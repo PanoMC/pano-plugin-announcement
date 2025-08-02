@@ -122,6 +122,7 @@ tasks {
         val pluginId: String by project
         val pluginName: String by project
         val pluginDescription: String by project
+        val pluginPanoVersion: String by project
         val pluginClass: String by project
         val pluginDeveloper: String by project
         val pluginLicense: String by project
@@ -133,6 +134,7 @@ tasks {
             attributes["id"] = pluginId
             attributes["name"] = pluginName
             attributes["description"] = pluginDescription
+            attributes["pano-version"] = pluginPanoVersion
             attributes["main-class"] = pluginClass
             attributes["version"] = version
             attributes["developer"] = pluginDeveloper
