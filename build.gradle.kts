@@ -121,27 +121,27 @@ tasks {
     shadowJar {
         val pluginId: String by project
         val pluginName: String by project
-        val pluginDescription: String by project
+        val pluginDescription: String? by project
         val pluginPanoVersion: String by project
         val pluginClass: String by project
         val pluginDeveloper: String by project
-        val pluginLicense: String by project
-        val pluginSourceUrl: String by project
-        val pluginDependencies: String by project
-        val pluginRequires: String by project
+        val pluginLicense: String? by project
+        val pluginSourceUrl: String? by project
+        val pluginDependencies: String? by project
+        val pluginRequires: String? by project
 
         manifest {
             attributes["id"] = pluginId
             attributes["name"] = pluginName
-            attributes["description"] = pluginDescription
+            pluginDescription?.let { attributes["description"] = it }
             attributes["pano-version"] = pluginPanoVersion
             attributes["main-class"] = pluginClass
             attributes["version"] = version
             attributes["developer"] = pluginDeveloper
-            attributes["license"] = pluginLicense
-            attributes["source-url"] = pluginSourceUrl
-            attributes["dependencies"] = pluginDependencies
-            attributes["requires"] = pluginRequires
+            pluginLicense?.let { attributes["license"] = it }
+            pluginSourceUrl?.let { attributes["source-url"] = it }
+            pluginDependencies?.let { attributes["dependencies"] = it }
+            pluginRequires?.let { attributes["requires"] = it }
         }
 
         archiveFileName.set("$pluginId-$version.jar")
