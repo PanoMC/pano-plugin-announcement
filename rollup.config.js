@@ -24,7 +24,7 @@ export default [
         ...baseConfig,
         output: {
             ...baseConfig.output,
-            dir: process.env.DEV ? "dist/server" : "src/main/resources/plugin-ui/server", // Server directory
+            dir: process.env.DEV ? "server" : "src/main/resources/plugin-ui/server", // Server directory
             entryFileNames: 'server.mjs' // Server entry file
         },
         plugins: [
@@ -43,7 +43,7 @@ export default [
         ...baseConfig,
         output: {
             ...baseConfig.output,
-            dir: process.env.DEV ? "dist/client" : "src/main/resources/plugin-ui/client", // Client directory
+            dir: process.env.DEV ? "client" : "src/main/resources/plugin-ui/client", // Client directory
             entryFileNames: 'client.mjs' // Client entry file
         },
         plugins: [
