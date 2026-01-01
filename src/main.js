@@ -7,15 +7,19 @@ export async function onLoad(panoApi) {
 }
 
 export async function onEnable() {
-    console.log("announcement enabled", pano.isPanel)
+  console.log("announcement enabled", "isPanel:" + pano.isPanel)
+
+  if (pano.isPanel) {
     pano.ui.page.register({
       path: "/announcements",
       component: () => import("./panel/AnnouncementsPage.svelte"),
-      resetLayout: false
+      resetLayout: false,
     });
 
     pano.ui.nav.site.editNavLinks((navigationItems) => {
-      const postsIndex = navigationItems.findIndex(item => item.href === "/posts");
+      const postsIndex = navigationItems.findIndex(
+        (item) => item.href === "/posts",
+      );
       const annoucementsLink = {
         href: "/announcements",
         icon: "fas fa-bullhorn",
@@ -31,4 +35,5 @@ export async function onEnable() {
 
       return navigationItems;
     });
+  }
 }
