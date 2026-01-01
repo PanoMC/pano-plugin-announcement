@@ -1,3 +1,7 @@
 {
-  "yay": "vay canına2"
+  "components": {
+    "site-navigation-menu": {
+      "announcements": "Duyurular"
+    }
+  }
 }

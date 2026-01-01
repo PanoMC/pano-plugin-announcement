@@ -1,3 +1,7 @@
 {
-  "test": "omg"
+  "components": {
+    "site-navigation-menu": {
+      "announcements": "Announcements"
+    }
+  }
 }
