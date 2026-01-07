@@ -13,7 +13,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@panomc/sdk": "^1.0.0-dev.5",
+    "@panomc/sdk": "^1.0.0-dev.6",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "cross-env": "^7.0.3",
