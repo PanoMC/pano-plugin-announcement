@@ -22,6 +22,7 @@
 
 <script>
   import { PageNavItem, PageNav } from "@panomc/sdk/components";
+  import {_} from "@panomc/sdk/utils/language"
 
   export let name;
 </script>
