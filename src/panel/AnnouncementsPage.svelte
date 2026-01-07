@@ -1,16 +1,6 @@
-<script context="module">
-  export async function load(event) {
-    console.log("Load came")
-  }
-</script>
-
-<script>
-    export let name;
-</script>
-
 <style global>
   .announcement {
-      color: red;
+    color: red;
   }
 </style>
 
@@ -18,3 +8,20 @@
   Hello {name}!
 </i>
 
+<PageNav slot="middle">
+  <PageNavItem href="/announcements">test1</PageNavItem>
+  <PageNavItem href="/settings">test2</PageNavItem>
+  <PageNavItem href="/omg">test3</PageNavItem>
+</PageNav>
+
+<script context="module">
+  export async function load(event) {
+    console.log("Load came");
+  }
+</script>
+
+<script>
+  import { PageNavItem, PageNav } from "@panomc/sdk/components";
+
+  export let name;
+</script>

@@ -1,39 +1,44 @@
-// export {default as test} from "./Component.svelte";
+import { PanoPlugin, viewComponent } from "@panomc/sdk";
 
-let pano;
+export default class PanoAnnouncementPlugin extends PanoPlugin {
+  onLoad() {
+    const pano = this.pano
 
-export async function onLoad(panoApi) {
-    pano = panoApi;
-}
+    console.log("announcement enabled", "isPanel:" + pano.isPanel);
 
-export async function onEnable() {
-  console.log("announcement enabled", "isPanel:" + pano.isPanel)
+    if (pano.isPanel) {
+      pano.ui.page.register({
+        path: "/announcements",
+        component: viewComponent(() => import("./panel/AnnouncementsPage.svelte")),
+        layout: viewComponent(() => import("./panel/AnnouncementsLayout.svelte")),
+        resetLayout: false,
+      });
 
-  if (pano.isPanel) {
-    pano.ui.page.register({
-      path: "/announcements",
-      component: () => import("./panel/AnnouncementsPage.svelte"),
-      resetLayout: false,
-    });
+      pano.ui.nav.site.editNavLinks((navigationItems) => {
+        const postsIndex = navigationItems.findIndex(
+          (item) => item.href === "/posts",
+        );
+        const announcementsLink = {
+          href: "/announcements",
+          icon: "fas fa-bullhorn",
+          text: "plugins.pano-plugin-announcement.components.site-navigation-menu.announcements",
+          startsWith: false,
+        };
 
-    pano.ui.nav.site.editNavLinks((navigationItems) => {
-      const postsIndex = navigationItems.findIndex(
-        (item) => item.href === "/posts",
-      );
-      const annoucementsLink = {
-        href: "/announcements",
-        icon: "fas fa-bullhorn",
-        text: "plugins.pano-plugin-announcement.components.site-navigation-menu.announcements",
-        startsWith: false,
-      };
+        if (postsIndex !== -1) {
+          navigationItems.splice(postsIndex + 1, 0, announcementsLink);
+        } else {
+          navigationItems.push(announcementsLink);
+        }
 
-      if (postsIndex !== -1) {
-        navigationItems.splice(postsIndex + 1, 0, annoucementsLink);
-      } else {
-        navigationItems.push(annoucementsLink);
-      }
+        return navigationItems;
+      });
+    }
+  }
 
-      return navigationItems;
-    });
+  onContextUpdate(ctx) {
+  }
+
+  onUnload() {
   }
 }

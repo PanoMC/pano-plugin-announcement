@@ -1,6 +1,9 @@
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import del from 'rollup-plugin-delete';
+import terser from '@rollup/plugin-terser';
+
+const production = !process.env.DEV;
 
 const baseConfig = {
   input: "src/main.js",
@@ -8,6 +11,7 @@ const baseConfig = {
     format: "es",
     chunkFileNames: "[name]-[hash].js", // Chunk file naming
   },
+  external: [/^@sveltejs\/kit/, /^\$app\//],
   plugins: [
     del({
       targets: process.env.DEV
@@ -15,7 +19,7 @@ const baseConfig = {
         : ["src/main/resources/plugin-ui/*"], // Targets to clean
       runOnce: true, // Run only once
     }),
-    resolve(),
+    production && terser()
   ],
   preserveEntrySignatures: "strict",
 };
@@ -31,10 +35,12 @@ export default [
     },
     plugins: [
       ...baseConfig.plugins,
+      resolve({
+        dedupe: ["svelte"],
+      }),
       svelte({
         compilerOptions: {
           generate: "server",
-          hydratable: true,
           css: "external",
         },
         emitCss: false,
@@ -51,15 +57,15 @@ export default [
     },
     plugins: [
       ...baseConfig.plugins,
+      resolve({
+        browser: true,
+        dedupe: ["svelte"],
+      }),
       svelte({
         compilerOptions: {
           generate: "client",
-          hydratable: true,
 
           css: "external",
-          compatibility: {
-            componentApi: 4,
-          },
         },
         emitCss: false,
       }),

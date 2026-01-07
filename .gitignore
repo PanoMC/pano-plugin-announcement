@@ -16,3 +16,4 @@ src/main/resources/*.zip
 client
 server
 manifest.json
+bin
