@@ -45,73 +45,73 @@
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
-            <tr>
-              <th scope="col" class="align-middle text-nowrap"></th>
-              <th scope="col" class="align-middle text-nowrap"> ID </th>
-              <th scope="col" class="align-middle text-nowrap"> Başlık </th>
-              <th scope="col" class="align-middle text-nowrap"> Durum </th>
-              <th scope="col" class="align-middle text-nowrap"> Tür </th>
-              <th scope="col" class="align-middle text-nowrap"> Zaman </th>
-            </tr>
+          <tr>
+            <th scope="col" class="align-middle text-nowrap"></th>
+            <th scope="col" class="align-middle text-nowrap"> ID</th>
+            <th scope="col" class="align-middle text-nowrap"> Başlık</th>
+            <th scope="col" class="align-middle text-nowrap"> Durum</th>
+            <th scope="col" class="align-middle text-nowrap"> Tür</th>
+            <th scope="col" class="align-middle text-nowrap"> Zaman</th>
+          </tr>
           </thead>
           <tbody>
-            {#each filteredAnnouncements as announcement, index (announcement.id)}
-              <tr>
-                <td class="align-middle">
-                  <div class="dropdown position-static">
+          {#each filteredAnnouncements as announcement, index (announcement.id)}
+            <tr>
+              <td class="align-middle">
+                <div class="dropdown position-static">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-link"
+                    data-bs-toggle="dropdown"
+                    title="İşlemler"
+                    aria-label="İşlemler">
+                    <span class="fas fa-ellipsis-v"></span>
+                  </button>
+                  <div
+                    class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
                     <button
                       type="button"
-                      class="btn btn-sm btn-link"
-                      data-bs-toggle="dropdown"
-                      title="İşlemler"
-                      aria-label="İşlemler">
-                      <span class="fas fa-ellipsis-v"></span>
-                    </button>
-                    <div
-                      class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
-                      <button
-                        type="button"
-                        class="dropdown-item"
-                        on:click={() => onEditClick(announcement.id)}
-                        class:disabled={buttonsLoading}>
+                      class="dropdown-item"
+                      on:click={() => onEditClick(announcement.id)}
+                      class:disabled={buttonsLoading}>
                         <span>
                           <i class="fas fa-edit me-2"></i>
                           Düzenle
                         </span>
-                      </button>
-                      <button
-                        type="button"
-                        class="dropdown-item"
-                        on:click={() => onDeleteClick(announcement.id)}
-                        class:disabled={buttonsLoading}>
-                        <i class="fas fa-trash me-2"></i>
-                        <span> Sil </span>
-                      </button>
-                    </div>
+                    </button>
+                    <button
+                      type="button"
+                      class="dropdown-item"
+                      on:click={() => onDeleteClick(announcement.id)}
+                      class:disabled={buttonsLoading}>
+                      <i class="fas fa-trash me-2"></i>
+                      <span> Sil </span>
+                    </button>
                   </div>
-                </td>
-                <td class="align-middle">
-                  <code>{announcement.id}</code>
-                </td>
-                <td class="align-middle">
-                  <div class="fw-semibold">
-                    <a
-                      href="{base}/announcements/{announcement.id}"
-                      class="text-decoration-none">
-                      {announcement.title}
-                    </a>
-                  </div>
-                </td>
-                <td class="align-middle">
-                  {#if announcement.status === "ACTIVE"}
-                    <span class="badge text-bg-success"> Aktif </span>
-                  {:else if announcement.status === "INACTIVE"}
-                    <span class="badge text-bg-secondary"> Pasif </span>
-                  {:else}
-                    <span class="badge text-bg-warning"> Zamanlandı </span>
-                  {/if}
-                </td>
-                <td class="align-middle">
+                </div>
+              </td>
+              <td class="align-middle">
+                <code>{announcement.id}</code>
+              </td>
+              <td class="align-middle">
+                <div class="fw-semibold">
+                  <a
+                    href="{base}/announcements/{announcement.id}"
+                    class="text-decoration-none">
+                    {announcement.title}
+                  </a>
+                </div>
+              </td>
+              <td class="align-middle">
+                {#if announcement.status === "ACTIVE"}
+                  <span class="badge text-bg-success"> Aktif </span>
+                {:else if announcement.status === "INACTIVE"}
+                  <span class="badge text-bg-secondary"> Pasif </span>
+                {:else}
+                  <span class="badge text-bg-warning"> Zamanlandı </span>
+                {/if}
+              </td>
+              <td class="align-middle">
                   <span class="badge text-bg-primary">
                     {announcement.displayType === "BANNER"
                       ? "Banner"
@@ -119,20 +119,20 @@
                         ? "Modal"
                         : announcement.displayType}
                   </span>
-                </td>
-                <td class="align-middle text-nowrap">
-                  <small>
-                    {new Date(announcement.time).toLocaleDateString("tr", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </small>
-                </td>
-              </tr>
-            {/each}
+              </td>
+              <td class="align-middle text-nowrap">
+                <small>
+                  {new Date(announcement.time).toLocaleDateString("tr", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </small>
+              </td>
+            </tr>
+          {/each}
           </tbody>
         </table>
       </div>
@@ -148,14 +148,14 @@
 
 <script context="module">
   /**
-   * @type {import('@sveltejs/kit').PageLoad}
+   * @type {import("@sveltejs/kit").PageLoad}
    */
 
   export async function load(event) {
-    const { parent } = event
-    const { pageTitle } = await parent()
+    const { parent } = event;
+    const { pageTitle } = await parent();
 
-    pageTitle.set("Duyurular")
+    pageTitle.set("Duyurular");
     return {};
   }
 
@@ -169,7 +169,7 @@
       timeType: "PERMANENT",
       status: "ACTIVE",
       content: "",
-      customCss: "",
+      customCss: ""
     },
     {
       id: 2,
@@ -180,8 +180,8 @@
       status: "INACTIVE",
       content: "Bu bir örnek modal duyurusu içeriğidir.",
       customCss:
-        ".custom-announcement { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); }",
-    },
+        ".custom-announcement { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); }"
+    }
   ];
 </script>
 
@@ -193,18 +193,18 @@
     CardHeader,
     CardFilters,
     CardFiltersItem,
-    NoContent,
+    NoContent
   } from "@panomc/sdk/components";
 
   import ConfirmDeleteAnnouncementModal, {
     show as showDeleteAnnouncementModal,
     setCallback as setDeleteAnnouncementModalCallback,
-    onHide as onDeleteAnnouncementModalHide,
+    onHide as onDeleteAnnouncementModalHide
   } from "./components/modals/ConfirmDeleteAnnouncementModal.svelte";
 
   import AddEditAnnouncementModal, {
     show as showAddEditAnnouncementModal,
-    setCallback as setAddEditAnnouncementModalCallback,
+    setCallback as setAddEditAnnouncementModalCallback
   } from "./components/modals/AddEditAnnouncementModal.svelte";
 
   export let data = { announcements };
@@ -232,7 +232,7 @@
         displayType: announcement.displayType,
         content: announcement.content || "",
         customCss: announcement.customCss || "",
-        modalDisplayFrequency: announcement.modalDisplayFrequency || "ALWAYS",
+        modalDisplayFrequency: announcement.modalDisplayFrequency || "ALWAYS"
       });
     }
   }
