@@ -84,17 +84,7 @@
                 <label for="time">Zaman Seçin</label>
               </div>
             {/if}
-            <div class="form-floating mb-3">
-              <select
-                class="form-select"
-                id="displayType"
-                bind:value={$announcement.displayType}>
-                <option value="BANNER">Banner</option>
-                <option value="MODAL">Modal</option>
-              </select>
-              <label for="displayType">Tür</label>
-            </div>
-  
+
             {#if $announcement.displayType === "BANNER" || $announcement.displayType === "MODAL"}
               <div class="form-floating mb-3">
                 <input
@@ -106,6 +96,17 @@
                 <label for="link">Bağlantı</label>
               </div>
             {/if}
+
+            <div class="form-floating mb-3">
+              <select
+                class="form-select"
+                id="displayType"
+                bind:value={$announcement.displayType}>
+                <option value="BANNER">Banner</option>
+                <option value="MODAL">Modal</option>
+              </select>
+              <label for="displayType">Tür</label>
+            </div>
   
             {#if $announcement.displayType === "BANNER"}
               <div class="form-floating mb-3">
@@ -266,13 +267,15 @@
                     </button>
                   {/if}
                 </div>
-                {#if $announcement?.contents}
-                  <Editor
-                    bind:content={$announcement.contents[activeContentIndex]}
-                    bind:isEmpty={isEditorEmpty}
-                    showHtml={true}
-                    contentStyles={"height: 300px;"} />
-                {/if}
+                {#key activeContentIndex}
+                  {#if $announcement?.contents}
+                    <Editor
+                      bind:content={$announcement.contents[activeContentIndex]}
+                      bind:isEmpty={isEditorEmpty}
+                      showHtml={true}
+                      contentStyles={"height: 300px;"} />
+                  {/if}
+                {/key}
               {:else}
                 {#if $announcement?.contents}
                   <Editor
