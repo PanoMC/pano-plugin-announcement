@@ -20,17 +20,17 @@
       </div>
       <CardFilters slot="right">
         <CardFiltersItem
-          href="{base}/announcements"
+          href="/announcements"
           active={currentStatus === "ALL"}>
           Tümü
         </CardFiltersItem>
         <CardFiltersItem
-          href="{base}/announcements?status=ACTIVE"
+          href="/announcements?status=ACTIVE"
           active={currentStatus === "ACTIVE"}>
           Aktif
         </CardFiltersItem>
         <CardFiltersItem
-          href="{base}/announcements?status=INACTIVE"
+          href="/announcements?status=INACTIVE"
           active={currentStatus === "INACTIVE"}>
           Pasif
         </CardFiltersItem>
