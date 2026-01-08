@@ -152,6 +152,10 @@
    */
 
   export async function load(event) {
+    const { parent } = event
+    const { pageTitle } = await parent()
+
+    pageTitle.set("Duyurular")
     return {};
   }
 
