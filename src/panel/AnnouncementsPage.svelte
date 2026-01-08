@@ -169,7 +169,9 @@
       timeType: "PERMANENT",
       status: "ACTIVE",
       content: "",
-      customCss: ""
+      customCss: "",
+      link: "https://panomc.com",
+      bannerEffect: "MARQUEE"
     },
     {
       id: 2,
@@ -180,7 +182,8 @@
       status: "INACTIVE",
       content: "Bu bir örnek modal duyurusu içeriğidir.",
       customCss:
-        ".custom-announcement { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); }"
+        ".custom-announcement { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); }",
+      link: ""
     }
   ];
 </script>
@@ -232,6 +235,8 @@
         displayType: announcement.displayType,
         content: announcement.content || "",
         customCss: announcement.customCss || "",
+        link: announcement.link || "",
+        bannerEffect: announcement.bannerEffect || "NONE",
         modalDisplayFrequency: announcement.modalDisplayFrequency || "ALWAYS"
       });
     }
