@@ -15,7 +15,6 @@ val pf4jVersion: String by project
 val vertxVersion: String by project
 val gsonVersion: String by project
 val handlebarsVersion: String by project
-val springContextVersion: String by project
 val bootstrap = (project.findProperty("bootstrap") as String?)?.toBoolean() ?: false
 val noui = project.hasProperty("noui")
 val pluginsDir: File? by rootProject.extra
