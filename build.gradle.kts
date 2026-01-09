@@ -70,9 +70,6 @@ dependencies {
     compileOnly("io.vertx:vertx-json-schema:${vertxVersion}")
     compileOnly("io.vertx:vertx-web-validation:${vertxVersion}")
     compileOnly("io.vertx:vertx-web-client:${vertxVersion}")
-
-    // https://mvnrepository.com/artifact/org.springframework/spring-context
-    compileOnly("org.springframework:spring-context:${springContextVersion}")
 }
 
 tasks {
