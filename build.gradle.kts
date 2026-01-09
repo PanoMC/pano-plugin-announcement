@@ -1,8 +1,8 @@
 import java.net.URL
 
 plugins {
-    kotlin("jvm") version "2.1.0"
-    kotlin("kapt") version "2.1.0"
+    kotlin("jvm") version "2.2.21"
+    kotlin("kapt") version "2.2.21"
     id("com.gradleup.shadow") version "8.3.8"
     `maven-publish`
 }
@@ -15,7 +15,9 @@ val pf4jVersion: String by project
 val vertxVersion: String by project
 val gsonVersion: String by project
 val handlebarsVersion: String by project
+val springContextVersion: String by project
 val bootstrap = (project.findProperty("bootstrap") as String?)?.toBoolean() ?: false
+val noui = project.hasProperty("noui")
 val pluginsDir: File? by rootProject.extra
 
 val os = System.getProperty("os.name").lowercase()
@@ -53,7 +55,7 @@ dependencies {
     if (bootstrap) {
         compileOnly(project(mapOf("path" to ":Pano")))
     } else {
-        compileOnly("com.github.panomc:pano:v1.0.0-alpha.70")
+        compileOnly("com.github.panomc:pano:v1.0.0-alpha.298")
     }
 
     compileOnly(kotlin("stdlib-jdk8"))
@@ -61,6 +63,16 @@ dependencies {
 
     compileOnly("org.pf4j:pf4j:${pf4jVersion}")
     kapt("org.pf4j:pf4j:${pf4jVersion}")
+    compileOnly("io.vertx:vertx-web:${vertxVersion}")
+    compileOnly("io.vertx:vertx-lang-kotlin:${vertxVersion}")
+    compileOnly("io.vertx:vertx-lang-kotlin-coroutines:${vertxVersion}")
+    compileOnly("io.vertx:vertx-jdbc-client:${vertxVersion}")
+    compileOnly("io.vertx:vertx-json-schema:${vertxVersion}")
+    compileOnly("io.vertx:vertx-web-validation:${vertxVersion}")
+    compileOnly("io.vertx:vertx-web-client:${vertxVersion}")
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-context
+    compileOnly("org.springframework:spring-context:${springContextVersion}")
 }
 
 tasks {
@@ -176,11 +188,15 @@ tasks {
 }
 
 tasks.named("build") {
-    dependsOn("zipPluginUI")
+    if (!noui) {
+        dependsOn("zipPluginUI")
+    }
 }
 
 tasks.named("processResources") {
-    dependsOn("zipPluginUI")
+    if (!noui) {
+        dependsOn("zipPluginUI")
+    }
 }
 
 publishing {

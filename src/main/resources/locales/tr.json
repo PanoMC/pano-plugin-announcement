@@ -1,4 +1,99 @@
 {
+  "pages": {
+    "announcements": {
+      "title": "Duyurular",
+      "new-announcement": "Yeni Duyuru",
+      "count": "{count} Duyuru",
+      "filters": {
+        "all": "Tümü",
+        "active": "Aktif",
+        "inactive": "Pasif"
+      },
+      "table": {
+        "id": "ID",
+        "title": "Başlık",
+        "status": "Durum",
+        "type": "Tür",
+        "date": "Zaman"
+      },
+      "actions": {
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "label": "İşlemler"
+      },
+      "types": {
+        "banner": "Banner",
+        "modal": "Modal"
+      }
+    }
+  },
+  "modals": {
+    "add-edit": {
+      "edit-title": "Duyuru Düzenle",
+      "new-title": "Yeni Duyuru",
+      "close": "Kapat",
+      "title-label": "Başlık",
+      "title-placeholder": "Duyuru başlığını girin",
+      "status": "Durum",
+      "status-active": "Aktif",
+      "status-inactive": "Pasif",
+      "time-type": "Zaman Tipi",
+      "time-permanent": "Kalıcı",
+      "time-timed": "Zamanlı",
+      "time-select": "Zaman Seçin",
+      "link": "Bağlantı",
+      "link-placeholder": "Bağlantı URL'sini girin",
+      "type": "Tür",
+      "type-banner": "Banner",
+      "type-modal": "Modal",
+      "effects": "Efektler",
+      "effect-none": "Yok",
+      "effect-marquee": "Kayan Yazı",
+      "effect-flash": "Flaş / Şok (Git Gel)",
+      "display": "Gösterim",
+      "display-always": "Sürekli",
+      "display-once": "Bir Defa",
+      "modal-size": "Modal Boyutu",
+      "modal-size-small": "Küçük",
+      "modal-size-normal": "Normal",
+      "modal-size-large": "Büyük",
+      "modal-size-full": "Tam",
+      "image": "Görsel",
+      "image-change": "Değiştir",
+      "image-remove": "Kaldır",
+      "image-drop-placeholder": "Görsel Seçin veya Sürükleyin",
+      "image-format-info": "PNG, JPEG, GIF, WEBP (Maks. 2MB)",
+      "image-error-size": "Dosya boyutu 2MB'dan büyük olamaz!",
+      "image-error-type": "Sadece PNG, JPEG, GIF ve WEBP formatları desteklenir!",
+      "content-tab": "İçerik #{index}",
+      "add-content": "Yeni İçerik Ekle",
+      "remove-content": "Sil",
+      "custom-css": "Özel CSS",
+      "custom-css-placeholder": "Özel CSS kodlarınızı buraya yazın",
+      "custom-css-info": "Duyuruya özel stil vermek için {selector} seçicisini kullanabilirsiniz.",
+      "btn-create": "Oluştur",
+      "btn-save": "Kaydet",
+      "error-save": "Kaydedilemedi: {error}",
+      "error-unknown": "Bilinmeyen hata",
+      "error-general": "Bir hata oluştu."
+    },
+    "delete": {
+      "title": "Duyuruyu Sil",
+      "confirm-msg": "Emin misiniz?",
+      "description": "\"{title}\" duyurusunu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+      "cancel": "Vazgeç",
+      "confirm": "Sil",
+      "success": "Duyuru silindi",
+      "error": "Duyuru silinemedi"
+    }
+  },
+  "toasts": {
+    "announcement-added": "Duyuru başarıyla eklendi.",
+    "announcement-updated": "Duyuru başarıyla güncellendi.",
+    "announcement-deleted": "Duyuru başarıyla silindi.",
+    "error-saving": "Duyuru kaydedilirken bir hata oluştu: {error}",
+    "error-deleting": "Duyuru silinirken bir hata oluştu: {error}"
+  },
   "components": {
     "site-navigation-menu": {
       "announcements": "Duyurular"

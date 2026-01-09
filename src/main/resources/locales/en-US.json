@@ -1,4 +1,99 @@
 {
+  "pages": {
+    "announcements": {
+      "title": "Announcements",
+      "new-announcement": "New Announcement",
+      "count": "{count} Announcements",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "table": {
+        "id": "ID",
+        "title": "Title",
+        "status": "Status",
+        "type": "Type",
+        "date": "Date"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "label": "Actions"
+      },
+      "types": {
+        "banner": "Banner",
+        "modal": "Modal"
+      }
+    }
+  },
+  "modals": {
+    "add-edit": {
+      "edit-title": "Edit Announcement",
+      "new-title": "New Announcement",
+      "close": "Close",
+      "title-label": "Title",
+      "title-placeholder": "Enter announcement title",
+      "status": "Status",
+      "status-active": "Active",
+      "status-inactive": "Inactive",
+      "time-type": "Time Type",
+      "time-permanent": "Permanent",
+      "time-timed": "Timed",
+      "time-select": "Select Time",
+      "link": "Link",
+      "link-placeholder": "Enter link URL",
+      "type": "Type",
+      "type-banner": "Banner",
+      "type-modal": "Modal",
+      "effects": "Effects",
+      "effect-none": "None",
+      "effect-marquee": "Marquee",
+      "effect-flash": "Flash (Back and Forth)",
+      "display": "Display",
+      "display-always": "Always",
+      "display-once": "Once",
+      "modal-size": "Modal Size",
+      "modal-size-small": "Small",
+      "modal-size-normal": "Normal",
+      "modal-size-large": "Large",
+      "modal-size-full": "Full",
+      "image": "Image",
+      "image-change": "Change",
+      "image-remove": "Remove",
+      "image-drop-placeholder": "Select or Drag & Drop Image",
+      "image-format-info": "PNG, JPEG, GIF, WEBP (Max. 2MB)",
+      "image-error-size": "File size cannot be larger than 2MB!",
+      "image-error-type": "Only PNG, JPEG, GIF and WEBP formats are supported!",
+      "content-tab": "Content #{index}",
+      "add-content": "Add New Content",
+      "remove-content": "Delete",
+      "custom-css": "Custom CSS",
+      "custom-css-placeholder": "Write your custom CSS codes here",
+      "custom-css-info": "You can use the {selector} selector to style the announcement.",
+      "btn-create": "Create",
+      "btn-save": "Save",
+      "error-save": "Could not be saved: {error}",
+      "error-unknown": "Unknown error",
+      "error-general": "An error occurred."
+    },
+    "delete": {
+      "title": "Delete Announcement",
+      "confirm-msg": "Are you sure?",
+      "description": "Are you sure you want to delete the announcement \"{title}\"? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "success": "Announcement deleted",
+      "error": "Announcement could not be deleted"
+    }
+  },
+  "toasts": {
+    "announcement-added": "Announcement successfully added.",
+    "announcement-updated": "Announcement successfully updated.",
+    "announcement-deleted": "Announcement successfully deleted.",
+    "error-saving": "An error occurred while saving the announcement: {error}",
+    "error-deleting": "An error occurred while deleting the announcement: {error}"
+  },
   "components": {
     "site-navigation-menu": {
       "announcements": "Announcements"
