@@ -1,4 +1,10 @@
 import { PanoPlugin, viewComponent } from "@panomc/sdk";
+import { derived } from "svelte/store";
+import { _ as i18n } from "@panomc/sdk/utils/language";
+
+export const _ = derived(i18n, ($_fn) => {
+  return (key, options) => $_fn(`plugins.pano-plugin-announcement.${key}`, options);
+});
 
 export default class PanoAnnouncementPlugin extends PanoPlugin {
   onLoad() {

@@ -11,7 +11,7 @@
         <div class="pb-3">
           <i class="fas fa-question-circle fa-3x d-block m-auto text-gray"></i>
         </div>
-        Bu duyuruyu silmek istediğinizden emin misiniz?
+        {$_('modals.delete.description', { values: { title: $announcement.title } })}
       </div>
       <div class="modal-footer flex-nowrap">
         <button
@@ -19,14 +19,14 @@
           type="button"
           class:disabled={loading}
           on:click={hide}>
-          İptal
+          {$_('modals.delete.cancel')}
         </button>
         <button
           class="btn btn-danger col-6 m-0"
           type="button"
           class:disabled={loading}
           on:click={onYesClick}>
-          Evet, Sil
+          {$_('modals.delete.confirm')}
         </button>
       </div>
     </div>
@@ -35,6 +35,7 @@
 
 <script context="module">
   import { writable, get } from "svelte/store";
+  import ApiUtil from "@panomc/sdk/utils/api";
 
   const modalElement = writable();
   const announcement = writable({});
@@ -69,21 +70,36 @@
 </script>
 
 <script>
+  import { showToast } from "@panomc/sdk/toasts";
+  import { _ } from "../../../main";
   let loading = false;
 
-  function onYesClick() {
+  async function onYesClick() {
     loading = true;
 
-    // TODO: Implement actual delete API call
-    console.log("Deleting announcement:", get(announcement));
+    try {
+      const result = await ApiUtil.delete({
+        path: `/api/panel/announcements/${get(announcement).id}`
+      });
 
-    // Simulate API call delay
-    setTimeout(() => {
+      if (result.error) {
+        // Handle error (e.g., show toast)
+        console.error("Delete failed:", result.error);
+        showToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
+           values: { error: result.error.statusMessage || $_('modals.add-edit.error-unknown') }
+        });
+      } else {
+        showToast('plugins.pano-plugin-announcement.toasts.announcement-deleted');
+        callback(get(announcement));
+        hide();
+      }
+    } catch (e) {
+      console.error(e);
+      showToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
+         values: { error: $_('modals.add-edit.error-general') }
+      });
+    } finally {
       loading = false;
-      hide();
-
-      // Show success message or handle error
-      callback(get(announcement));
-    }, 1000);
+    }
   }
 </script>

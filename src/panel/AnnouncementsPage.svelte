@@ -2,13 +2,13 @@
   <!-- Action Menu -->
   <PageActions leftClasses="d-lg-flex d-none" middleClasses="d-lg-flex d-none">
     <div slot="right">
-      <a
-        href="{base}/announcements/create"
+      <button
+        type="button"
         class="btn btn-secondary"
-        role="button">
+        on:click={onCreateClick}>
         <i class="fas fa-plus"></i>
-        <span class="d-lg-inline d-none ms-2"> Yeni Duyuru</span>
-      </a>
+        <span class="d-lg-inline d-none ms-2"> {$_('pages.announcements.new-announcement')}</span>
+      </button>
     </div>
   </PageActions>
 
@@ -16,29 +16,29 @@
   <div class="card">
     <CardHeader>
       <div slot="left">
-        {filteredAnnouncements?.length || 0} Duyuru
+        {$_('pages.announcements.count', { values: { count: data.announcementCount || 0 } })}
       </div>
       <CardFilters slot="right">
         <CardFiltersItem
           href="/announcements"
           active={currentStatus === "ALL"}>
-          Tümü
+          {$_('pages.announcements.filters.all')}
         </CardFiltersItem>
         <CardFiltersItem
           href="/announcements?status=ACTIVE"
           active={currentStatus === "ACTIVE"}>
-          Aktif
+          {$_('pages.announcements.filters.active')}
         </CardFiltersItem>
         <CardFiltersItem
           href="/announcements?status=INACTIVE"
           active={currentStatus === "INACTIVE"}>
-          Pasif
+          {$_('pages.announcements.filters.inactive')}
         </CardFiltersItem>
       </CardFilters>
     </CardHeader>
 
     <!-- No Announcements -->
-    {#if !filteredAnnouncements || filteredAnnouncements.length === 0}
+    {#if !data.announcements || data.announcements.length === 0}
       <NoContent />
     {:else}
       <!-- Announcements Table -->
@@ -47,15 +47,15 @@
           <thead>
           <tr>
             <th scope="col" class="align-middle text-nowrap"></th>
-            <th scope="col" class="align-middle text-nowrap"> ID</th>
-            <th scope="col" class="align-middle text-nowrap"> Başlık</th>
-            <th scope="col" class="align-middle text-nowrap"> Durum</th>
-            <th scope="col" class="align-middle text-nowrap"> Tür</th>
-            <th scope="col" class="align-middle text-nowrap"> Zaman</th>
+            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.id')}</th>
+            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.title')}</th>
+            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.status')}</th>
+            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.type')}</th>
+            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.date')}</th>
           </tr>
           </thead>
           <tbody>
-          {#each filteredAnnouncements as announcement, index (announcement.id)}
+          {#each data.announcements as announcement, index (announcement.id)}
             <tr>
               <td class="align-middle">
                 <div class="dropdown position-static">
@@ -63,8 +63,8 @@
                     type="button"
                     class="btn btn-sm btn-link"
                     data-bs-toggle="dropdown"
-                    title="İşlemler"
-                    aria-label="İşlemler">
+                    title={$_('pages.announcements.actions.label')}
+                    aria-label={$_('pages.announcements.actions.label')}>
                     <span class="fas fa-ellipsis-v"></span>
                   </button>
                   <div
@@ -76,7 +76,7 @@
                       class:disabled={buttonsLoading}>
                         <span>
                           <i class="fas fa-edit me-2"></i>
-                          Düzenle
+                          {$_('pages.announcements.actions.edit')}
                         </span>
                     </button>
                     <button
@@ -85,7 +85,7 @@
                       on:click={() => onDeleteClick(announcement.id)}
                       class:disabled={buttonsLoading}>
                       <i class="fas fa-trash me-2"></i>
-                      <span> Sil </span>
+                      <span> {$_('pages.announcements.actions.delete')} </span>
                     </button>
                   </div>
                 </div>
@@ -95,41 +95,32 @@
               </td>
               <td class="align-middle">
                 <div class="fw-semibold">
-                  <a
-                    href="{base}/announcements/{announcement.id}"
-                    class="text-decoration-none">
+                  <button
+                    type="button"
+                    on:click={() => onEditClick(announcement.id)}
+                    class="btn btn-link p-0 fw-semibold text-primary text-decoration-none text-start shadow-none">
                     {announcement.title}
-                  </a>
+                  </button>
                 </div>
               </td>
               <td class="align-middle">
-                {#if announcement.status === "ACTIVE"}
-                  <span class="badge text-bg-success"> Aktif </span>
-                {:else if announcement.status === "INACTIVE"}
-                  <span class="badge text-bg-secondary"> Pasif </span>
+                {#if announcement.status}
+                  <span class="badge text-bg-success"> {$_('pages.announcements.filters.active')} </span>
                 {:else}
-                  <span class="badge text-bg-warning"> Zamanlandı </span>
+                  <span class="badge text-bg-secondary"> {$_('pages.announcements.filters.inactive')} </span>
                 {/if}
               </td>
               <td class="align-middle">
                   <span class="badge text-bg-primary">
-                    {announcement.displayType === "BANNER"
-                      ? "Banner"
-                      : announcement.displayType === "MODAL"
-                        ? "Modal"
-                        : announcement.displayType}
+                    {announcement.type === "BANNER"
+                      ? $_('pages.announcements.types.banner')
+                      : announcement.type === "MODAL"
+                        ? $_('pages.announcements.types.modal')
+                        : announcement.type}
                   </span>
               </td>
               <td class="align-middle text-nowrap">
-                <small>
-                  {new Date(announcement.time).toLocaleDateString("tr", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </small>
+                <Date time={announcement.createdAt} fullFormat={true} />
               </td>
             </tr>
           {/each}
@@ -137,6 +128,14 @@
         </table>
       </div>
     {/if}
+    <div class="card-footer">
+      <Pagination
+        page={data.page}
+        totalPage={data.totalPage}
+        on:firstPageClick={() => onPageClick(1)}
+        on:lastPageClick={() => onPageClick(data.totalPage)}
+        on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
+    </div>
   </div>
 
   <!-- Edit Modal -->
@@ -147,57 +146,57 @@
 </article>
 
 <script context="module">
+  import ApiUtil, { buildQueryParams } from "@panomc/sdk/utils/api";
+
   /**
    * @type {import("@sveltejs/kit").PageLoad}
    */
 
   export async function load(event) {
-    const { parent } = event;
+    const { parent, url: { searchParams } } = event;
     const { pageTitle } = await parent();
 
-    pageTitle.set("Duyurular");
-    return {};
-  }
+    pageTitle.set('plugins.pano-plugin-announcement.pages.announcements.title');
 
-  // Mock data for now - replace with actual API call
-  const announcements = [
-    {
-      id: 1,
-      title: "Sample Announcement 1",
-      displayType: "BANNER",
-      time: "2024-01-15 10:30:00",
-      timeType: "PERMANENT",
-      status: "ACTIVE",
-      content: "",
-      customCss: "",
-      link: "https://panomc.com",
-      bannerEffect: "MARQUEE"
-    },
-    {
-      id: 2,
-      title: "Sample Announcement 2",
-      displayType: "MODAL",
-      time: "2024-01-14 14:20:00",
-      timeType: "TIMED",
-      status: "INACTIVE",
-      content: "Bu bir örnek modal duyurusu içeriğidir.",
-      customCss:
-        ".custom-announcement { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); }",
-      link: ""
+    const page = searchParams.get("page") || 1;
+    const statusParam = searchParams.get("status");
+    let status = null;
+    if (statusParam === "ACTIVE") status = true;
+    else if (statusParam === "INACTIVE") status = false;
+
+    const queryParams = buildQueryParams({
+      page,
+      status
+    });
+
+    const body = await ApiUtil.get({
+      path: `/api/panel/announcements` + queryParams,
+      request: event,
+    });
+
+    if (body.error) {
+      return { data: { announcements: [], announcementCount: 0, totalPage: 1, page: 1 } };
     }
-  ];
+
+    body.page = parseInt(page);
+    return { data: body };
+  }
 </script>
 
 <script>
-  import { base, page } from "@panomc/sdk/svelte";
+  import { base, page, goto } from "@panomc/sdk/svelte";
 
   import {
     PageActions,
     CardHeader,
     CardFilters,
     CardFiltersItem,
-    NoContent
+    NoContent,
+    Pagination,
+    Date
   } from "@panomc/sdk/components";
+
+  import { _ } from "../main";
 
   import ConfirmDeleteAnnouncementModal, {
     show as showDeleteAnnouncementModal,
@@ -210,41 +209,50 @@
     setCallback as setAddEditAnnouncementModalCallback
   } from "./components/modals/AddEditAnnouncementModal.svelte";
 
-  export let data = { announcements };
+  export let data;
 
   $: currentStatus = $page.url.searchParams.get("status") || "ALL";
-  $: filteredAnnouncements =
-    currentStatus === "ALL"
-      ? data.announcements
-      : data.announcements.filter((a) => a.status === currentStatus);
 
   let buttonsLoading = false;
+
+  async function refreshData() {
+    const pageNum = data.page === 1 ? null : data.page;
+    const statusParam = currentStatus === "ALL" ? null : currentStatus;
+ 
+    const queryParams = buildQueryParams({
+      page: pageNum,
+      status: statusParam
+    });
+ 
+    await goto(`${base}/announcements${queryParams}`, { invalidateAll: true });
+  }
+
+  async function onPageClick(pageNum) {
+    data.page = pageNum;
+    await refreshData();
+  }
+
+  function onCreateClick() {
+    showAddEditAnnouncementModal("create");
+  }
 
   function onEditClick(id) {
     const announcement = data.announcements.find((a) => a.id === id);
     if (announcement) {
       showAddEditAnnouncementModal("edit", {
-        id: announcement.id,
-        title: announcement.title,
-        status: announcement.status,
-        timeType: announcement.timeType || "PERMANENT",
-        time:
-          announcement.timeType === "TIMED"
-            ? new Date(announcement.time).toISOString().slice(0, 16)
-            : "", // datetime-local format
-        displayType: announcement.displayType,
-        content: announcement.content || "",
-        customCss: announcement.customCss || "",
-        link: announcement.link || "",
-        bannerEffect: announcement.bannerEffect || "NONE",
-        modalDisplayFrequency: announcement.modalDisplayFrequency || "ALWAYS"
+        ...announcement,
+        displayType: announcement.type,
+        bannerEffect: announcement.effectType,
+        timeType: announcement.until ? "TIMED" : "PERMANENT",
+        time: announcement.until ? new Date(announcement.until).toISOString().slice(0, 16) : "",
+        modalSize: announcement.size === 0 ? "SMALL" : announcement.size === 1 ? "NORMAL" : announcement.size === 2 ? "LARGE" : "FULL",
+        status: announcement.status ? "ACTIVE" : "DRAFT"
       });
     }
   }
 
   setAddEditAnnouncementModalCallback(() => {
-    // This will be called when announcement is successfully saved
-    location.reload();
+    refreshData();
   });
 
   function onDeleteClick(id) {
@@ -254,17 +262,7 @@
     }
   }
 
-  // Set up delete modal callbacks
   setDeleteAnnouncementModalCallback(() => {
-    // This will be called when announcement is successfully deleted
-    // Here you would typically refresh the data or remove from local array
-    console.log("Announcement deleted successfully");
-    // For now, just reload the page or update local data
-    location.reload();
-  });
-
-  onDeleteAnnouncementModalHide(() => {
-    // This will be called when modal is hidden (cancelled or after delete)
-    console.log("Delete modal hidden");
+    refreshData();
   });
 </script>
