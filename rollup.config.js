@@ -11,7 +11,6 @@ const baseConfig = {
     format: "es",
     chunkFileNames: "[name]-[hash].js", // Chunk file naming
   },
-  external: [/^@sveltejs\/kit/, /^\$app\//],
   plugins: [
     del({
       targets: process.env.DEV
@@ -55,6 +54,7 @@ export default [
       dir: process.env.DEV ? "client" : "src/main/resources/plugin-ui/client", // Client directory
       entryFileNames: "client.mjs", // Client entry file
     },
+    external: (id) => id.startsWith("svelte"),
     plugins: [
       ...baseConfig.plugins,
       resolve({
@@ -64,7 +64,6 @@ export default [
       svelte({
         compilerOptions: {
           generate: "client",
-
           css: "external",
         },
         emitCss: false,
