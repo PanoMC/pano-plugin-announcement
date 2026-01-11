@@ -153,6 +153,19 @@
               <div class="form-floating mb-3">
                 <select
                   class="form-select"
+                  id="location"
+                  bind:value={$announcement.location}>
+                  <option value="GLOBAL">{$_('modals.add-edit.location-global')}</option>
+                  <option value="HOME">{$_('modals.add-edit.location-home')}</option>
+                </select>
+                <label for="location">{$_('modals.add-edit.location')}</label>
+              </div>
+            {/if}
+
+            {#if $announcement.displayType === "BANNER"}
+              <div class="form-floating mb-3">
+                <select
+                  class="form-select"
                   id="bannerEffect"
                   bind:value={$announcement.bannerEffect}>
                   <option value="NONE">{$_('modals.add-edit.effect-none')}</option>
@@ -426,6 +439,7 @@
         closeable: cloned.closeable || false,
         showFromType: cloned.showFrom ? "CUSTOM" : "NOW",
         showFrom: cloned.showFrom ? new Date(cloned.showFrom).toISOString().slice(0, 16) : "",
+        location: cloned.location || "GLOBAL",
         bannerContents: activeType === "BANNER" ? contents : (cloned.bannerContents || [""]),
         modalContent: activeType === "MODAL" ? contents[0] : (cloned.modalContent || "")
       };
@@ -445,6 +459,7 @@
         link: "",
         bannerEffect: "NONE",
         closeable: true,
+        location: "GLOBAL",
         bannerContents: [""],
         modalContent: "",
         modalDisplayFrequency: "ALWAYS",
@@ -597,6 +612,7 @@
         customCss: $announcement.customCss || "",
         size: $announcement.displayType === "MODAL" ? ($announcement.modalSize === "SMALL" ? 0 : $announcement.modalSize === "NORMAL" ? 1 : $announcement.modalSize === "LARGE" ? 2 : 3) : null,
         modalDisplayFrequency: $announcement.modalDisplayFrequency,
+        location: $announcement.location,
         closeable: $announcement.displayType === "BANNER" ? $announcement.closeable : false,
         removeImage: $isImageRemoved
       };
