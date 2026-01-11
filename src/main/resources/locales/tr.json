@@ -14,7 +14,8 @@
         "title": "Başlık",
         "status": "Durum",
         "type": "Tür",
-        "date": "Zaman"
+        "date": "Oluşturma",
+        "updated-at": "Güncellenme"
       },
       "actions": {
         "edit": "Düzenle",

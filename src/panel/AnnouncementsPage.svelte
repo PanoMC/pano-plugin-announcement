@@ -46,83 +46,24 @@
         <table class="table table-hover">
           <thead>
           <tr>
-            <th scope="col" class="align-middle text-nowrap"></th>
-            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.id')}</th>
+            <th scope="col" class="align-middle text-nowrap" style="width: 40px;"></th>
+            <th scope="col" class="align-middle text-nowrap" style="width: 60px;"> {$_('pages.announcements.table.id')}</th>
+            <th scope="col" class="align-middle text-nowrap" style="width: 60px;"></th>
             <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.title')}</th>
-            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.status')}</th>
+            <th scope="col" class="align-middle text-nowrap" class:table-active={currentStatus !== "ALL"}> {$_('pages.announcements.table.status')}</th>
             <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.type')}</th>
             <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.date')}</th>
+            <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.updated-at')}</th>
           </tr>
           </thead>
           <tbody>
-          {#each data.announcements as announcement, index (announcement.id)}
-            <tr>
-              <td class="align-middle">
-                <div class="dropdown position-static">
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-link"
-                    data-bs-toggle="dropdown"
-                    title={$_('pages.announcements.actions.label')}
-                    aria-label={$_('pages.announcements.actions.label')}>
-                    <span class="fas fa-ellipsis-v"></span>
-                  </button>
-                  <div
-                    class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
-                    <button
-                      type="button"
-                      class="dropdown-item"
-                      on:click={() => onEditClick(announcement.id)}
-                      class:disabled={buttonsLoading}>
-                        <span>
-                          <i class="fas fa-edit me-2"></i>
-                          {$_('pages.announcements.actions.edit')}
-                        </span>
-                    </button>
-                    <button
-                      type="button"
-                      class="dropdown-item"
-                      on:click={() => onDeleteClick(announcement.id)}
-                      class:disabled={buttonsLoading}>
-                      <i class="fas fa-trash me-2"></i>
-                      <span> {$_('pages.announcements.actions.delete')} </span>
-                    </button>
-                  </div>
-                </div>
-              </td>
-              <td class="align-middle">
-                <code>{announcement.id}</code>
-              </td>
-              <td class="align-middle">
-                <div class="fw-semibold">
-                  <button
-                    type="button"
-                    on:click={() => onEditClick(announcement.id)}
-                    class="btn btn-link p-0 fw-semibold text-primary text-decoration-none text-start shadow-none">
-                    {announcement.title}
-                  </button>
-                </div>
-              </td>
-              <td class="align-middle">
-                {#if announcement.status}
-                  <span class="badge text-bg-success"> {$_('pages.announcements.filters.active')} </span>
-                {:else}
-                  <span class="badge text-bg-secondary"> {$_('pages.announcements.filters.inactive')} </span>
-                {/if}
-              </td>
-              <td class="align-middle">
-                  <span class="badge text-bg-primary">
-                    {announcement.type === "BANNER"
-                      ? $_('pages.announcements.types.banner')
-                      : announcement.type === "MODAL"
-                        ? $_('pages.announcements.types.modal')
-                        : announcement.type}
-                  </span>
-              </td>
-              <td class="align-middle text-nowrap">
-                <Date time={announcement.createdAt} fullFormat={true} />
-              </td>
-            </tr>
+          {#each data.announcements as announcement (announcement.id)}
+            <AnnouncementRow 
+              {announcement} 
+              {currentStatus}
+              {buttonsLoading}
+              onEditClick={onEditClick}
+              onDeleteClick={onDeleteClick} />
           {/each}
           </tbody>
         </table>
@@ -197,6 +138,7 @@
   } from "@panomc/sdk/components";
 
   import { _ } from "../main";
+  import AnnouncementRow from "./components/AnnouncementRow.svelte";
 
   import ConfirmDeleteAnnouncementModal, {
     show as showDeleteAnnouncementModal,

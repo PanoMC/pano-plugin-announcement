@@ -14,7 +14,8 @@
         "title": "Title",
         "status": "Status",
         "type": "Type",
-        "date": "Date"
+        "date": "Created At",
+        "updated-at": "Updated At"
       },
       "actions": {
         "edit": "Edit",
