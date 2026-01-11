@@ -35,6 +35,7 @@ class PanelGetAnnouncementsAPI(
     override fun getValidationHandler(schemaRepository: SchemaRepository): ValidationHandler =
         ValidationHandlerBuilder.create(schemaRepository)
             .queryParameter(optionalParam("status", booleanSchema()))
+            .queryParameter(optionalParam("visible", booleanSchema()))
             .queryParameter(optionalParam("page", numberSchema()))
             .build()
 
@@ -43,11 +44,12 @@ class PanelGetAnnouncementsAPI(
 
         val parameters = getParameters(context)
         val status = parameters.queryParameter("status")?.boolean
+        val visible = parameters.queryParameter("visible")?.boolean
         val page = parameters.queryParameter("page")?.long ?: 1L
 
         val sqlClient = databaseManager.getSqlClient()
-        val announcements = announcementDao.getAllByStatus(page, status, sqlClient)
-        val count = announcementDao.count(status, sqlClient)
+        val announcements = announcementDao.getAllByStatus(page, status, visible, sqlClient)
+        val count = announcementDao.count(status, visible, sqlClient)
 
         val totalPageNum = ceil(count.toDouble() / 10).toLong()
 

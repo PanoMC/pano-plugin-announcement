@@ -28,21 +28,13 @@ class GetAnnouncementsAPI(
     override suspend fun handle(context: RoutingContext): Result {
         val sqlClient = databaseManager.getSqlClient()
         
-        // Fetch active announcements directly from the database first
-        val dbActiveAnnouncements = announcementDao.getAllActive(sqlClient)
+        // Fetch all currently visible announcements
+        val visibleAnnouncements = announcementDao.getAllVisible(null, sqlClient)
 
-        // DOUBLE CHECK FILTERING LOGIC IN THE ENDPOINT
-        val currentTime = System.currentTimeMillis()
-        val finalAnnouncements = dbActiveAnnouncements.filter { announcement ->
-            // 2. Until Check (If set, must be in the future)
-            val isNotExpired = announcement.until == null || announcement.until == 0L || announcement.until > currentTime
-            
-            // 3. Show From Check (If set, must be in the past or now)
-            val isStarted = announcement.showFrom == null || announcement.showFrom <= currentTime
-            
-            isNotExpired && isStarted
-        }
-
-        return Successful(mapOf("data" to finalAnnouncements))
+        return Successful(
+            mapOf(
+                "data" to visibleAnnouncements
+            )
+        )
     }
 }
