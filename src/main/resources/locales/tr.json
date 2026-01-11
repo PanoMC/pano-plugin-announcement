@@ -7,13 +7,18 @@
       "filters": {
         "all": "Tümü",
         "active": "Aktif",
-        "inactive": "Pasif"
+        "inactive": "Pasif",
+        "live": "Yayında",
+        "hidden": "Gizli"
       },
       "table": {
         "id": "ID",
         "title": "Başlık",
         "status": "Durum",
         "type": "Tür",
+        "showing": "Gösterim",
+        "live": "Gösteriliyor",
+        "hidden": "Gizli",
         "date": "Oluşturma",
         "updated-at": "Güncellenme"
       },

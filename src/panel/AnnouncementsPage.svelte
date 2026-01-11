@@ -21,7 +21,7 @@
       <CardFilters slot="right">
         <CardFiltersItem
           href="/announcements"
-          active={currentStatus === "ALL"}>
+          active={!filterActive}>
           {$_('pages.announcements.filters.all')}
         </CardFiltersItem>
         <CardFiltersItem
@@ -33,6 +33,16 @@
           href="/announcements?status=INACTIVE"
           active={currentStatus === "INACTIVE"}>
           {$_('pages.announcements.filters.inactive')}
+        </CardFiltersItem>
+        <CardFiltersItem
+          href="/announcements?visible=true"
+          active={currentVisibility === "true"}>
+          {$_('pages.announcements.filters.live')}
+        </CardFiltersItem>
+        <CardFiltersItem
+          href="/announcements?visible=false"
+          active={currentVisibility === "false"}>
+          {$_('pages.announcements.filters.hidden')}
         </CardFiltersItem>
       </CardFilters>
     </CardHeader>
@@ -50,7 +60,8 @@
             <th scope="col" class="align-middle text-nowrap" style="width: 60px;"> {$_('pages.announcements.table.id')}</th>
             <th scope="col" class="align-middle text-nowrap" style="width: 60px;"></th>
             <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.title')}</th>
-            <th scope="col" class="align-middle text-nowrap" class:table-active={currentStatus !== "ALL"}> {$_('pages.announcements.table.status')}</th>
+            <th scope="col" class="align-middle text-nowrap" style="width: 100px;" class:table-active={currentStatus}> {$_('pages.announcements.table.status')}</th>
+            <th scope="col" class="align-middle text-nowrap" style="width: 100px;" class:table-active={currentVisibility}> {$_('pages.announcements.table.showing')}</th>
             <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.type')}</th>
             <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.date')}</th>
             <th scope="col" class="align-middle text-nowrap"> {$_('pages.announcements.table.updated-at')}</th>
@@ -61,6 +72,7 @@
             <AnnouncementRow 
               {announcement} 
               {currentStatus}
+              {currentVisibility}
               {buttonsLoading}
               onEditClick={onEditClick}
               onDeleteClick={onDeleteClick} />
@@ -105,9 +117,15 @@
     if (statusParam === "ACTIVE") status = true;
     else if (statusParam === "INACTIVE") status = "false";
 
+    const visibleParam = searchParams.get("visible");
+    let visible = null;
+    if (visibleParam === "true") visible = true;
+    else if (visibleParam === "false") visible = "false";
+
     const queryParams = buildQueryParams({
       page,
-      status
+      status,
+      visible
     });
 
     const body = await ApiUtil.get({
@@ -153,17 +171,21 @@
 
   export let data;
 
-  $: currentStatus = $page.url.searchParams.get("status") || "ALL";
+  $: currentStatus = $page.url.searchParams.get("status");
+  $: currentVisibility = $page.url.searchParams.get("visible");
+  $: filterActive = currentStatus || currentVisibility;
 
   let buttonsLoading = false;
 
   async function refreshData() {
     const pageNum = data.page === 1 ? null : data.page;
-    const statusParam = currentStatus === "ALL" ? null : currentStatus;
+    const statusVal = $page.url.searchParams.get("status");
+    const visibleVal = $page.url.searchParams.get("visible");
  
     const queryParams = buildQueryParams({
       page: pageNum,
-      status: statusParam
+      status: statusVal,
+      visible: visibleVal
     });
  
     await goto(`${base}/announcements${queryParams}`, { invalidateAll: true });

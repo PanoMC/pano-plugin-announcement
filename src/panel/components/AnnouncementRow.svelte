@@ -1,10 +1,11 @@
 <script>
   import { _ } from "../../main";
-  import { Date } from "@panomc/sdk/components";
+  import { Date as DateComponent } from "@panomc/sdk/components";
   import { base } from "@panomc/sdk/svelte";
 
   export let announcement;
   export let currentStatus;
+  export let currentVisibility;
   export let buttonsLoading = false;
   export let onEditClick;
   export let onDeleteClick;
@@ -12,6 +13,19 @@
   $: imageUrl = announcement.imageFileName 
     ? `${base}/api/panel/announcements/image/${announcement.imageFileName}?thumbnail=true` 
     : null;
+
+  import { onMount } from "svelte";
+  let now = Date.now();
+  onMount(() => {
+    const interval = setInterval(() => {
+      now = Date.now();
+    }, 1000);
+    return () => clearInterval(interval);
+  });
+
+  $: isShowing = announcement.status && 
+                  (announcement.showFrom === null || Number(announcement.showFrom) === 0 || Number(announcement.showFrom) <= now) && 
+                  (announcement.until === null || Number(announcement.until) === 0 || Number(announcement.until) > now);
 </script>
 
 <tr>
@@ -71,11 +85,22 @@
       </button>
     </div>
   </td>
-  <td class="align-middle" class:table-active={currentStatus !== "ALL"}>
+  <td class="align-middle" class:table-active={currentStatus}>
     {#if announcement.status}
       <span class="badge text-bg-success"> {$_('pages.announcements.filters.active')} </span>
     {:else}
       <span class="badge text-bg-secondary"> {$_('pages.announcements.filters.inactive')} </span>
+    {/if}
+  </td>
+  <td class="align-middle" class:table-active={currentVisibility !== null}>
+    {#if isShowing}
+      <span class="badge rounded-pill text-bg-success-subtle text-success border border-success-subtle">
+        <i class="fas fa-eye me-1"></i> {$_('pages.announcements.table.live')}
+      </span>
+    {:else}
+      <span class="badge rounded-pill text-bg-danger-subtle text-danger border border-danger-subtle">
+        <i class="fas fa-eye-slash me-1"></i> {$_('pages.announcements.table.hidden')}
+      </span>
     {/if}
   </td>
   <td class="align-middle">
@@ -88,10 +113,10 @@
     </span>
   </td>
   <td class="align-middle text-nowrap">
-    <Date time={announcement.createdAt} fullFormat={true} />
+    <DateComponent time={announcement.createdAt} fullFormat={true} />
   </td>
   <td class="align-middle text-nowrap">
-    <Date time={announcement.updatedAt} fullFormat={true} />
+    <DateComponent time={announcement.updatedAt} fullFormat={true} />
   </td>
 </tr>
 

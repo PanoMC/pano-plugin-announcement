@@ -7,13 +7,18 @@
       "filters": {
         "all": "All",
         "active": "Active",
-        "inactive": "Inactive"
+        "inactive": "Inactive",
+        "live": "Live",
+        "hidden": "Hidden"
       },
       "table": {
         "id": "ID",
         "title": "Title",
         "status": "Status",
         "type": "Type",
+        "showing": "Showing",
+        "live": "Live",
+        "hidden": "Hidden",
         "date": "Created At",
         "updated-at": "Updated At"
       },
