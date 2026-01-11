@@ -174,6 +174,17 @@ class AnnouncementDaoImpl : AnnouncementDao() {
         return rows.toEntities()
     }
 
+    override suspend fun getAll(sqlClient: SqlClient): List<Announcement> {
+        val query = "SELECT ${fields.toTableQuery()} FROM `${getTablePrefix() + tableName}`"
+
+        val rows: RowSet<Row> = sqlClient
+            .query(query)
+            .execute()
+            .coAwait()
+
+        return rows.toEntities()
+    }
+
     override suspend fun uninstall(sqlClient: SqlClient) {
         sqlClient
             .query("DROP TABLE IF EXISTS `${getTablePrefix() + tableName}`")
