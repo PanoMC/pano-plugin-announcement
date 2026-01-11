@@ -72,7 +72,9 @@ class PanelGetAnnouncementImageAPI(
         response.putHeader("ETag", etag)
         response.putHeader("Cache-Control", "public, max-age=$CACHE_TTL_SECONDS, immutable")
 
-        response.sendFile(file.absolutePath)
+        try {
+            response.sendFile(file.absolutePath)
+        } catch (_: Exception) {}
 
         return null
     }
