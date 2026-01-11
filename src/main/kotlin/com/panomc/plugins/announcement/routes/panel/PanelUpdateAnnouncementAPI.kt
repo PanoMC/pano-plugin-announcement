@@ -10,6 +10,7 @@ import com.panomc.plugins.announcement.db.dao.AnnouncementDao
 import com.panomc.plugins.announcement.db.model.Announcement
 import com.panomc.plugins.announcement.permission.ManageAnnouncementsPermission
 import com.panomc.plugins.announcement.util.AnnouncementEffectType
+import com.panomc.plugins.announcement.util.AnnouncementLocation
 import com.panomc.plugins.announcement.util.AnnouncementType
 import com.panomc.plugins.announcement.util.ImageUtil
 import com.panomc.plugins.announcement.util.ModalDisplayFrequency
@@ -70,6 +71,7 @@ class PanelUpdateAnnouncementAPI(
                         .optionalProperty("removeImage", booleanSchema())
                         .optionalProperty("closeable", booleanSchema())
                         .optionalProperty("modalDisplayFrequency", enumSchema(*ModalDisplayFrequency.entries.map { it.name }.toTypedArray()))
+                        .optionalProperty("location", enumSchema(*AnnouncementLocation.entries.map { it.name }.toTypedArray()))
                 )
             )
             .predicate(RequestPredicate.BODY_REQUIRED)
@@ -132,6 +134,7 @@ class PanelUpdateAnnouncementAPI(
             imageFileName = imageFileName,
             closeable = data.getBoolean("closeable") ?: true,
             showFrom = data.getLong("showFrom"),
+            location = data.getString("location")?.let { AnnouncementLocation.valueOf(it) } ?: AnnouncementLocation.GLOBAL,
             updatedAt = System.currentTimeMillis()
         )
 

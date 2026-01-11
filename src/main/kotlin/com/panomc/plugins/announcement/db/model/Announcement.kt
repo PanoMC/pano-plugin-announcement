@@ -3,6 +3,7 @@ package com.panomc.plugins.announcement.db.model
 import com.panomc.platform.db.DBEntity
 import com.panomc.plugins.announcement.util.AnnouncementEffectType
 import com.panomc.plugins.announcement.util.AnnouncementType
+import com.panomc.plugins.announcement.util.AnnouncementLocation
 import com.panomc.plugins.announcement.util.ModalDisplayFrequency
 
 open class Announcement(
@@ -20,6 +21,7 @@ open class Announcement(
     val imageFileName: String? = null,
     val closeable: Boolean = true,
     val showFrom: Long? = null,
+    val location: AnnouncementLocation = AnnouncementLocation.GLOBAL,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 ) : DBEntity()
