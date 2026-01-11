@@ -65,8 +65,10 @@ class PanelAddAnnouncementAPI(
                             enumSchema(*AnnouncementEffectType.entries.map { it.name }.toTypedArray())
                         )
                         .optionalProperty("until", numberSchema())
+                        .optionalProperty("showFrom", numberSchema())
                         .optionalProperty("customCss", stringSchema())
                         .optionalProperty("size", numberSchema())
+                        .optionalProperty("closeable", booleanSchema())
                         .optionalProperty("modalDisplayFrequency", enumSchema(*ModalDisplayFrequency.entries.map { it.name }.toTypedArray()))
                 )
             )
@@ -113,7 +115,9 @@ class PanelAddAnnouncementAPI(
             customCss = data.getString("customCss") ?: "",
             size = size,
             displayFrequency = displayFrequency,
-            imageFileName = imageFileName
+            imageFileName = imageFileName,
+            closeable = data.getBoolean("closeable") ?: true,
+            showFrom = data.getLong("showFrom")
         )
 
         val sqlClient = databaseManager.getSqlClient()

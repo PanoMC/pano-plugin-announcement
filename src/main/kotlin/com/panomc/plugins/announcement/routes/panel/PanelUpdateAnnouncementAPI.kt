@@ -63,9 +63,11 @@ class PanelUpdateAnnouncementAPI(
                         .optionalProperty("link", stringSchema())
                         .optionalProperty("effectType", enumSchema(*AnnouncementEffectType.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("until", numberSchema())
+                        .optionalProperty("showFrom", numberSchema())
                         .optionalProperty("customCss", stringSchema())
                         .optionalProperty("size", numberSchema())
                         .optionalProperty("removeImage", booleanSchema())
+                        .optionalProperty("closeable", booleanSchema())
                         .optionalProperty("modalDisplayFrequency", enumSchema(*ModalDisplayFrequency.entries.map { it.name }.toTypedArray()))
                 )
             )
@@ -127,6 +129,8 @@ class PanelUpdateAnnouncementAPI(
             size = size,
             displayFrequency = displayFrequency,
             imageFileName = imageFileName,
+            closeable = data.getBoolean("closeable") ?: true,
+            showFrom = data.getLong("showFrom"),
             updatedAt = System.currentTimeMillis()
         )
 

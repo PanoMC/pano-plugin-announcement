@@ -18,6 +18,8 @@ open class Announcement(
     val size: Int? = null,
     val displayFrequency: ModalDisplayFrequency? = null,
     val imageFileName: String? = null,
+    val closeable: Boolean = true,
+    val showFrom: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 ) : DBEntity()
