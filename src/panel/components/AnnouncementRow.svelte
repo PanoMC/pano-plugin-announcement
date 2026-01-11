@@ -29,11 +29,13 @@
 </script>
 
 <tr>
-  <td class="align-middle text-center" style="width: 40px;">
+  <th scope="row" class="align-middle text-center" style="width: 60px;">
     <div class="dropdown position-static">
       <button
         type="button"
-        class="btn btn-sm btn-link p-0"
+        class="btn btn-sm btn-link"
+        aria-expanded="false"
+        aria-haspopup="true"
         data-bs-toggle="dropdown"
         title={$_('pages.announcements.actions.label')}
         aria-label={$_('pages.announcements.actions.label')}>
@@ -52,7 +54,7 @@
         </button>
         <button
           type="button"
-          class="dropdown-item text-danger"
+          class="dropdown-item"
           on:click={() => onDeleteClick(announcement.id)}
           class:disabled={buttonsLoading}>
           <i class="fas fa-trash me-2"></i>
@@ -60,8 +62,8 @@
         </button>
       </div>
     </div>
-  </td>
-  <td class="align-middle" style="width: 60px;">
+  </th>
+  <td class="align-middle">
     <code>{announcement.id}</code>
   </td>
   <td class="align-middle" style="width: 60px;">
@@ -80,30 +82,26 @@
       <button
         type="button"
         on:click={() => onEditClick(announcement.id)}
-        class="btn btn-link p-0 fw-semibold text-primary text-decoration-none text-start shadow-none d-block text-truncate w-100">
+        class="btn btn-link p-0 fw-semibold text-truncate">
         {announcement.title}
       </button>
     </div>
   </td>
-  <td class="align-middle" class:table-active={currentStatus}>
+  <td class="align-middle text-nowrap" class:table-active={currentStatus}>
     {#if announcement.status}
       <span class="badge text-bg-success"> {$_('pages.announcements.filters.active')} </span>
     {:else}
       <span class="badge text-bg-secondary"> {$_('pages.announcements.filters.inactive')} </span>
     {/if}
   </td>
-  <td class="align-middle" class:table-active={currentVisibility !== null}>
+  <td class="align-middle text-nowrap" class:table-active={currentVisibility !== null}>
     {#if isShowing}
-      <span class="badge rounded-pill text-bg-success-subtle text-success border border-success-subtle">
-        <i class="fas fa-eye me-1"></i> {$_('pages.announcements.table.live')}
-      </span>
+      <span class="badge text-bg-success"> {$_('pages.announcements.table.live')} </span>
     {:else}
-      <span class="badge rounded-pill text-bg-danger-subtle text-danger border border-danger-subtle">
-        <i class="fas fa-eye-slash me-1"></i> {$_('pages.announcements.table.hidden')}
-      </span>
+      <span class="badge text-bg-danger"> {$_('pages.announcements.table.hidden')} </span>
     {/if}
   </td>
-  <td class="align-middle">
+  <td class="align-middle text-nowrap">
     <span class="badge text-bg-primary">
       {announcement.type === "BANNER"
         ? $_('pages.announcements.types.banner')
