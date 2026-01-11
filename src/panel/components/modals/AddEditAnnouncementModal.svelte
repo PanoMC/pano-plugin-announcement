@@ -36,16 +36,57 @@
                 <label for="title">{$_('modals.add-edit.title-label')}</label>
               </div>
             </div>
-            <div class="form-floating mb-3">
-              <select
-                class="form-select"
+            <div class="form-check form-switch mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
                 id="status"
-                bind:value={$announcement.status}>
-                <option value="ACTIVE">{$_('modals.add-edit.status-active')}</option>
-                <option value="DRAFT">{$_('modals.add-edit.status-inactive')}</option>
-              </select>
-              <label for="status">{$_('modals.add-edit.status')}</label>
+                role="switch"
+                checked={$announcement.status === "ACTIVE"}
+                on:change={(e) => ($announcement.status = e.target.checked ? "ACTIVE" : "DRAFT")} />
+              <label class="form-check-label ms-2" for="status">
+                {$announcement.status === "ACTIVE" ? $_('modals.add-edit.status-active') : $_('modals.add-edit.status-inactive')}
+              </label>
             </div>
+            <div class="mb-3">
+              <label class="form-label" for="showFromNow">{$_('modals.add-edit.show-from')}</label>
+              <div class="btn-group w-100" role="group">
+                <input
+                  type="radio"
+                  class="btn-check"
+                  id="showFromNow"
+                  autocomplete="off"
+                  bind:group={$announcement.showFromType}
+                  value="NOW" />
+                <label class="btn btn-outline-primary" for="showFromNow">
+                  {$_('modals.add-edit.show-from-now')}
+                </label>
+
+                <input
+                  type="radio"
+                  class="btn-check"
+                  id="showFromCustom"
+                  autocomplete="off"
+                  bind:group={$announcement.showFromType}
+                  value="CUSTOM" />
+                <label class="btn btn-outline-primary" for="showFromCustom">
+                  {$_('modals.add-edit.show-from-custom')}
+                </label>
+              </div>
+            </div>
+            {#if $announcement.showFromType === "CUSTOM"}
+              <div class="form-floating mb-3">
+                <input
+                  type="datetime-local"
+                  class="form-control"
+                  id="showFrom"
+                  bind:value={$announcement.showFrom}
+                  placeholder={$_('modals.add-edit.show-from-select')}
+                  required />
+                <label for="showFrom">{$_('modals.add-edit.show-from-select')}</label>
+              </div>
+            {/if}
+
             <div class="mb-3">
               <label class="form-label" for="timePermanent">{$_('modals.add-edit.time-type')}</label>
               <div class="btn-group w-100" role="group">
@@ -119,6 +160,17 @@
                   <option value="FLASH">{$_('modals.add-edit.effect-flash')}</option>
                 </select>
                 <label for="bannerEffect">{$_('modals.add-edit.effects')}</label>
+              </div>
+              <div class="form-check form-switch mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="closeable"
+                  role="switch"
+                  bind:checked={$announcement.closeable} />
+                <label class="form-check-label ms-2" for="closeable">
+                  {$_('modals.add-edit.closeable')}
+                </label>
               </div>
             {/if}
 
@@ -202,57 +254,7 @@
                 </div>
               </div>
 
-              <div class="mb-4">
-                <label class="form-label" for="modalImage"> {$_('modals.add-edit.image')} </label>
-                <div class="position-relative w-100">
-                  {#if displayImage}
-                    <div class="ratio ratio-16x9 border rounded overflow-hidden">
-                      <button
-                        type="button"
-                        class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
-                        use:tooltip={[$_('modals.add-edit.image-change'), { placement: "bottom" }]}
-                        on:click={() => modalImageInput.click()}>
-                        <img
-                          src={displayImage}
-                          class="img-fluid w-100 h-100 object-fit-contain"
-                          alt={$_('modals.add-edit.image')} />
-                      </button>
-                    </div>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
-                      on:click={onRemoveImage}
-                      title={$_('modals.add-edit.image-remove')}
-                      aria-label={$_('modals.add-edit.image-remove')}>
-                      <i class="fas fa-minus"></i>
-                    </button>
-                  {:else}
-                    <div class="list-group w-100">
-                      <button
-                        type="button"
-                        class="btn w-100 list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center border rounded shadow-none m-0"
-                        class:drag-over={dropZoneActive}
-                        style="height: 180px; cursor: pointer;"
-                        on:click={() => modalImageInput.click()}
-                        on:drop={handleDrop}
-                        on:dragover={handleDragOver}
-                        on:dragleave={handleDragLeave}>
-                        <i class="fas fa-image fa-3x mb-3 opacity-50"></i>
-                        <p class="mb-0 opacity-75 fw-medium">{$_('modals.add-edit.image-drop-placeholder')}</p>
-                        <small class="opacity-50 text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.5px;">{$_('modals.add-edit.image-format-info')}</small>
-                      </button>
-                    </div>
-                  {/if}
-                </div>
-                <input
-                  class="d-none"
-                  id="modalImage"
-                  type="file"
-                  bind:files={modalImageFiles}
-                  on:change={onModalImageChange}
-                  bind:this={modalImageInput}
-                  accept="image/png,image/jpeg,image/gif,image/webp" />
-              </div>
+
             {/if}
           </div>
           <div class="col-md-7">
@@ -261,7 +263,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                   <div class="overflow-x-auto flex-grow-1" style="scrollbar-width: thin;">
                     <div class="btn-group btn-group-sm flex-nowrap mb-1" role="group">
-                      {#each $announcement?.contents || [] as item, i}
+                      {#each $announcement?.bannerContents || [] as item, i}
                         <button
                           type="button"
                           class="btn {activeContentIndex === i ? 'btn-primary' : 'btn-outline-primary'} text-nowrap"
@@ -278,7 +280,7 @@
                       </button>
                     </div>
                   </div>
-                  {#if ($announcement?.contents?.length || 0) > 1}
+                  {#if ($announcement?.bannerContents?.length || 0) > 1}
                     <button
                       type="button"
                       class="btn btn-sm btn-link"
@@ -289,22 +291,75 @@
                   {/if}
                 </div>
                 {#key activeContentIndex}
-                  {#if $announcement?.contents}
-                    <Editor
-                      bind:content={$announcement.contents[activeContentIndex]}
-                      bind:isEmpty={isEditorEmpty}
-                      showHtml={true}
-                      contentStyles={"height: 300px;"} />
+                  {#if $announcement?.bannerContents}
+                    <div class="form-floating">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="content-{activeContentIndex}"
+                        bind:value={$announcement.bannerContents[activeContentIndex]}
+                        placeholder={$_('modals.add-edit.content-placeholder')}
+                        required />
+                      <label for="content-{activeContentIndex}">{$_('modals.add-edit.content-label')}</label>
+                    </div>
                   {/if}
                 {/key}
-              {:else}
-                {#if $announcement?.contents}
-                  <Editor
-                    bind:content={$announcement.contents[0]}
-                    bind:isEmpty={isEditorEmpty}
-                    showHtml={true}
-                    contentStyles={"height: 300px;"} />
-                {/if}
+              {:else if $announcement.displayType === "MODAL"}
+                <div class="mb-4">
+                  <div class="position-relative w-100">
+                    {#if displayImage}
+                      <div class="ratio ratio-16x9 border rounded overflow-hidden">
+                        <button
+                          type="button"
+                          class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
+                          use:tooltip={[$_('modals.add-edit.image-change'), { placement: "bottom" }]}
+                          on:click={() => modalImageInput.click()}>
+                          <img
+                            src={displayImage}
+                            class="img-fluid w-100 h-100 object-fit-contain"
+                            alt={$_('modals.add-edit.image')} />
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
+                        on:click={onRemoveImage}
+                        title={$_('modals.add-edit.image-remove')}
+                        aria-label={$_('modals.add-edit.image-remove')}>
+                        <i class="fas fa-minus"></i>
+                      </button>
+                    {:else}
+                      <div class="list-group w-100">
+                        <button
+                          type="button"
+                          class="btn w-100 list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center border rounded shadow-none m-0"
+                          class:drag-over={dropZoneActive}
+                          style="height: 180px; cursor: pointer;"
+                          on:click={() => modalImageInput.click()}
+                          on:drop={handleDrop}
+                          on:dragover={handleDragOver}
+                          on:dragleave={handleDragLeave}>
+                          <i class="fas fa-image fa-3x mb-3 opacity-50"></i>
+                          <p class="mb-0 opacity-75 fw-medium">{$_('modals.add-edit.image-drop-placeholder')}</p>
+                          <small class="opacity-50 text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.5px;">{$_('modals.add-edit.image-format-info')}</small>
+                        </button>
+                      </div>
+                    {/if}
+                  </div>
+                  <input
+                    class="d-none"
+                    id="modalImage"
+                    type="file"
+                    bind:files={modalImageFiles}
+                    on:change={onModalImageChange}
+                    bind:this={modalImageInput}
+                    accept="image/png,image/jpeg,image/gif,image/webp" />
+                </div>
+                <Editor
+                  bind:content={$announcement.modalContent}
+                  bind:isEmpty={isEditorEmpty}
+                  showHtml={true}
+                  contentStyles={"height: 300px;"} />
               {/if}
             </div>
             <div class="form-floating">
@@ -361,11 +416,18 @@
 
     if (newAnnouncement) {
       const cloned = JSON.parse(JSON.stringify(newAnnouncement));
+      const activeType = cloned.displayType || cloned.type || "BANNER";
+      const contents = cloned.contents || [cloned.content || ""];
       const state = {
         modalSize: "NORMAL",
         modalDisplayFrequency: "ALWAYS",
         ...cloned,
-        contents: cloned.contents || [cloned.content || ""]
+        displayType: activeType,
+        closeable: cloned.closeable || false,
+        showFromType: cloned.showFrom ? "CUSTOM" : "NOW",
+        showFrom: cloned.showFrom ? new Date(cloned.showFrom).toISOString().slice(0, 16) : "",
+        bannerContents: activeType === "BANNER" ? contents : (cloned.bannerContents || [""]),
+        modalContent: activeType === "MODAL" ? contents[0] : (cloned.modalContent || "")
       };
       announcement.set(state);
       initialAnnouncement.set(JSON.parse(JSON.stringify(state)));
@@ -376,12 +438,15 @@
         status: "ACTIVE",
         timeType: "PERMANENT",
         time: "",
+        showFromType: "NOW",
+        showFrom: "",
         displayType: "BANNER",
-        content: "",
         customCss: "",
         link: "",
         bannerEffect: "NONE",
-        contents: [""],
+        closeable: true,
+        bannerContents: [""],
+        modalContent: "",
         modalDisplayFrequency: "ALWAYS",
         modalSize: "NORMAL"
       });
@@ -427,10 +492,10 @@
   $: isFormValid = (() => {
     if (!$announcement.title || $announcement.title.trim() === "") return false;
 
-    if (!$announcement.contents || $announcement.contents.length === 0 || $announcement.contents.every(c => !c || c.trim() === "")) return false;
-
-    if ($announcement.displayType === "MODAL") {
-      if ($announcement.contents.length > 1) return false;
+    if ($announcement.displayType === "BANNER") {
+      if (!$announcement.bannerContents || $announcement.bannerContents.length === 0 || $announcement.bannerContents.every(c => !c || c.trim() === "")) return false;
+    } else if ($announcement.displayType === "MODAL") {
+      if (!$announcement.modalContent || $announcement.modalContent.trim() === "") return false;
       if ($mode === "create" && !$selectedFile) return false;
     }
 
@@ -444,9 +509,6 @@
 
   $: if ($announcement.displayType !== "BANNER") {
     activeContentIndex = 0;
-    if ($announcement.contents && $announcement.contents.length > 1) {
-      $announcement.contents = [$announcement.contents[0]];
-    }
   }
   let modalImageFiles = null;
   let modalImageInput;
@@ -530,10 +592,12 @@
         type: $announcement.displayType,
         effectType: $announcement.displayType === "BANNER" ? $announcement.bannerEffect : "NONE",
         until: $announcement.timeType === "TIMED" ? new Date($announcement.time).getTime() : null,
-        contents: JSON.stringify($announcement.contents),
+        showFrom: $announcement.showFromType === "CUSTOM" ? new Date($announcement.showFrom).getTime() : null,
+        contents: JSON.stringify($announcement.displayType === "BANNER" ? $announcement.bannerContents : [$announcement.modalContent]),
         customCss: $announcement.customCss || "",
         size: $announcement.displayType === "MODAL" ? ($announcement.modalSize === "SMALL" ? 0 : $announcement.modalSize === "NORMAL" ? 1 : $announcement.modalSize === "LARGE" ? 2 : 3) : null,
         modalDisplayFrequency: $announcement.modalDisplayFrequency,
+        closeable: $announcement.displayType === "BANNER" ? $announcement.closeable : false,
         removeImage: $isImageRemoved
       };
 
@@ -585,23 +649,23 @@
 
   function addContent() {
     announcement.update(a => {
-      a.contents = [...a.contents, ""];
+      a.bannerContents = [...a.bannerContents, ""];
       return a;
     });
-    activeContentIndex = get(announcement).contents.length - 1;
+    activeContentIndex = get(announcement).bannerContents.length - 1;
   }
 
   function removeActiveContent() {
-    const currentContents = get(announcement).contents;
+    const currentContents = get(announcement).bannerContents;
     if (currentContents.length <= 1) return;
 
     announcement.update(a => {
-      a.contents = a.contents.filter((_, i) => i !== activeContentIndex);
+      a.bannerContents = a.bannerContents.filter((_, i) => i !== activeContentIndex);
       return a;
     });
 
-    if (activeContentIndex >= get(announcement).contents.length) {
-      activeContentIndex = get(announcement).contents.length - 1;
+    if (activeContentIndex >= get(announcement).bannerContents.length) {
+      activeContentIndex = get(announcement).bannerContents.length - 1;
     }
   }
 </script>
