@@ -162,7 +162,7 @@
     const statusParam = searchParams.get("status");
     let status = null;
     if (statusParam === "ACTIVE") status = true;
-    else if (statusParam === "INACTIVE") status = false;
+    else if (statusParam === "INACTIVE") status = "false";
 
     const queryParams = buildQueryParams({
       page,
