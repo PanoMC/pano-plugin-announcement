@@ -11,6 +11,7 @@ import com.panomc.plugins.announcement.db.model.Announcement
 import com.panomc.plugins.announcement.permission.ManageAnnouncementsPermission
 import com.panomc.plugins.announcement.util.AnnouncementEffectType
 import com.panomc.plugins.announcement.util.AnnouncementType
+import com.panomc.plugins.announcement.util.ImageUtil
 import com.panomc.plugins.announcement.util.ModalDisplayFrequency
 import io.vertx.core.Handler
 import io.vertx.core.json.JsonArray
@@ -193,6 +194,8 @@ class PanelUpdateAnnouncementAPI(
 
         File(fileUpload.uploadedFileName()).copyTo(destFile, true)
 
+        ImageUtil.generateThumbnail(destFile, File(plugin.uploadsDir, "thumbnails"))
+
         return fileName
     }
 
@@ -200,6 +203,11 @@ class PanelUpdateAnnouncementAPI(
         val file = File(plugin.uploadsDir, fileName)
         if (file.exists()) {
             file.delete()
+        }
+
+        val thumbnailFile = File(File(plugin.uploadsDir, "thumbnails"), fileName)
+        if (thumbnailFile.exists()) {
+            thumbnailFile.delete()
         }
     }
 }

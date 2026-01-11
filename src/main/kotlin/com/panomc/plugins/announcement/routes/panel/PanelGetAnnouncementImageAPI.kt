@@ -11,11 +11,14 @@ import com.panomc.platform.util.MimeTypeUtil
 import com.panomc.plugins.announcement.AnnouncementPlugin
 import com.panomc.plugins.announcement.db.dao.AnnouncementDao
 import com.panomc.plugins.announcement.permission.ManageAnnouncementsPermission
+import com.panomc.plugins.announcement.util.ImageUtil
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.validation.ValidationHandler
+import io.vertx.ext.web.validation.builder.Parameters.optionalParam
 import io.vertx.ext.web.validation.builder.Parameters.param
 import io.vertx.ext.web.validation.builder.ValidationHandlerBuilder
 import io.vertx.json.schema.SchemaRepository
+import io.vertx.json.schema.common.dsl.Schemas.booleanSchema
 import io.vertx.json.schema.common.dsl.Schemas.stringSchema
 import java.io.File
 
@@ -41,6 +44,7 @@ class PanelGetAnnouncementImageAPI(
     override fun getValidationHandler(schemaRepository: SchemaRepository): ValidationHandler =
         ValidationHandlerBuilder.create(schemaRepository)
             .pathParameter(param("fileName", stringSchema()))
+            .queryParameter(optionalParam("thumbnail", booleanSchema()))
             .build()
 
     override suspend fun handle(context: RoutingContext): Result? {
@@ -57,7 +61,12 @@ class PanelGetAnnouncementImageAPI(
             return null
         }
 
-        val file = File(plugin.uploadsDir, announcement.imageFileName)
+        val isThumbnail = parameters.queryParameter("thumbnail")?.boolean ?: false
+        val file = if (isThumbnail) {
+            getThumbnailFile(announcement.imageFileName!!)
+        } else {
+            File(plugin.uploadsDir, announcement.imageFileName)
+        }
 
         if (!file.exists()) {
             context.response().setStatusCode(404).end()
@@ -77,5 +86,18 @@ class PanelGetAnnouncementImageAPI(
         } catch (_: Exception) {}
 
         return null
+    }
+
+    private fun getThumbnailFile(fileName: String): File {
+        val thumbnailsDir = File(plugin.uploadsDir, "thumbnails")
+        val originalFile = File(plugin.uploadsDir, fileName)
+        
+        if (!originalFile.exists()) return originalFile
+
+        // Ensure thumbnail exists (it should if uploaded through API, but this handles legacy or manual uploads)
+        ImageUtil.generateThumbnail(originalFile, thumbnailsDir)
+
+        val thumbnailFile = File(thumbnailsDir, fileName)
+        return if (thumbnailFile.exists()) thumbnailFile else originalFile
     }
 }

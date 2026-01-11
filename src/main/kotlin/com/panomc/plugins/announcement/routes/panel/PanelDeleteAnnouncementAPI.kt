@@ -58,5 +58,10 @@ class PanelDeleteAnnouncementAPI(
         if (file.exists()) {
             file.delete()
         }
+
+        val thumbnailFile = File(File(plugin.uploadsDir, "thumbnails"), fileName)
+        if (thumbnailFile.exists()) {
+            thumbnailFile.delete()
+        }
     }
 }
