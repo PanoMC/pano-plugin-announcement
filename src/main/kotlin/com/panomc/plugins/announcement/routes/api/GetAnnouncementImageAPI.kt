@@ -61,6 +61,12 @@ class GetAnnouncementImageAPI(
             return null
         }
 
+        // Check if not yet active
+        if (announcement.showFrom != null && announcement.showFrom > System.currentTimeMillis()) {
+            context.response().setStatusCode(404).end()
+            return null
+        }
+
         val file = File(plugin.uploadsDir, announcement.imageFileName)
 
         if (!file.exists()) {
