@@ -13,7 +13,7 @@ import com.panomc.plugins.announcement.util.AnnouncementEffectType
 import com.panomc.plugins.announcement.util.AnnouncementLocation
 import com.panomc.plugins.announcement.util.AnnouncementType
 import com.panomc.plugins.announcement.util.ImageUtil
-import com.panomc.plugins.announcement.util.ModalDisplayFrequency
+import com.panomc.plugins.announcement.util.AnnouncementDisplayFrequency
 import io.vertx.core.Handler
 import io.vertx.core.json.JsonArray
 import io.vertx.ext.web.RoutingContext
@@ -70,7 +70,7 @@ class PanelUpdateAnnouncementAPI(
                         .optionalProperty("size", numberSchema())
                         .optionalProperty("removeImage", booleanSchema())
                         .optionalProperty("closeable", booleanSchema())
-                        .optionalProperty("modalDisplayFrequency", enumSchema(*ModalDisplayFrequency.entries.map { it.name }.toTypedArray()))
+                        .optionalProperty("displayFrequency", enumSchema(*AnnouncementDisplayFrequency.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("location", enumSchema(*AnnouncementLocation.entries.map { it.name }.toTypedArray()))
                 )
             )
@@ -97,7 +97,7 @@ class PanelUpdateAnnouncementAPI(
         val contentsJson = data.getString("contents")
         val contents = JsonArray(contentsJson).map { it.toString() }
 
-        val displayFrequency = data.getString("modalDisplayFrequency")?.let { ModalDisplayFrequency.valueOf(it) }
+        val displayFrequency = data.getString("displayFrequency")?.let { AnnouncementDisplayFrequency.valueOf(it) }
         val size = data.getInteger("size")
 
         validateForm(title, contents, type, fileUpload, false, displayFrequency, size)
@@ -149,7 +149,7 @@ class PanelUpdateAnnouncementAPI(
         type: AnnouncementType,
         fileUpload: io.vertx.ext.web.FileUpload?,
         isCreate: Boolean,
-        displayFrequency: ModalDisplayFrequency?,
+        displayFrequency: AnnouncementDisplayFrequency?,
         size: Int?
     ) {
         if (title.isNullOrBlank()) {

@@ -4,7 +4,7 @@ import com.panomc.platform.db.DBEntity
 import com.panomc.plugins.announcement.util.AnnouncementEffectType
 import com.panomc.plugins.announcement.util.AnnouncementType
 import com.panomc.plugins.announcement.util.AnnouncementLocation
-import com.panomc.plugins.announcement.util.ModalDisplayFrequency
+import com.panomc.plugins.announcement.util.AnnouncementDisplayFrequency
 
 open class Announcement(
     val id: Long = -1,
@@ -17,7 +17,7 @@ open class Announcement(
     val contents: List<String>,
     val customCss: String = "",
     val size: Int? = null,
-    val displayFrequency: ModalDisplayFrequency? = null,
+    val displayFrequency: AnnouncementDisplayFrequency? = null,
     val imageFileName: String? = null,
     val closeable: Boolean = true,
     val showFrom: Long? = null,
