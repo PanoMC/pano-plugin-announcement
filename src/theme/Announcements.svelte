@@ -64,7 +64,8 @@
         </div>
 
         {#if banner.link}
-          <a href={banner.link} class="stretched-link"></a>
+        {banner.external}
+          <a href={banner.link} class="stretched-link" target={banner.external ? "_blank" : null} rel={banner.external ? "noopener noreferrer" : null}></a>
         {/if}
 
         {#if banner.customCss}
@@ -111,7 +112,7 @@
 
             <div class="d-flex justify-content-end gap-2">
               {#if modal.link}
-                <a href={modal.link} class="btn btn-primary px-4"
+                <a href={modal.link} class="btn btn-primary px-4" target={modal.external ? "_blank" : null} rel={modal.external ? "noopener noreferrer" : null}
                   >{$_("buttons.visit")}</a>
               {/if}
             </div>

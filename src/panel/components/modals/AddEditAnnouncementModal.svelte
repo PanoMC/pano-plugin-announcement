@@ -136,6 +136,17 @@
                   placeholder={$_('modals.add-edit.link-placeholder')} />
                 <label for="link">{$_('modals.add-edit.link')}</label>
               </div>
+              <div class="form-check form-switch mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="external"
+                  role="switch"
+                  bind:checked={$announcement.external} />
+                <label class="form-check-label ms-2" for="external">
+                  {$_('modals.add-edit.external')}
+                </label>
+              </div>
             {/if}
 
             <div class="form-floating mb-3">
@@ -440,6 +451,7 @@
         showFromType: cloned.showFrom ? "CUSTOM" : "NOW",
         showFrom: cloned.showFrom ? new Date(cloned.showFrom).toISOString().slice(0, 16) : "",
         location: cloned.location || "GLOBAL",
+        external: cloned.external || false,
         bannerContents: activeType === "BANNER" ? contents : (cloned.bannerContents || [""]),
         modalContent: activeType === "MODAL" ? contents[0] : (cloned.modalContent || "")
       };
@@ -463,7 +475,8 @@
         bannerContents: [""],
         modalContent: "",
         displayFrequency: "ALWAYS",
-        modalSize: "NORMAL"
+        modalSize: "NORMAL",
+        external: false
       });
     }
 
@@ -613,6 +626,7 @@
         size: $announcement.displayType === "MODAL" ? ($announcement.modalSize === "SMALL" ? 0 : $announcement.modalSize === "NORMAL" ? 1 : $announcement.modalSize === "LARGE" ? 2 : 3) : null,
         displayFrequency: $announcement.displayFrequency,
         location: $announcement.location,
+        external: $announcement.external || false,
         closeable: $announcement.displayType === "BANNER" ? $announcement.closeable : false,
         removeImage: $isImageRemoved
       };
@@ -646,7 +660,7 @@
       if (result.error) {
         console.error("Save failed:", result.error);
         showToast('plugins.pano-plugin-announcement.toasts.error-saving', {
-          values: { error: result.error.statusMessage || $_('modals.add-edit.error-unknown') }
+          values: { error: result.error || $_('modals.add-edit.error-unknown') }
         });
       } else {
         showToast($mode === 'create' ? 'plugins.pano-plugin-announcement.toasts.announcement-added' : 'plugins.pano-plugin-announcement.toasts.announcement-updated');
