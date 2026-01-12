@@ -1,6 +1,7 @@
 {
   "buttons": {
-    "visit": "Visit"
+    "visit": "Visit",
+    "close": "Close"
   },
   "pages": {
     "announcements": {

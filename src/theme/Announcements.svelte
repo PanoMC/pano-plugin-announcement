@@ -59,7 +59,8 @@
                 e.stopPropagation();
                 closeBanner(banner.id);
               }}
-              aria-label="Close"></button>
+              title={$_("buttons.close")}
+              aria-label={$_("buttons.close")}></button>
           {/if}
         </div>
 
@@ -93,7 +94,8 @@
             class="btn-close position-absolute top-0 end-0 m-3"
             style="z-index: 1050; filter: drop-shadow(0px 0px 2px rgba(255,255,255,0.8));"
             data-bs-dismiss="modal"
-            aria-label="Close"></button>
+            title={$_("buttons.close")}
+            aria-label={$_("buttons.close")}></button>
 
           {#if modal.imageFileName}
             <img
@@ -103,18 +105,19 @@
               alt={modal.title} />
           {/if}
 
-          <div class="p-4">
-            <h4 class="mb-3">{modal.title}</h4>
-            <div class="announcement-modal-content mb-4">
+          <div class="modal-body">
+            <h4>{modal.title}</h4>
+            <div class="announcement-modal-content">
               {@html modal.contents[0]}
             </div>
 
-            <div class="d-flex justify-content-end gap-2">
-              {#if modal.link}
-                <a href={modal.link} class="btn btn-primary px-4" target={modal.external ? "_blank" : null} rel={modal.external ? "noopener noreferrer" : null}
-                  >{$_("buttons.visit")}</a>
-              {/if}
-            </div>
+          </div>
+
+          <div class="modal-footer">
+            {#if modal.link}
+              <a href={modal.link} class="btn btn-secondary w-100" target={modal.external ? "_blank" : null} rel={modal.external ? "noopener noreferrer" : null}
+                >{$_("buttons.visit")}</a>
+            {/if}
           </div>
 
           {#if modal.customCss}
