@@ -164,7 +164,7 @@
       if (closedBanners.includes(a.id)) return false;
       if (a.type === "BANNER") {
         if (a.location === "HOME") {
-          return hookName === "page:top";
+          return hookName === "page:home:top";
         }
         if (a.location === "GLOBAL") {
           return hookName === "theme:top";
