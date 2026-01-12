@@ -59,6 +59,7 @@
       "show-from-select": "Başlangıç Zamanı",
       "link": "Bağlantı",
       "link-placeholder": "Bağlantı URL'sini girin",
+      "external": "Dış Bağlantı (Yeni sekmede aç)",
       "type": "Tür",
       "type-banner": "Banner",
       "type-modal": "Modal",

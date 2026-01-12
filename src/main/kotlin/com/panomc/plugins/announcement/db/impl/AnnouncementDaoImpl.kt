@@ -39,6 +39,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
                               `closeable` TINYINT(1) NOT NULL DEFAULT 1,
                               `showFrom` BIGINT,
                               `location` VARCHAR(255) NOT NULL DEFAULT 'GLOBAL',
+                              `external` TINYINT(1) NOT NULL DEFAULT 0,
                               `createdAt` BIGINT(20) NOT NULL,
                               `updatedAt` BIGINT(20) NOT NULL,
                               PRIMARY KEY (`id`)
@@ -51,7 +52,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
 
     override suspend fun add(announcement: Announcement, sqlClient: SqlClient): Long {
         val query =
-            "INSERT INTO `${getTablePrefix() + tableName}` (`title`, `status`, `link`, `type`, `effectType`, `until`, `contents`, `customCss`, `size`, `displayFrequency`, `imageFileName`, `closeable`, `showFrom`, `location`, `createdAt`, `updatedAt`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO `${getTablePrefix() + tableName}` (`title`, `status`, `link`, `type`, `effectType`, `until`, `contents`, `customCss`, `size`, `displayFrequency`, `imageFileName`, `closeable`, `showFrom`, `location`, `external`, `createdAt`, `updatedAt`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
         val rows: RowSet<Row> = sqlClient
             .preparedQuery(query)
@@ -71,6 +72,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
                     announcement.closeable,
                     announcement.showFrom,
                     announcement.location.name,
+                    announcement.external,
                     announcement.createdAt,
                     announcement.updatedAt
                 )
@@ -82,7 +84,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
 
     override suspend fun update(announcement: Announcement, sqlClient: SqlClient) {
         val query =
-            "UPDATE `${getTablePrefix() + tableName}` SET `title` = ?, `status` = ?, `link` = ?, `type` = ?, `effectType` = ?, `until` = ?, `contents` = ?, `customCss` = ?, `size` = ?, `displayFrequency` = ?, `imageFileName` = ?, `closeable` = ?, `showFrom` = ?, `location` = ?, `updatedAt` = ? WHERE `id` = ?"
+            "UPDATE `${getTablePrefix() + tableName}` SET `title` = ?, `status` = ?, `link` = ?, `type` = ?, `effectType` = ?, `until` = ?, `contents` = ?, `customCss` = ?, `size` = ?, `displayFrequency` = ?, `imageFileName` = ?, `closeable` = ?, `showFrom` = ?, `location` = ?, `external` = ?, `updatedAt` = ? WHERE `id` = ?"
 
         sqlClient
             .preparedQuery(query)
@@ -102,6 +104,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
                     announcement.closeable,
                     announcement.showFrom,
                     announcement.location.name,
+                    announcement.external,
                     announcement.updatedAt,
                     announcement.id
                 )

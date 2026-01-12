@@ -22,6 +22,7 @@ open class Announcement(
     val closeable: Boolean = true,
     val showFrom: Long? = null,
     val location: AnnouncementLocation = AnnouncementLocation.GLOBAL,
+    val external: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 ) : DBEntity()

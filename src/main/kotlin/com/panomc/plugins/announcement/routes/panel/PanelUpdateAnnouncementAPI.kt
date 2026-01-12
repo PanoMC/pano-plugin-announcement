@@ -72,6 +72,7 @@ class PanelUpdateAnnouncementAPI(
                         .optionalProperty("closeable", booleanSchema())
                         .optionalProperty("displayFrequency", enumSchema(*AnnouncementDisplayFrequency.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("location", enumSchema(*AnnouncementLocation.entries.map { it.name }.toTypedArray()))
+                        .optionalProperty("external", booleanSchema())
                 )
             )
             .predicate(RequestPredicate.BODY_REQUIRED)
@@ -135,6 +136,7 @@ class PanelUpdateAnnouncementAPI(
             closeable = data.getBoolean("closeable") ?: true,
             showFrom = data.getLong("showFrom"),
             location = data.getString("location")?.let { AnnouncementLocation.valueOf(it) } ?: AnnouncementLocation.GLOBAL,
+            external = data.getBoolean("external") ?: false,
             updatedAt = System.currentTimeMillis()
         )
 

@@ -59,6 +59,7 @@
       "show-from-select": "Start Time",
       "link": "Link",
       "link-placeholder": "Enter link URL",
+      "external": "External Link (Open in new tab)",
       "type": "Type",
       "type-banner": "Banner",
       "type-modal": "Modal",
