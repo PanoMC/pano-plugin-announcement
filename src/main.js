@@ -39,6 +39,18 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
 
         return navigationItems;
       });
+    } else {
+      const announcementsComponent = viewComponent(() => import("./theme/Announcements.svelte"));
+
+      pano.ui.hook.register({
+        name: "theme:top",
+        component: announcementsComponent,
+      });
+      pano.ui.hook.register({
+        name: "page:top",
+        component: announcementsComponent,
+        skipLoad: true
+      });
     }
   }
 

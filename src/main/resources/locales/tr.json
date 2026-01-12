@@ -1,4 +1,7 @@
 {
+  "buttons": {
+    "visit": "Ziyaret Et"
+  },
   "pages": {
     "announcements": {
       "title": "Duyurular",

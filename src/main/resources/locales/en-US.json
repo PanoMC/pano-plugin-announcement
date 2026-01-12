@@ -1,4 +1,7 @@
 {
+  "buttons": {
+    "visit": "Visit"
+  },
   "pages": {
     "announcements": {
       "title": "Announcements",
