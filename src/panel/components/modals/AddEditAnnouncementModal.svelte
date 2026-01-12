@@ -197,7 +197,7 @@
                     class="btn-check"
                     id="modalFrequencyPermanent"
                     autocomplete="off"
-                    bind:group={$announcement.modalDisplayFrequency}
+                    bind:group={$announcement.displayFrequency}
                     value="ALWAYS" />
                   <label
                     class="btn btn-outline-primary"
@@ -210,7 +210,7 @@
                     class="btn-check"
                     id="modalFrequencyOnce"
                     autocomplete="off"
-                    bind:group={$announcement.modalDisplayFrequency}
+                    bind:group={$announcement.displayFrequency}
                     value="ONCE" />
                   <label class="btn btn-outline-primary" for="modalFrequencyOnce">
                     {$_('modals.add-edit.display-once')}
@@ -432,9 +432,9 @@
       const activeType = cloned.displayType || cloned.type || "BANNER";
       const contents = cloned.contents || [cloned.content || ""];
       const state = {
-        modalSize: "NORMAL",
-        modalDisplayFrequency: "ALWAYS",
         ...cloned,
+        modalSize: cloned.size === 0 ? "SMALL" : cloned.size === 2 ? "LARGE" : cloned.size === 3 ? "FULL" : "NORMAL",
+        displayFrequency: cloned.displayFrequency || "ALWAYS",
         displayType: activeType,
         closeable: cloned.closeable || false,
         showFromType: cloned.showFrom ? "CUSTOM" : "NOW",
@@ -462,7 +462,7 @@
         location: "GLOBAL",
         bannerContents: [""],
         modalContent: "",
-        modalDisplayFrequency: "ALWAYS",
+        displayFrequency: "ALWAYS",
         modalSize: "NORMAL"
       });
     }
@@ -611,7 +611,7 @@
         contents: JSON.stringify($announcement.displayType === "BANNER" ? $announcement.bannerContents : [$announcement.modalContent]),
         customCss: $announcement.customCss || "",
         size: $announcement.displayType === "MODAL" ? ($announcement.modalSize === "SMALL" ? 0 : $announcement.modalSize === "NORMAL" ? 1 : $announcement.modalSize === "LARGE" ? 2 : 3) : null,
-        modalDisplayFrequency: $announcement.modalDisplayFrequency,
+        displayFrequency: $announcement.displayFrequency,
         location: $announcement.location,
         closeable: $announcement.displayType === "BANNER" ? $announcement.closeable : false,
         removeImage: $isImageRemoved
