@@ -119,5 +119,11 @@
     "site-navigation-menu": {
       "announcements": "Duyurular"
     }
+  },
+  "permissions": {
+    "MANAGE_ANNOUNCEMENTS": {
+      "title": "Duyuruları Düzenle",
+      "description": "Tema içinde gösterilecek bir duyuru oluşturabilir, silebilir ve düzenleyebilir."
+    }
   }
 }
