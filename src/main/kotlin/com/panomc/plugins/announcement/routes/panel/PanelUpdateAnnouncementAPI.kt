@@ -9,13 +9,10 @@ import com.panomc.plugins.announcement.AnnouncementPlugin
 import com.panomc.plugins.announcement.db.dao.AnnouncementDao
 import com.panomc.plugins.announcement.db.model.Announcement
 import com.panomc.plugins.announcement.permission.ManageAnnouncementsPermission
-import com.panomc.plugins.announcement.util.AnnouncementEffectType
-import com.panomc.plugins.announcement.util.AnnouncementLocation
-import com.panomc.plugins.announcement.util.AnnouncementType
-import com.panomc.plugins.announcement.util.ImageUtil
-import com.panomc.plugins.announcement.util.AnnouncementDisplayFrequency
+import com.panomc.plugins.announcement.util.*
 import io.vertx.core.Handler
 import io.vertx.core.json.JsonArray
+import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.BodyHandler
 import io.vertx.ext.web.validation.RequestPredicate
@@ -141,6 +138,33 @@ class PanelUpdateAnnouncementAPI(
         )
 
         announcementDao.update(announcement, sqlClient)
+
+        val userId = authProvider.getUserIdFromRoutingContext(context)
+        val username = databaseManager.userDao.getUsernameFromUserId(userId, sqlClient)!!
+
+        val changes = JsonObject()
+        if (existingAnnouncement != null) {
+            if (existingAnnouncement.title != title) changes.put("title", title)
+            if (existingAnnouncement.status != status) changes.put("status", status)
+            if (existingAnnouncement.link != (data.getString("link") ?: "")) changes.put("link", data.getString("link") ?: "")
+            if (existingAnnouncement.type != type) changes.put("type", type.name)
+            if (existingAnnouncement.effectType != (data.getString("effectType")?.let { AnnouncementEffectType.valueOf(it) })) changes.put("effectType", data.getString("effectType"))
+            if (existingAnnouncement.until != data.getLong("until")) changes.put("until", data.getLong("until"))
+            if (existingAnnouncement.contents != contents) changes.put("contents", JsonArray(contents))
+            if (existingAnnouncement.customCss != (data.getString("customCss") ?: "")) changes.put("customCss", data.getString("customCss") ?: "")
+            if (existingAnnouncement.size != size) changes.put("size", size)
+            if (existingAnnouncement.displayFrequency != displayFrequency) changes.put("displayFrequency", displayFrequency?.name)
+            if (existingAnnouncement.closeable != (data.getBoolean("closeable") ?: true)) changes.put("closeable", data.getBoolean("closeable") ?: true)
+            if (existingAnnouncement.showFrom != data.getLong("showFrom")) changes.put("showFrom", data.getLong("showFrom"))
+            if (existingAnnouncement.location != (data.getString("location")?.let { AnnouncementLocation.valueOf(it) } ?: AnnouncementLocation.GLOBAL)) changes.put("location", data.getString("location") ?: "GLOBAL")
+            if (existingAnnouncement.external != (data.getBoolean("external") ?: false)) changes.put("external", data.getBoolean("external") ?: false)
+            if (imageFileName != existingAnnouncement.imageFileName) changes.put("image", imageFileName != null)
+        }
+
+        databaseManager.panelActivityLogDao.add(
+            com.panomc.plugins.announcement.log.UpdatedAnnouncementLog(userId, username, plugin.pluginId, title, if (changes.isEmpty) null else changes),
+            sqlClient
+        )
 
         return Successful()
     }

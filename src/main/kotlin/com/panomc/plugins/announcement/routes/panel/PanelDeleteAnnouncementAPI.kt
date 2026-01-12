@@ -50,6 +50,14 @@ class PanelDeleteAnnouncementAPI(
 
         announcementDao.deleteById(id, sqlClient)
 
+        val userId = authProvider.getUserIdFromRoutingContext(context)
+        val username = databaseManager.userDao.getUsernameFromUserId(userId, sqlClient)!!
+
+        databaseManager.panelActivityLogDao.add(
+            com.panomc.plugins.announcement.log.DeletedAnnouncementLog(userId, username, plugin.pluginId, announcement?.title ?: id.toString()),
+            sqlClient
+        )
+
         return Successful()
     }
 

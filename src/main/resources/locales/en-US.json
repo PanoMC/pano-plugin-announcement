@@ -125,5 +125,10 @@
       "title": "Manage Announcements",
       "description": "Can create, delete, edit an announcement which will be shown in theme."
     }
+  },
+  "activity-logs": {
+    "CREATED_ANNOUNCEMENT": "<b>{username}</b> created the \"{title}\" announcement.",
+    "UPDATED_ANNOUNCEMENT": "<b>{username}</b> updated the \"{title}\" announcement.",
+    "DELETED_ANNOUNCEMENT": "<b>{username}</b> deleted the \"{title}\" announcement."
   }
 }

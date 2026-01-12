@@ -9,11 +9,7 @@ import com.panomc.plugins.announcement.AnnouncementPlugin
 import com.panomc.plugins.announcement.db.dao.AnnouncementDao
 import com.panomc.plugins.announcement.db.model.Announcement
 import com.panomc.plugins.announcement.permission.ManageAnnouncementsPermission
-import com.panomc.plugins.announcement.util.AnnouncementEffectType
-import com.panomc.plugins.announcement.util.AnnouncementLocation
-import com.panomc.plugins.announcement.util.AnnouncementType
-import com.panomc.plugins.announcement.util.ImageUtil
-import com.panomc.plugins.announcement.util.AnnouncementDisplayFrequency
+import com.panomc.plugins.announcement.util.*
 import io.vertx.core.Handler
 import io.vertx.core.json.JsonArray
 import io.vertx.ext.web.FileUpload
@@ -128,6 +124,14 @@ class PanelAddAnnouncementAPI(
 
         val sqlClient = databaseManager.getSqlClient()
         announcementDao.add(announcement, sqlClient)
+
+        val userId = authProvider.getUserIdFromRoutingContext(context)
+        val username = databaseManager.userDao.getUsernameFromUserId(userId, sqlClient)!!
+
+        databaseManager.panelActivityLogDao.add(
+            com.panomc.plugins.announcement.log.CreatedAnnouncementLog(userId, username, plugin.pluginId, title),
+            sqlClient
+        )
 
         return Successful()
     }

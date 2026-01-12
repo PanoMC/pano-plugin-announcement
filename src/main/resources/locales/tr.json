@@ -125,5 +125,10 @@
       "title": "Duyuruları Düzenle",
       "description": "Tema içinde gösterilecek bir duyuru oluşturabilir, silebilir ve düzenleyebilir."
     }
+  },
+  "activity-logs": {
+    "CREATED_ANNOUNCEMENT": "<b>{username}</b> \"{title}\" duyurusunu oluşturdu.",
+    "UPDATED_ANNOUNCEMENT": "<b>{username}</b> \"{title}\" duyurusunu güncelledi.",
+    "DELETED_ANNOUNCEMENT": "<b>{username}</b> \"{title}\" duyurusunu sildi."
   }
 }
