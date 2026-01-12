@@ -64,7 +64,6 @@
         </div>
 
         {#if banner.link}
-        {banner.external}
           <a href={banner.link} class="stretched-link" target={banner.external ? "_blank" : null} rel={banner.external ? "noopener noreferrer" : null}></a>
         {/if}
 
