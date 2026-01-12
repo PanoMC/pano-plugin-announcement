@@ -47,7 +47,7 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
         component: announcementsComponent,
       });
       pano.ui.hook.register({
-        name: "page:top",
+        name: "page:home:top",
         component: announcementsComponent,
         skipLoad: true
       });
