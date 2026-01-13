@@ -2,8 +2,10 @@ import { PanoPlugin, viewComponent } from "@panomc/sdk";
 import { derived } from "svelte/store";
 import { _ as i18n } from "@panomc/sdk/utils/language";
 
+const pluginId = "pano-plugin-announcement"
+
 export const _ = derived(i18n, ($_fn) => {
-  return (key, options) => $_fn(`plugins.pano-plugin-announcement.${key}`, options);
+  return (key, options) => $_fn(`plugins.${pluginId}.${key}`, options);
 });
 
 export default class PanoAnnouncementPlugin extends PanoPlugin {
@@ -14,10 +16,11 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
 
     if (pano.isPanel) {
       pano.ui.page.register({
-        path: "/announcements",
-        component: viewComponent(() => import("./panel/AnnouncementsPage.svelte")),
-        layout: viewComponent(() => import("./panel/AnnouncementsLayout.svelte")),
+        path: '/announcements',
+        component: viewComponent(() => import('./panel/AnnouncementsPage.svelte')),
+        layout: viewComponent(() => import('./panel/AnnouncementsLayout.svelte')),
         resetLayout: false,
+        permission: `pano.plugin.${pluginId}.manage.announcements`,
       });
 
       pano.ui.nav.site.editNavLinks((navigationItems) => {
@@ -25,10 +28,11 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
           (item) => item.href === "/posts",
         );
         const announcementsLink = {
-          href: "/announcements",
-          icon: "fas fa-bullhorn",
-          text: "plugins.pano-plugin-announcement.components.site-navigation-menu.announcements",
+          href: '/announcements',
+          icon: 'fas fa-bullhorn',
+          text: `plugins.${pluginId}.components.site-navigation-menu.announcements`,
           startsWith: false,
+          permission: `pano.plugin.${pluginId}.manage.announcements`,
         };
 
         if (postsIndex !== -1) {
