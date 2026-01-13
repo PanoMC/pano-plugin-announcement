@@ -135,18 +135,33 @@
   export async function load(event) {
     if (!event) return { announcements: [] };
 
+    let output = {};
+
     try {
       const res = await ApiUtil.get({
         path: "/api/announcements",
         request: event,
       });
-      return {
+
+      const anyAnnouncement = res.data.find((announcement) => announcement.type === "BANNER" && announcement.location === "HOME");
+
+      console.log(anyAnnouncement, res.data, event.hookName)
+
+      // this prevents extra gap due to hook container when there is no announcement
+      if (event.hookName === "page:home:top" && !anyAnnouncement) {
+        output = { hookOptions: {invisible: true} }
+      }
+
+      output = {
+        ...output,
         announcements: res.data || [],
       };
     } catch (err) {
       console.error("[Announcements] Failed to fetch:", err);
-      return { announcements: [] };
+      output = { ...output, announcements: [] };
     }
+
+    return output;
   }
 </script>
 
