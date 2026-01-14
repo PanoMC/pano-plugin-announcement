@@ -352,33 +352,55 @@
                         aria-label={$_('modals.add-edit.image-remove')}>
                         <i class="fas fa-minus"></i>
                       </button>
+                      
+                       <!-- Hidden input for changing image when already set (optional, or rely on D&D zone again?) 
+                            The UI shows the image. Clicking it calls modalImageInput.click().
+                            So I need to keep modalImageInput OR use DragAndDropZone even when image is set?
+                            The existing code hides the D&D zone when displayImage is true.
+                            It shows a preview and allows clicking to change.
+                            If I use DragAndDropZone, it's just the zone.
+                            I can assume user meant replacing the "Empty" state zone.
+                            But for "Change" (clicking image), it relied on `modalImageInput`.
+                            I should keep `modalImageInput` for the "Change" action OR render a hidden DragAndDropZone?
+                            Easier: Keep `modalImageInput` for the "Change" scenario, but use DragAndDropZone for the "Empty" scenario.
+                            AND remove the hidden input `id="modalImage"` that was covering the empty state? 
+                            No, `id="modalImage"` was used by both?
+                            Line 340 `on:click={() => modalImageInput.click()}`.
+                            Line 362 `on:click={() => modalImageInput.click()}`.
+                            So `modalImageInput` is the only input.
+                            If I use `DragAndDropZone`, it has its own input.
+                            I can export `click` method from `DragAndDropZone` or just bind to its input?
+                            My component has `fileInput` variable but not exported.
+                            I should export `click` function from `DragAndDropZone`.
+                            Let's update `DragAndDropZone` later if needed, but for now I can just use a separate input for the "Change" action or just hide the `DragAndDropZone` when image is present.
+                            Wait, if I hide `DragAndDropZone`, I can't use it to change.
+                            Existing behavior: When image is present, it shows image button. Clicking passes to input.
+                            So I can keep `modalImageInput` for the "Change" case.
+                            For the "Empty" case (else block), I use `DragAndDropZone`.
+                        -->
+                        <input
+                            class="d-none"
+                            id="modalImage"
+                            type="file"
+                            on:change={onModalImageChange}
+                            bind:this={modalImageInput}
+                            accept="image/png,image/jpeg,image/gif,image/webp" />
+
                     {:else}
-                      <div class="list-group w-100">
-                        <button
-                          type="button"
-                          class="btn w-100 list-group-item list-group-item-action drop-zone d-flex flex-column align-items-center justify-content-center border rounded shadow-none m-0"
-                          class:drag-over={dropZoneActive}
-                          style="height: 180px; cursor: pointer;"
-                          on:click={() => modalImageInput.click()}
-                          on:drop={handleDrop}
-                          on:dragover={handleDragOver}
-                          on:dragleave={handleDragLeave}>
+                      <DragAndDropZone
+                        class="mb-0"
+                        style="height: 180px;"
+                        accept={['image/png', 'image/jpeg', 'image/gif', 'image/webp']}
+                        maxFileSize={2 * 1024 * 1024}
+                        on:drop={(e) => processFile(e.detail)}
+                        on:error={handleFileError}
+                      >
                           <i class="fas fa-image fa-3x mb-3 opacity-50"></i>
                           <p class="mb-0 opacity-75 fw-medium">{$_('modals.add-edit.image-drop-placeholder')}</p>
                           <small class="opacity-50 text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.5px;">{$_('modals.add-edit.image-format-info')}</small>
-                        </button>
-                      </div>
+                      </DragAndDropZone>
                     {/if}
                   </div>
-                  <input
-                    class="d-none"
-                    id="modalImage"
-                    type="file"
-                    bind:files={modalImageFiles}
-                    on:change={onModalImageChange}
-                    bind:this={modalImageInput}
-                    accept="image/png,image/jpeg,image/gif,image/webp" />
-                </div>
                 <Editor
                   bind:content={$announcement.modalContent}
                   bind:isEmpty={isEditorEmpty}
@@ -503,7 +525,7 @@
 
 <script>
   import ApiUtil from "@panomc/sdk/utils/api"
-  import { Editor } from "@panomc/sdk/components";
+  import { Editor, DragAndDropZone } from "@panomc/sdk/components";
   import { base } from "@panomc/sdk/svelte";
   import tooltip from "@panomc/sdk/utils/tooltip";
   import { showToast } from "@panomc/sdk/toasts";
@@ -541,22 +563,12 @@
   let modalImageFiles = null;
   let modalImageInput;
 
-  function handleDragOver(event) {
-    event.preventDefault();
-    dropZoneActive = true;
-  }
-
-  function handleDragLeave() {
-    dropZoneActive = false;
-  }
-
-  function handleDrop(event) {
-    event.preventDefault();
-    dropZoneActive = false;
-
-    const files = event.dataTransfer.files;
-    if (files.length > 0) {
-      processFile(files[0]);
+  function handleFileError(event) {
+    const { error } = event.detail;
+    if (error === 'INVALID_SIZE') {
+      showToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-size');
+    } else if (error === 'INVALID_TYPE') {
+        showToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-type');
     }
   }
 
