@@ -401,11 +401,12 @@
                       </DragAndDropZone>
                     {/if}
                   </div>
-                <Editor
-                  bind:content={$announcement.modalContent}
-                  bind:isEmpty={isEditorEmpty}
-                  showHtml={true}
-                  contentStyles={"height: 300px;"} />
+                  <Editor
+                    bind:content={$announcement.modalContent}
+                    bind:isEmpty={isEditorEmpty}
+                    showHtml={true}
+                    contentStyles={"height: 300px;"} />
+                </div>
               {/if}
             </div>
             <div class="form-floating">
