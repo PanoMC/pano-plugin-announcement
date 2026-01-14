@@ -81,6 +81,8 @@
     <div class="text-truncate">
       <button
         type="button"
+        title="{$_('buttons.edit')}"
+        aria-label="{$_('buttons.edit')}"
         on:click={() => onEditClick(announcement.id)}
         class="btn btn-link p-0 fw-semibold text-truncate">
         {announcement.title}

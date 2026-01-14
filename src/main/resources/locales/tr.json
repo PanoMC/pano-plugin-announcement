@@ -1,7 +1,8 @@
 {
   "buttons": {
     "visit": "Ziyaret Et",
-    "close": "Kapat"
+    "close": "Kapat",
+    "edit": "Düzenle"
   },
   "pages": {
     "announcements": {
