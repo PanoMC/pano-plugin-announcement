@@ -145,8 +145,6 @@
 
       const anyAnnouncement = res.data.find((announcement) => announcement.type === "BANNER" && announcement.location === "HOME");
 
-      console.log(anyAnnouncement, res.data, event.hookName)
-
       // this prevents extra gap due to hook container when there is no announcement
       if (event.hookName === "page:home:top" && !anyAnnouncement) {
         output = { hookOptions: {invisible: true} }
