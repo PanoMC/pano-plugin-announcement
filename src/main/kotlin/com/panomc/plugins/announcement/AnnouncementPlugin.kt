@@ -2,6 +2,7 @@ package com.panomc.plugins.announcement
 
 import com.panomc.platform.api.PanoPlugin
 import com.panomc.platform.api.PluginDatabaseManager
+import com.panomc.platform.setup.SetupManager
 import java.io.File
 
 class AnnouncementPlugin : PanoPlugin() {
@@ -9,21 +10,37 @@ class AnnouncementPlugin : PanoPlugin() {
         applicationContext.getBean(PluginDatabaseManager::class.java)
     }
 
+    private val setupManager by lazy {
+        applicationContext.getBean(SetupManager::class.java)
+    }
+
     val uploadsDir: File by lazy {
         File(pluginDataFolder, "uploads")
     }
 
+    private var isInitialized = false
+
     override suspend fun onStart() {
         logger.info("Starting...")
-        try {
-            pluginDatabaseManager.initialize(this)
 
-            if (!uploadsDir.exists()) {
-                uploadsDir.mkdirs()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        if (!setupManager.isSetupDone()) {
+            logger.info("Setup is not finished, waiting for setup completion...")
+            return
         }
+
+        startPlugin()
+    }
+
+    internal suspend fun startPlugin() {
+        if (isInitialized) return
+        isInitialized = true
+
+        pluginDatabaseManager.initialize(this)
+
+        if (!uploadsDir.exists()) {
+            uploadsDir.mkdirs()
+        }
+        
         logger.info("Started!")
     }
 
@@ -39,4 +56,3 @@ class AnnouncementPlugin : PanoPlugin() {
         }
     }
 }
-
