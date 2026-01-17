@@ -1,6 +1,6 @@
-import { PanoPlugin, viewComponent } from "@panomc/sdk";
-import { derived } from "svelte/store";
-import { _ as i18n } from "@panomc/sdk/utils/language";
+import {PanoPlugin, viewComponent} from "@panomc/sdk";
+import {derived} from "svelte/store";
+import {_ as i18n} from "@panomc/sdk/utils/language";
 
 const pluginId = "pano-plugin-announcement"
 
@@ -46,9 +46,20 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
     } else {
       const announcementsComponent = viewComponent(() => import("./theme/Announcements.svelte"));
 
+      pano.ui.app.onLoad(async (data, event) => {
+        const {load} = await import("./theme/Announcements.svelte");
+        const res = await load({...event, hookName: "page:home:top"});
+        data.announcements = res.announcements || [];
+
+        if (res.hookOptions?.invisible) {
+          pano.ui.hook.setVisible("page:home:top", announcementsComponent, false);
+        }
+      });
+
       pano.ui.hook.register({
         name: "theme:top",
         component: announcementsComponent,
+        skipLoad: true
       });
       pano.ui.hook.register({
         name: "page:home:top",

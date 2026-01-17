@@ -41,11 +41,16 @@
 
   let { announcements = [], hookName } = $props();
 
+  let pageAnnouncements = $derived($page.data.announcements || []);
+  let finalAnnouncements = $derived(
+          announcements.length > 0 ? announcements : pageAnnouncements,
+  );
+
   let closedBanners = $state([]);
   let activeContentIndex = $state({});
 
   let visibleAnnouncements = $derived(
-    announcements.filter((a) => {
+          finalAnnouncements.filter((a) => {
       if (closedBanners.includes(a.id)) return false;
       if (a.type === "BANNER") {
         if (a.location === "HOME") {
@@ -77,7 +82,7 @@
 
   $effect(() => {
     const intervals = [];
-    announcements.forEach((a) => {
+    finalAnnouncements.forEach((a) => {
       if (a.type === "BANNER" && a.contents.length > 1) {
         activeContentIndex[a.id] = 0;
         const interval = setInterval(() => {
