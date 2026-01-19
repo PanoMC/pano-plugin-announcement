@@ -77,14 +77,14 @@
       </div>
     {/if}
   </td>
-  <td class="align-middle">
+  <td class="align-middle" style="max-width: 250px;">
     <div class="text-truncate">
       <button
         type="button"
-        title="{$_('buttons.edit')}"
-        aria-label="{$_('buttons.edit')}"
+        title={$_('buttons.edit')}
+        aria-label={$_('buttons.edit')}
         on:click={() => onEditClick(announcement.id)}
-        class="btn btn-link p-0 fw-semibold text-truncate">
+        class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate">
         {announcement.title}
       </button>
     </div>

@@ -540,7 +540,7 @@
               ></textarea>
               <label for="customCss">{$_("modals.add-edit.custom-css")}</label>
             </div>
-            <small class="text-muted d-block mt-1">
+            <small class="d-block mt-1">
               {@html $_("modals.add-edit.custom-css-info", {
                 values: {
                   selector: `<code>#pano-announcement-${$announcement.id || "ID"}</code>`,
