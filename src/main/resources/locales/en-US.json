@@ -7,7 +7,7 @@
   "pages": {
     "announcements": {
       "title": "Announcements",
-      "new-announcement": "New Announcement",
+      "new-announcement": "Add Announcement",
       "count": "{count} Announcements",
       "filters": {
         "all": "All",
@@ -41,7 +41,7 @@
   "modals": {
     "add-edit": {
       "edit-title": "Edit Announcement",
-      "new-title": "New Announcement",
+      "new-title": "Add Announcement",
       "close": "Close",
       "title-label": "Title",
       "title-placeholder": "Enter announcement title",

@@ -7,7 +7,7 @@
   "pages": {
     "announcements": {
       "title": "Duyurular",
-      "new-announcement": "Yeni Duyuru",
+      "new-announcement": "Duyuru Ekle",
       "count": "{count} Duyuru",
       "filters": {
         "all": "Tümü",
@@ -41,7 +41,7 @@
   "modals": {
     "add-edit": {
       "edit-title": "Duyuru Düzenle",
-      "new-title": "Yeni Duyuru",
+      "new-title": "Duyuru Ekle",
       "close": "Kapat",
       "title-label": "Başlık",
       "title-placeholder": "Duyuru başlığını girin",

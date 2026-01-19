@@ -365,8 +365,9 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-md-5 border-end">
-            <div class="input-group mb-3">
+          <div class="col-md-7 border-end d-flex flex-column">
+            <!-- Title -->
+            <div class="input-group mb-4">
               {#if $mode === "edit"}
                 <span class="input-group-text">#{$announcement.id}</span>
               {/if}
@@ -382,7 +383,174 @@
                 <label for="title">{$_("modals.add-edit.title-label")}</label>
               </div>
             </div>
-            <div class="form-check form-switch mb-3">
+
+            <!-- Content -->
+            <div class="mb-4">
+              {#if $announcement.displayType === "BANNER"}
+                <div
+                  class="d-flex justify-content-between align-items-center mb-2 gap-2"
+                >
+                  <div
+                    class="overflow-x-auto flex-grow-1"
+                    style="scrollbar-width: thin;"
+                  >
+                    <div
+                      class="btn-group btn-group-sm flex-nowrap mb-1"
+                      role="group"
+                    >
+                      {#each $announcement?.bannerContents || [] as item, i}
+                        <button
+                          type="button"
+                          class="btn {activeContentIndex === i
+                            ? 'btn-primary'
+                            : 'btn-outline-primary'} text-nowrap"
+                          on:click={() => (activeContentIndex = i)}
+                        >
+                          {$_("modals.add-edit.content-tab", {
+                            values: { index: i + 1 },
+                          })}
+                        </button>
+                      {/each}
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        on:click={addContent}
+                        title={$_("modals.add-edit.add-content")}
+                      >
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  {#if ($announcement?.bannerContents?.length || 0) > 1}
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link"
+                      on:click={removeActiveContent}
+                      title={$_("modals.add-edit.remove-content")}
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  {/if}
+                </div>
+                {#key activeContentIndex}
+                  {#if $announcement?.bannerContents}
+                    <div class="form-floating">
+                      <textarea
+                        class="form-control"
+                        id="content-{activeContentIndex}"
+                        bind:value={
+                          $announcement.bannerContents[activeContentIndex]
+                        }
+                        placeholder={$_("modals.add-edit.content-placeholder")}
+                        required
+                        style="height: 120px;"
+                      ></textarea>
+                      <label for="content-{activeContentIndex}"
+                        >{$_("modals.add-edit.content-label")}</label
+                      >
+                    </div>
+                  {/if}
+                {/key}
+              {:else if $announcement.displayType === "MODAL"}
+                <div class="mb-4">
+                  <div class="position-relative w-100 mb-3">
+                    {#key displayImage}
+                      {#if displayImage}
+                        <div class="ratio ratio-16x9 border rounded">
+                          <button
+                            type="button"
+                            class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
+                            use:tooltip={[
+                              $_("modals.add-edit.image-change"),
+                              { placement: "bottom" },
+                            ]}
+                            on:click={() => modalImageInput.click()}
+                          >
+                            <img
+                              src={displayImage}
+                              class="img-fluid w-100 h-100 object-fit-contain"
+                              alt={$_("modals.add-edit.image")}
+                            />
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
+                          style="z-index: 10;"
+                          on:click={onRemoveImage}
+                          on:mouseenter|stopPropagation
+                          on:mouseleave|stopPropagation
+                          aria-label={$_("modals.add-edit.image-remove")}
+                        >
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <input
+                          class="d-none"
+                          id="modalImage"
+                          type="file"
+                          on:change={onModalImageChange}
+                          bind:this={modalImageInput}
+                          accept="image/png,image/jpeg,image/gif,image/webp"
+                        />
+                      {:else}
+                        <DragAndDropZone
+                          class="mb-3"
+                          style="aspect-ratio: 16/9;"
+                          accept={[
+                            "image/png",
+                            "image/jpeg",
+                            "image/gif",
+                            "image/webp",
+                          ]}
+                          maxFileSize={2 * 1024 * 1024}
+                          on:drop={(e) => processFile(e.detail)}
+                          on:error={handleFileError}
+                        >
+                          <i class="fas fa-image fa-3x mb-3 opacity-50"></i>
+                          <p class="mb-0 opacity-75 fw-medium">
+                            {$_("modals.add-edit.image-drop-placeholder")}
+                          </p>
+                          <small
+                            class="opacity-50 text-uppercase fw-semibold"
+                            style="font-size: 0.7rem; letter-spacing: 0.5px;"
+                            >{$_("modals.add-edit.image-format-info")}</small
+                          >
+                        </DragAndDropZone>
+                      {/if}
+                    {/key}
+                  </div>
+                  <Editor
+                    bind:content={$announcement.modalContent}
+                    bind:isEmpty={isEditorEmpty}
+                    showHtml={true}
+                    contentStyles={"height: 300px;"}
+                  />
+                </div>
+              {/if}
+            </div>
+
+            <!-- Custom CSS -->
+            <div class="form-floating flex-grow-1">
+              <textarea
+                class="form-control"
+                id="customCss"
+                bind:value={$announcement.customCss}
+                placeholder={$_("modals.add-edit.custom-css-placeholder")}
+                style="height: 100%; min-height: 120px;"
+              ></textarea>
+              <label for="customCss">{$_("modals.add-edit.custom-css")}</label>
+            </div>
+            <small class="text-muted d-block mt-1">
+              {@html $_("modals.add-edit.custom-css-info", {
+                values: {
+                  selector: `<code>#pano-announcement-${$announcement.id || "ID"}</code>`,
+                },
+              })}
+            </small>
+          </div>
+
+          <div class="col-md-5">
+            <div class="form-check form-switch mb-4">
               <input
                 class="form-check-input"
                 type="checkbox"
@@ -394,12 +562,13 @@
                     ? "ACTIVE"
                     : "DRAFT")}
               />
-              <label class="form-check-label ms-2" for="status">
+              <label class="form-check-label ms-2 fw-bold" for="status">
                 {$announcement.status === "ACTIVE"
                   ? $_("modals.add-edit.status-active")
                   : $_("modals.add-edit.status-inactive")}
               </label>
             </div>
+
             <div class="mb-3">
               <label class="form-label" for="showFromNow"
                 >{$_("modals.add-edit.show-from")}</label
@@ -490,6 +659,23 @@
               </div>
             {/if}
 
+            <hr />
+
+            <div class="form-floating mb-3">
+              <select
+                class="form-select"
+                id="displayType"
+                bind:value={$announcement.displayType}
+              >
+                <option value="BANNER"
+                  >{$_("modals.add-edit.type-banner")}</option
+                >
+                <option value="MODAL">{$_("modals.add-edit.type-modal")}</option
+                >
+              </select>
+              <label for="displayType">{$_("modals.add-edit.type")}</label>
+            </div>
+
             {#if $announcement.displayType === "BANNER" || $announcement.displayType === "MODAL"}
               <div class="form-floating mb-3">
                 <input
@@ -515,21 +701,6 @@
               </div>
             {/if}
 
-            <div class="form-floating mb-3">
-              <select
-                class="form-select"
-                id="displayType"
-                bind:value={$announcement.displayType}
-              >
-                <option value="BANNER"
-                  >{$_("modals.add-edit.type-banner")}</option
-                >
-                <option value="MODAL">{$_("modals.add-edit.type-modal")}</option
-                >
-              </select>
-              <label for="displayType">{$_("modals.add-edit.type")}</label>
-            </div>
-
             {#if $announcement.displayType === "BANNER"}
               <div class="form-floating mb-3">
                 <select
@@ -546,9 +717,7 @@
                 </select>
                 <label for="location">{$_("modals.add-edit.location")}</label>
               </div>
-            {/if}
 
-            {#if $announcement.displayType === "BANNER"}
               <div class="form-floating mb-3">
                 <select
                   class="form-select"
@@ -675,194 +844,6 @@
                 </div>
               </div>
             {/if}
-          </div>
-          <div class="col-md-7">
-            <div class="mb-3">
-              {#if $announcement.displayType === "BANNER"}
-                <div
-                  class="d-flex justify-content-between align-items-center mb-2 gap-2"
-                >
-                  <div
-                    class="overflow-x-auto flex-grow-1"
-                    style="scrollbar-width: thin;"
-                  >
-                    <div
-                      class="btn-group btn-group-sm flex-nowrap mb-1"
-                      role="group"
-                    >
-                      {#each $announcement?.bannerContents || [] as item, i}
-                        <button
-                          type="button"
-                          class="btn {activeContentIndex === i
-                            ? 'btn-primary'
-                            : 'btn-outline-primary'} text-nowrap"
-                          on:click={() => (activeContentIndex = i)}
-                        >
-                          {$_("modals.add-edit.content-tab", {
-                            values: { index: i + 1 },
-                          })}
-                        </button>
-                      {/each}
-                      <button
-                        type="button"
-                        class="btn btn-outline-primary"
-                        on:click={addContent}
-                        title={$_("modals.add-edit.add-content")}
-                      >
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-                  {#if ($announcement?.bannerContents?.length || 0) > 1}
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-link"
-                      on:click={removeActiveContent}
-                      title={$_("modals.add-edit.remove-content")}
-                    >
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  {/if}
-                </div>
-                {#key activeContentIndex}
-                  {#if $announcement?.bannerContents}
-                    <div class="form-floating">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="content-{activeContentIndex}"
-                        bind:value={
-                          $announcement.bannerContents[activeContentIndex]
-                        }
-                        placeholder={$_("modals.add-edit.content-placeholder")}
-                        required
-                      />
-                      <label for="content-{activeContentIndex}"
-                        >{$_("modals.add-edit.content-label")}</label
-                      >
-                    </div>
-                  {/if}
-                {/key}
-              {:else if $announcement.displayType === "MODAL"}
-                <div class="mb-4">
-                  <div class="position-relative w-100 mb-3">
-                    {#key displayImage}
-                      {#if displayImage}
-                        <div class="ratio ratio-16x9 border rounded">
-                          <button
-                            type="button"
-                            class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
-                            use:tooltip={[
-                              $_("modals.add-edit.image-change"),
-                              { placement: "bottom" },
-                            ]}
-                            on:click={() => modalImageInput.click()}
-                          >
-                            <img
-                              src={displayImage}
-                              class="img-fluid w-100 h-100 object-fit-contain"
-                              alt={$_("modals.add-edit.image")}
-                            />
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
-                          style="z-index: 10;"
-                          on:click={onRemoveImage}
-                          on:mouseenter|stopPropagation
-                          on:mouseleave|stopPropagation
-                          aria-label={$_("modals.add-edit.image-remove")}
-                        >
-                          <i class="fas fa-minus"></i>
-                        </button>
-
-                        <!-- Hidden input for changing image when already set (optional, or rely on D&D zone again?) 
-                              The UI shows the image. Clicking it calls modalImageInput.click().
-                              So I need to keep modalImageInput OR use DragAndDropZone even when image is set?
-                              The existing code hides the D&D zone when displayImage is true.
-                              It shows a preview and allows clicking to change.
-                              If I use DragAndDropZone, it's just the zone.
-                              I can assume user meant replacing the "Empty" state zone.
-                              But for "Change" (clicking image), it relied on `modalImageInput`.
-                              I should keep `modalImageInput` for the "Change" action OR render a hidden DragAndDropZone?
-                              Easier: Keep `modalImageInput` for the "Change" scenario, but use DragAndDropZone for the "Empty" scenario.
-                              AND remove the hidden input `id="modalImage"` that was covering the empty state? 
-                              No, `id="modalImage"` was used by both?
-                              Line 340 `on:click={() => modalImageInput.click()}`.
-                              Line 362 `on:click={() => modalImageInput.click()}`.
-                              So `modalImageInput` is the only input.
-                              If I use `DragAndDropZone`, it has its own input.
-                              I can export `click` method from `DragAndDropZone` or just bind to its input?
-                              My component has `fileInput` variable but not exported.
-                              I should export `click` function from `DragAndDropZone`.
-                              Let's update `DragAndDropZone` later if needed, but for now I can just use a separate input for the "Change" action or just hide the `DragAndDropZone` when image is present.
-                              Wait, if I hide `DragAndDropZone`, I can't use it to change.
-                              Existing behavior: When image is present, it shows image button. Clicking passes to input.
-                              So I can keep `modalImageInput` for the "Change" case.
-                              For the "Empty" case (else block), I use `DragAndDropZone`.
-                          -->
-                        <input
-                          class="d-none"
-                          id="modalImage"
-                          type="file"
-                          on:change={onModalImageChange}
-                          bind:this={modalImageInput}
-                          accept="image/png,image/jpeg,image/gif,image/webp"
-                        />
-                      {:else}
-                        <DragAndDropZone
-                          class="mb-3"
-                          style="aspect-ratio: 16/9;"
-                          accept={[
-                            "image/png",
-                            "image/jpeg",
-                            "image/gif",
-                            "image/webp",
-                          ]}
-                          maxFileSize={2 * 1024 * 1024}
-                          on:drop={(e) => processFile(e.detail)}
-                          on:error={handleFileError}
-                        >
-                          <i class="fas fa-image fa-3x mb-3 opacity-50"></i>
-                          <p class="mb-0 opacity-75 fw-medium">
-                            {$_("modals.add-edit.image-drop-placeholder")}
-                          </p>
-                          <small
-                            class="opacity-50 text-uppercase fw-semibold"
-                            style="font-size: 0.7rem; letter-spacing: 0.5px;"
-                            >{$_("modals.add-edit.image-format-info")}</small
-                          >
-                        </DragAndDropZone>
-                      {/if}
-                    {/key}
-                  </div>
-                  <Editor
-                    bind:content={$announcement.modalContent}
-                    bind:isEmpty={isEditorEmpty}
-                    showHtml={true}
-                    contentStyles={"height: 300px;"}
-                  />
-                </div>
-              {/if}
-            </div>
-            <div class="form-floating">
-              <textarea
-                class="form-control"
-                id="customCss"
-                bind:value={$announcement.customCss}
-                placeholder={$_("modals.add-edit.custom-css-placeholder")}
-                style="height: 120px;"
-              ></textarea>
-              <label for="customCss">{$_("modals.add-edit.custom-css")}</label>
-            </div>
-            <small class="text-muted d-block mt-1">
-              {@html $_("modals.add-edit.custom-css-info", {
-                values: {
-                  selector: `<code>#pano-announcement-${$announcement.id || "ID"}</code>`,
-                },
-              })}
-            </small>
           </div>
         </div>
       </div>
