@@ -153,16 +153,16 @@
 </script>
 
 {#if visibleBanners.length > 0}
-  <div class="announcements-container">
+  <div class="announcements-container vstack gap-2">
     {#each visibleBanners as banner (banner.id)}
       <div
         id="pano-announcement-{banner.id}"
-        class="announcement-banner alert alert-info border-0 rounded-0 m-0 p-2 position-relative overflow-hidden"
+        class="announcement-banner alert alert-info position-relative overflow-hidden rounded-pill mb-0"
         class:alert-dismissible={banner.closeable}
         role="alert"
       >
-        <div class="d-flex align-items-center justify-content-center w-100">
-          <div class="announcement-content text-center flex-grow-1">
+        <div class="d-flex align-items-center justify-content-center">
+          <div class="announcement-content flex-grow-1">
             {#if banner.effectType === "MARQUEE"}
               <!-- svelte-ignore a11y-distracting-elements -->
               <marquee behavior="scroll" direction="left" scrollamount="5">
