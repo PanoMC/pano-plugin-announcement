@@ -1,32 +1,8 @@
-<script>
-  import { _ } from "../../main";
-  import { Date as DateComponent } from "@panomc/sdk/components";
-  import { base } from "@panomc/sdk/svelte";
-
-  export let announcement;
-  export let currentStatus;
-  export let currentVisibility;
-  export let buttonsLoading = false;
-  export let onEditClick;
-  export let onDeleteClick;
-
-  $: imageUrl = announcement.imageFileName 
-    ? `${base}/api/panel/announcements/image/${announcement.imageFileName}?thumbnail=true` 
-    : null;
-
-  import { onMount } from "svelte";
-  let now = Date.now();
-  onMount(() => {
-    const interval = setInterval(() => {
-      now = Date.now();
-    }, 1000);
-    return () => clearInterval(interval);
-  });
-
-  $: isShowing = announcement.status && 
-                  (announcement.showFrom === null || Number(announcement.showFrom) === 0 || Number(announcement.showFrom) <= now) && 
-                  (announcement.until === null || Number(announcement.until) === 0 || Number(announcement.until) > now);
-</script>
+<style>
+  .thumbnail-wrapper {
+    background-color: var(--bs-tertiary-bg);
+  }
+</style>
 
 <tr>
   <th scope="row" class="align-middle text-center" style="width: 60px;">
@@ -68,10 +44,12 @@
   </td>
   <td class="align-middle" style="width: 60px;">
     {#if imageUrl}
-      <div class="thumbnail-wrapper border rounded overflow-hidden flex-shrink-0" style="width: 48px; height: 48px;">
-        <img 
-          src={imageUrl} 
-          alt={announcement.title} 
+      <div
+        class="thumbnail-wrapper border rounded overflow-hidden flex-shrink-0"
+        style="width: 48px; height: 48px;">
+        <img
+          src={imageUrl}
+          alt={announcement.title}
           class="w-100 h-100 object-fit-cover"
           loading="lazy" />
       </div>
@@ -105,9 +83,9 @@
   </td>
   <td class="align-middle text-nowrap">
     <span class="badge text-bg-primary">
-      {announcement.type === "BANNER"
+      {announcement.type === 'BANNER'
         ? $_('pages.announcements.types.banner')
-        : announcement.type === "MODAL"
+        : announcement.type === 'MODAL'
           ? $_('pages.announcements.types.modal')
           : announcement.type}
     </span>
@@ -120,8 +98,37 @@
   </td>
 </tr>
 
-<style>
-  .thumbnail-wrapper {
-    background-color: var(--bs-tertiary-bg);
-  }
-</style>
+<script>
+    import {_} from '../../main';
+    import {Date as DateComponent} from '@panomc/sdk/components';
+    import {base} from '@panomc/sdk/svelte';
+    import {onMount} from 'svelte';
+
+    export let announcement;
+  export let currentStatus;
+  export let currentVisibility;
+  export let buttonsLoading = false;
+  export let onEditClick;
+  export let onDeleteClick;
+
+  $: imageUrl = announcement.imageFileName
+    ? `${base}/api/panel/announcements/image/${announcement.imageFileName}?thumbnail=true`
+    : null;
+
+    let now = Date.now();
+  onMount(() => {
+    const interval = setInterval(() => {
+      now = Date.now();
+    }, 1000);
+    return () => clearInterval(interval);
+  });
+
+  $: isShowing =
+    announcement.status &&
+    (announcement.showFrom === null ||
+      Number(announcement.showFrom) === 0 ||
+      Number(announcement.showFrom) <= now) &&
+    (announcement.until === null ||
+      Number(announcement.until) === 0 ||
+      Number(announcement.until) > now);
+</script>

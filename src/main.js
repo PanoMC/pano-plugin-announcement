@@ -1,8 +1,8 @@
-import {PanoPlugin, viewComponent} from "@panomc/sdk";
-import {derived} from "svelte/store";
-import {_ as i18n} from "@panomc/sdk/utils/language";
+import {PanoPlugin, viewComponent} from '@panomc/sdk';
+import {derived} from 'svelte/store';
+import {_ as i18n} from '@panomc/sdk/utils/language';
 
-const pluginId = "pano-plugin-announcement"
+const pluginId = 'pano-plugin-announcement';
 
 export const _ = derived(i18n, ($_fn) => {
   return (key, options) => $_fn(`plugins.${pluginId}.${key}`, options);
@@ -10,9 +10,9 @@ export const _ = derived(i18n, ($_fn) => {
 
 export default class PanoAnnouncementPlugin extends PanoPlugin {
   onLoad() {
-    const pano = this.pano
+    const pano = this.pano;
 
-    console.log("announcement enabled", "isPanel:" + pano.isPanel);
+    console.log('announcement enabled', 'isPanel:' + pano.isPanel);
 
     if (pano.isPanel) {
       pano.ui.page.register({
@@ -24,9 +24,7 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
       });
 
       pano.ui.nav.site.editNavLinks((navigationItems) => {
-        const postsIndex = navigationItems.findIndex(
-          (item) => item.href === "/posts",
-        );
+        const postsIndex = navigationItems.findIndex((item) => item.href === '/posts');
         const announcementsLink = {
           href: '/announcements',
           icon: 'fas fa-bullhorn',
@@ -44,34 +42,32 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
         return navigationItems;
       });
     } else {
-      const announcementsComponent = viewComponent(() => import("./theme/Announcements.svelte"));
+      const announcementsComponent = viewComponent(() => import('./theme/Announcements.svelte'));
 
       pano.ui.app.onLoad(async (data, event) => {
-        const {load} = await import("./theme/Announcements.svelte");
-        const res = await load({...event, hookName: "page:home:top"});
+        const { load } = await import('./theme/Announcements.svelte');
+        const res = await load({ ...event, hookName: 'page:home:top' });
         data.announcements = res.announcements || [];
 
         if (res.hookOptions?.invisible) {
-          pano.ui.hook.setVisible("page:home:top", announcementsComponent, false);
+          pano.ui.hook.setVisible('page:home:top', announcementsComponent, false);
         }
       });
 
       pano.ui.hook.register({
-        name: "theme:top",
+        name: 'theme:top',
         component: announcementsComponent,
-        skipLoad: true
+        skipLoad: true,
       });
       pano.ui.hook.register({
-        name: "page:home:top",
+        name: 'page:home:top',
         component: announcementsComponent,
-        skipLoad: true
+        skipLoad: true,
       });
     }
   }
 
-  onContextUpdate(ctx) {
-  }
+  onContextUpdate(ctx) {}
 
-  onUnload() {
-  }
+  onUnload() {}
 }
