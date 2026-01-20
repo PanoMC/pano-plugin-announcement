@@ -24,6 +24,39 @@
     max-width: 100%;
     height: auto;
   }
+
+  .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  .marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee-animation 20s linear infinite;
+  }
+
+  .marquee-content:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-animation {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-content {
+      animation: none;
+      white-space: normal;
+      padding-left: 0;
+    }
+  }
 </style>
 
 {#if visibleBanners.length > 0}
@@ -31,43 +64,44 @@
     {#each visibleBanners as banner (banner.id)}
       <div
         id="pano-announcement-{banner.id}"
-        class="announcement-banner alert alert-info position-relative overflow-hidden rounded-pill mb-0"
+        class="announcement-banner alert alert-info overflow-hidden mb-0"
         class:alert-dismissible={banner.closeable}
         role="alert">
-        <div class="d-flex align-items-center justify-content-center">
-          <div class="announcement-content flex-grow-1">
-            {#if banner.effectType === 'MARQUEE'}
-              <!-- svelte-ignore a11y-distracting-elements -->
-              <marquee behavior="scroll" direction="left" scrollamount="5">
-                {@html banner.contents[activeContentIndex[banner.id] || 0]}
-              </marquee>
-            {:else if banner.effectType === 'FLASH'}
-              <div class="flash-container">
+        <div class="announcement-content">
+          {#if banner.effectType === 'MARQUEE'}
+            <div class="marquee-container">
+              <div class="marquee-content">
                 {@html banner.contents[activeContentIndex[banner.id] || 0]}
               </div>
-            {:else}
+            </div>
+          {:else if banner.effectType === 'FLASH'}
+            <div class="flash-container">
               {@html banner.contents[activeContentIndex[banner.id] || 0]}
-            {/if}
-          </div>
-
-          {#if banner.closeable}
-            <button
-              type="button"
-              class="btn-close position-relative"
-              style="z-index: 2;"
-              onclick={(e) => {
-                e.stopPropagation();
-                closeBanner(banner.id);
-              }}
-              title={$_('buttons.close')}
-              aria-label={$_('buttons.close')}></button>
+            </div>
+          {:else}
+            {@html banner.contents[activeContentIndex[banner.id] || 0]}
           {/if}
         </div>
+
+        {#if banner.closeable}
+          <button
+            type="button"
+            class="btn-close"
+            style="z-index: 2;"
+            onclick={(e) => {
+              e.stopPropagation();
+              closeBanner(banner.id);
+            }}
+            title={$_('buttons.close')}
+            aria-label={$_('buttons.close')}></button>
+        {/if}
 
         {#if banner.link}
           <a
             href={banner.link}
             class="stretched-link"
+            title={banner.title}
+            aria-label={banner.title}
             target={banner.external ? '_blank' : null}
             rel={banner.external ? 'noopener noreferrer' : null}></a>
         {/if}
@@ -132,10 +166,10 @@
   </div>
 {/each}
 
-<script context="module">
-    import ApiUtil from '@panomc/sdk/utils/api';
+<script module>
+  import ApiUtil from '@panomc/sdk/utils/api';
 
-    export async function load(event) {
+  export async function load(event) {
     if (!event) return { announcements: [] };
 
     let output = {};
