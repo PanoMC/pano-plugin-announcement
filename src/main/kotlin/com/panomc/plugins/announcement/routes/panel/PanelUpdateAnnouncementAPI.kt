@@ -70,6 +70,8 @@ class PanelUpdateAnnouncementAPI(
                         .optionalProperty("displayFrequency", enumSchema(*AnnouncementDisplayFrequency.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("location", enumSchema(*AnnouncementLocation.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("external", booleanSchema())
+                        .optionalProperty("alertStyle", enumSchema(*AnnouncementAlertStyle.entries.map { it.name }.toTypedArray()))
+                        .optionalProperty("textAlign", enumSchema(*AnnouncementTextAlign.entries.map { it.name }.toTypedArray()))
                 )
             )
             .predicate(RequestPredicate.BODY_REQUIRED)
@@ -134,6 +136,8 @@ class PanelUpdateAnnouncementAPI(
             showFrom = data.getLong("showFrom"),
             location = data.getString("location")?.let { AnnouncementLocation.valueOf(it) } ?: AnnouncementLocation.GLOBAL,
             external = data.getBoolean("external") ?: false,
+            alertStyle = data.getString("alertStyle")?.let { AnnouncementAlertStyle.valueOf(it) } ?: AnnouncementAlertStyle.INFO,
+            textAlign = data.getString("textAlign")?.let { AnnouncementTextAlign.valueOf(it) } ?: AnnouncementTextAlign.CENTER,
             updatedAt = System.currentTimeMillis()
         )
 
@@ -158,6 +162,8 @@ class PanelUpdateAnnouncementAPI(
             if (existingAnnouncement.showFrom != data.getLong("showFrom")) changes.put("showFrom", data.getLong("showFrom"))
             if (existingAnnouncement.location != (data.getString("location")?.let { AnnouncementLocation.valueOf(it) } ?: AnnouncementLocation.GLOBAL)) changes.put("location", data.getString("location") ?: "GLOBAL")
             if (existingAnnouncement.external != (data.getBoolean("external") ?: false)) changes.put("external", data.getBoolean("external") ?: false)
+            if (existingAnnouncement.alertStyle.name != (data.getString("alertStyle") ?: "INFO")) changes.put("alertStyle", data.getString("alertStyle") ?: "INFO")
+            if (existingAnnouncement.textAlign.name != (data.getString("textAlign") ?: "CENTER")) changes.put("textAlign", data.getString("textAlign") ?: "CENTER")
             if (imageFileName != existingAnnouncement.imageFileName) changes.put("image", imageFileName != null)
         }
 

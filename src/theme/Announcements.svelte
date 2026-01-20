@@ -64,7 +64,7 @@
     {#each visibleBanners as banner (banner.id)}
       <div
         id="pano-announcement-{banner.id}"
-        class="announcement-banner alert alert-info overflow-hidden mb-0"
+        class="announcement-banner alert alert-{(banner.alertStyle || 'INFO').toLowerCase()} overflow-hidden mb-0 {getTextAlignClass(banner.textAlign)}"
         class:alert-dismissible={banner.closeable}
         role="alert">
         <div class="announcement-content">
@@ -167,9 +167,9 @@
 {/each}
 
 <script module>
-  import ApiUtil from '@panomc/sdk/utils/api';
+    import ApiUtil from '@panomc/sdk/utils/api';
 
-  export async function load(event) {
+    export async function load(event) {
     if (!event) return { announcements: [] };
 
     let output = {};
@@ -276,6 +276,18 @@
         return 'modal-fullscreen';
       default:
         return '';
+    }
+  }
+
+  function getTextAlignClass(align) {
+    switch (align) {
+      case 'LEFT':
+        return 'text-start';
+      case 'RIGHT':
+        return 'text-end';
+      case 'CENTER':
+      default:
+        return 'text-center';
     }
   }
 

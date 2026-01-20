@@ -65,6 +65,8 @@
       "type": "Type",
       "type-banner": "Banner",
       "type-modal": "Modal",
+      "style": "Style",
+      "text-align": "Text Alignment",
       "effects": "Effects",
       "effect-none": "None",
       "effect-marquee": "Marquee",

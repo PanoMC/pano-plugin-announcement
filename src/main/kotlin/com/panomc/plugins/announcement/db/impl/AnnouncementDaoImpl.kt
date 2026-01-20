@@ -40,6 +40,8 @@ class AnnouncementDaoImpl : AnnouncementDao() {
                               `showFrom` BIGINT,
                               `location` VARCHAR(255) NOT NULL DEFAULT 'GLOBAL',
                               `external` TINYINT(1) NOT NULL DEFAULT 0,
+                              `alertStyle` VARCHAR(255) NOT NULL DEFAULT 'INFO',
+                              `textAlign` VARCHAR(255) NOT NULL DEFAULT 'CENTER',
                               `createdAt` BIGINT(20) NOT NULL,
                               `updatedAt` BIGINT(20) NOT NULL,
                               PRIMARY KEY (`id`)
@@ -52,7 +54,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
 
     override suspend fun add(announcement: Announcement, sqlClient: SqlClient): Long {
         val query =
-            "INSERT INTO `${getTablePrefix() + tableName}` (`title`, `status`, `link`, `type`, `effectType`, `until`, `contents`, `customCss`, `size`, `displayFrequency`, `imageFileName`, `closeable`, `showFrom`, `location`, `external`, `createdAt`, `updatedAt`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO `${getTablePrefix() + tableName}` (`title`, `status`, `link`, `type`, `effectType`, `until`, `contents`, `customCss`, `size`, `displayFrequency`, `imageFileName`, `closeable`, `showFrom`, `location`, `external`, `alertStyle`, `textAlign`, `createdAt`, `updatedAt`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
         val rows: RowSet<Row> = sqlClient
             .preparedQuery(query)
@@ -73,6 +75,8 @@ class AnnouncementDaoImpl : AnnouncementDao() {
                     announcement.showFrom,
                     announcement.location.name,
                     announcement.external,
+                    announcement.alertStyle.name,
+                    announcement.textAlign.name,
                     announcement.createdAt,
                     announcement.updatedAt
                 )
@@ -84,7 +88,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
 
     override suspend fun update(announcement: Announcement, sqlClient: SqlClient) {
         val query =
-            "UPDATE `${getTablePrefix() + tableName}` SET `title` = ?, `status` = ?, `link` = ?, `type` = ?, `effectType` = ?, `until` = ?, `contents` = ?, `customCss` = ?, `size` = ?, `displayFrequency` = ?, `imageFileName` = ?, `closeable` = ?, `showFrom` = ?, `location` = ?, `external` = ?, `updatedAt` = ? WHERE `id` = ?"
+            "UPDATE `${getTablePrefix() + tableName}` SET `title` = ?, `status` = ?, `link` = ?, `type` = ?, `effectType` = ?, `until` = ?, `contents` = ?, `customCss` = ?, `size` = ?, `displayFrequency` = ?, `imageFileName` = ?, `closeable` = ?, `showFrom` = ?, `location` = ?, `external` = ?, `alertStyle` = ?, `textAlign` = ?, `updatedAt` = ? WHERE `id` = ?"
 
         sqlClient
             .preparedQuery(query)
@@ -105,6 +109,8 @@ class AnnouncementDaoImpl : AnnouncementDao() {
                     announcement.showFrom,
                     announcement.location.name,
                     announcement.external,
+                    announcement.alertStyle.name,
+                    announcement.textAlign.name,
                     announcement.updatedAt,
                     announcement.id
                 )

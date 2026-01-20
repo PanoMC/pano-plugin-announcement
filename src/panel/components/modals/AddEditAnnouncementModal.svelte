@@ -318,6 +318,67 @@
                 </select>
                 <label for="bannerEffect">{$_('modals.add-edit.effects')}</label>
               </div>
+
+              <div class="mb-3">
+                <p class="form-label d-block">{$_('modals.add-edit.style')}</p>
+                <div class="d-flex flex-wrap gap-2">
+                  {#each ['PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'WARNING', 'INFO', 'LIGHT', 'DARK'] as color}
+                    <button
+                      type="button"
+                      class="btn btn-{color.toLowerCase()} p-0 rounded-circle border {$announcement.alertStyle === color
+                        ? 'border-3 border-primary shadow-sm'
+                        : 'border-1 border-secondary border-opacity-25'}"
+                      style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+                      on:click={() => ($announcement.alertStyle = color)}
+                      title={color}>
+                      {#if $announcement.alertStyle === color}
+                        <i
+                          class="fas fa-check {['LIGHT', 'WARNING', 'INFO'].includes(color)
+                            ? 'text-dark'
+                            : 'text-white'}"></i>
+                      {/if}
+                    </button>
+                  {/each}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <p class="form-label d-block">{$_('modals.add-edit.text-align')}</p>
+                <div class="btn-group btn-group-sm w-100" role="group">
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    id="textAlignLeft"
+                    autocomplete="off"
+                    bind:group={$announcement.textAlign}
+                    value="LEFT" />
+                  <label class="btn btn-outline-primary" for="textAlignLeft">
+                    <i class="fas fa-align-left"></i>
+                  </label>
+
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    id="textAlignCenter"
+                    autocomplete="off"
+                    bind:group={$announcement.textAlign}
+                    value="CENTER" />
+                  <label class="btn btn-outline-primary" for="textAlignCenter">
+                    <i class="fas fa-align-center"></i>
+                  </label>
+
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    id="textAlignRight"
+                    autocomplete="off"
+                    bind:group={$announcement.textAlign}
+                    value="RIGHT" />
+                  <label class="btn btn-outline-primary" for="textAlignRight">
+                    <i class="fas fa-align-right"></i>
+                  </label>
+                </div>
+              </div>
               <div class="form-check form-switch mb-3">
                 <input
                   class="form-check-input"
@@ -428,9 +489,9 @@
 </div>
 
 <script context="module">
-    import {get, writable} from 'svelte/store';
+  import {get, writable} from 'svelte/store';
 
-    const modalElement = writable();
+  const modalElement = writable();
   const mode = writable('create');
   const announcement = writable({});
   const initialAnnouncement = writable({});
@@ -471,6 +532,8 @@
         external: cloned.external || false,
         bannerContents: activeType === 'BANNER' ? contents : cloned.bannerContents || [''],
         modalContent: activeType === 'MODAL' ? contents[0] : cloned.modalContent || '',
+        alertStyle: cloned.alertStyle || 'INFO',
+        textAlign: cloned.textAlign || 'CENTER',
       };
       announcement.set(state);
       initialAnnouncement.set(JSON.parse(JSON.stringify(state)));
@@ -494,6 +557,8 @@
         displayFrequency: 'ALWAYS',
         modalSize: 'NORMAL',
         external: false,
+        alertStyle: 'INFO',
+        textAlign: 'CENTER',
       });
     }
 
@@ -663,6 +728,8 @@
         location: $announcement.location,
         external: $announcement.external || false,
         closeable: $announcement.displayType === 'BANNER' ? $announcement.closeable : false,
+        alertStyle: $announcement.displayType === 'BANNER' ? $announcement.alertStyle : 'INFO',
+        textAlign: $announcement.displayType === 'BANNER' ? $announcement.textAlign : 'CENTER',
         removeImage: $isImageRemoved,
       };
 

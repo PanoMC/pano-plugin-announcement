@@ -65,6 +65,8 @@
       "type": "Tür",
       "type-banner": "Banner",
       "type-modal": "Modal",
+      "style": "Stil",
+      "text-align": "Metin Hizalaması",
       "effects": "Efektler",
       "effect-none": "Yok",
       "effect-marquee": "Kayan Yazı",

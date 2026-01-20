@@ -70,6 +70,8 @@ class PanelAddAnnouncementAPI(
                         .optionalProperty("displayFrequency", enumSchema(*AnnouncementDisplayFrequency.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("location", enumSchema(*AnnouncementLocation.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("external", booleanSchema())
+                        .optionalProperty("alertStyle", enumSchema(*AnnouncementAlertStyle.entries.map { it.name }.toTypedArray()))
+                        .optionalProperty("textAlign", enumSchema(*AnnouncementTextAlign.entries.map { it.name }.toTypedArray()))
                 )
             )
             .predicate(RequestPredicate.BODY_REQUIRED)
@@ -119,7 +121,9 @@ class PanelAddAnnouncementAPI(
             closeable = data.getBoolean("closeable") ?: true,
             showFrom = data.getLong("showFrom"),
             location = data.getString("location")?.let { AnnouncementLocation.valueOf(it) } ?: AnnouncementLocation.GLOBAL,
-            external = data.getBoolean("external") ?: false
+            external = data.getBoolean("external") ?: false,
+            alertStyle = data.getString("alertStyle")?.let { AnnouncementAlertStyle.valueOf(it) } ?: AnnouncementAlertStyle.INFO,
+            textAlign = data.getString("textAlign")?.let { AnnouncementTextAlign.valueOf(it) } ?: AnnouncementTextAlign.CENTER
         )
 
         val sqlClient = databaseManager.getSqlClient()
