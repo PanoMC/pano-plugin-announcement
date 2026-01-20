@@ -270,7 +270,7 @@
 
 <style>
   .announcements-container {
-    z-index: 1100;
+    z-index: 10;
   }
 
   .announcement-banner {
