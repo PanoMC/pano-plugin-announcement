@@ -15,7 +15,7 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-md-7 border-end d-flex flex-column">
+          <div class="col-xl-7 border-end d-flex flex-column">
             <!-- Title -->
             <div class="input-group mb-4">
               {#if $mode === 'edit'}
@@ -170,7 +170,7 @@
             </small>
           </div>
 
-          <div class="col-md-5">
+          <div class="col-xl-5">
             <div class="form-check form-switch mb-4">
               <input
                 class="form-check-input"

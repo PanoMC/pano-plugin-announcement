@@ -9,7 +9,7 @@
     <div class="dropdown position-static">
       <button
         type="button"
-        class="btn btn-sm btn-link"
+        class="btn btn-link"
         aria-expanded="false"
         aria-haspopup="true"
         data-bs-toggle="dropdown"
@@ -99,12 +99,12 @@
 </tr>
 
 <script>
-    import {_} from '../../main';
-    import {Date as DateComponent} from '@panomc/sdk/components';
-    import {base} from '@panomc/sdk/svelte';
-    import {onMount} from 'svelte';
+  import { _ } from '../../main';
+  import { Date as DateComponent } from '@panomc/sdk/components';
+  import { base } from '@panomc/sdk/svelte';
+  import { onMount } from 'svelte';
 
-    export let announcement;
+  export let announcement;
   export let currentStatus;
   export let currentVisibility;
   export let buttonsLoading = false;
@@ -115,7 +115,7 @@
     ? `${base}/api/panel/announcements/image/${announcement.imageFileName}?thumbnail=true`
     : null;
 
-    let now = Date.now();
+  let now = Date.now();
   onMount(() => {
     const interval = setInterval(() => {
       now = Date.now();
