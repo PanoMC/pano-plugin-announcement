@@ -17,7 +17,7 @@
         <div class="row">
           <div class="col-xl-7 border-end d-flex flex-column">
             <!-- Title -->
-            <div class="input-group mb-4">
+            <div class="input-group mb-3">
               {#if $mode === 'edit'}
                 <span class="input-group-text">#{$announcement.id}</span>
               {/if}
@@ -34,7 +34,7 @@
             </div>
 
             <!-- Content -->
-            <div class="mb-4">
+            <div class="mb-3">
               {#if $announcement.displayType === 'BANNER'}
                 <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                   <div class="overflow-x-auto flex-grow-1" style="scrollbar-width: thin;">
@@ -79,15 +79,15 @@
                         bind:value={$announcement.bannerContents[activeContentIndex]}
                         placeholder={$_('modals.add-edit.content-placeholder')}
                         required
-                        style="height: 120px;"></textarea>
+                        style="min-height: 256px;"></textarea>
                       <label for="content-{activeContentIndex}"
                         >{$_('modals.add-edit.content-label')}</label>
                     </div>
                   {/if}
                 {/key}
               {:else if $announcement.displayType === 'MODAL'}
-                <div class="mb-4">
-                  <div class="position-relative w-100 mb-3">
+                <div class="vstack gap-2">
+                  <div class="position-relative w-100">
                     {#key displayImage}
                       {#if displayImage}
                         <div class="ratio ratio-16x9 border rounded">
@@ -124,7 +124,6 @@
                           accept="image/png,image/jpeg,image/gif,image/webp" />
                       {:else}
                         <DragAndDropZone
-                          class="mb-3"
                           style="aspect-ratio: 16/9;"
                           accept={['image/png', 'image/jpeg', 'image/gif', 'image/webp']}
                           maxFileSize={2 * 1024 * 1024}
@@ -146,7 +145,7 @@
                     bind:content={$announcement.modalContent}
                     bind:isEmpty={isEditorEmpty}
                     showHtml={true}
-                    contentStyles={'height: 300px;'} />
+                    contentStyles={'min-height: 300px;'} />
                 </div>
               {/if}
             </div>
@@ -154,14 +153,14 @@
             <!-- Custom CSS -->
             <div class="form-floating flex-grow-1">
               <textarea
-                class="form-control"
+                class="form-control font-monospace"
                 id="customCss"
                 bind:value={$announcement.customCss}
                 placeholder={$_('modals.add-edit.custom-css-placeholder')}
                 style="height: 100%; min-height: 120px;"></textarea>
               <label for="customCss">{$_('modals.add-edit.custom-css')}</label>
             </div>
-            <small class="d-block mt-1">
+            <small class="d-block mt-2">
               {@html $_('modals.add-edit.custom-css-info', {
                 values: {
                   selector: `<code>#pano-announcement-${$announcement.id || 'ID'}</code>`,
@@ -171,7 +170,7 @@
           </div>
 
           <div class="col-xl-5">
-            <div class="form-check form-switch mb-4">
+            <div class="form-check form-switch mb-3">
               <input
                 class="form-check-input"
                 type="checkbox"
@@ -325,7 +324,8 @@
                   {#each ['PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'WARNING', 'INFO', 'LIGHT', 'DARK'] as color}
                     <button
                       type="button"
-                      class="btn btn-{color.toLowerCase()} p-0 rounded-circle border {$announcement.alertStyle === color
+                      class="btn btn-{color.toLowerCase()} p-0 rounded-circle border {$announcement.alertStyle ===
+                      color
                         ? 'border-3 border-primary shadow-sm'
                         : 'border-1 border-secondary border-opacity-25'}"
                       style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
@@ -489,7 +489,7 @@
 </div>
 
 <script context="module">
-  import {get, writable} from 'svelte/store';
+  import { get, writable } from 'svelte/store';
 
   const modalElement = writable();
   const mode = writable('create');
