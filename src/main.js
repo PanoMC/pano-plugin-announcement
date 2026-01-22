@@ -18,8 +18,6 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
       pano.ui.page.register({
         path: '/announcements',
         component: viewComponent(() => import('./panel/AnnouncementsPage.svelte')),
-        layout: viewComponent(() => import('./panel/AnnouncementsLayout.svelte')),
-        resetLayout: false,
         permission: `pano.plugin.${pluginId}.manage.announcements`,
       });
 

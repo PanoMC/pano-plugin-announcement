@@ -103,9 +103,9 @@
 </article>
 
 <script context="module">
-    import ApiUtil, {buildQueryParams} from '@panomc/sdk/utils/api';
+  import ApiUtil, {buildQueryParams} from '@panomc/sdk/utils/api';
 
-    /**
+  /**
    * @type {import("@sveltejs/kit").PageLoad}
    */
 
@@ -168,7 +168,6 @@
   import ConfirmDeleteAnnouncementModal, {
     show as showDeleteAnnouncementModal,
     setCallback as setDeleteAnnouncementModalCallback,
-    onHide as onDeleteAnnouncementModalHide,
   } from './components/modals/ConfirmDeleteAnnouncementModal.svelte';
 
   import AddEditAnnouncementModal, {
