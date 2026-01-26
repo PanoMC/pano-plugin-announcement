@@ -489,7 +489,7 @@
 </div>
 
 <script context="module">
-  import { get, writable } from 'svelte/store';
+  import {get, writable} from 'svelte/store';
 
   const modalElement = writable();
   const mode = writable('create');
@@ -585,7 +585,7 @@
 
 <script>
   import ApiUtil from '@panomc/sdk/utils/api';
-  import { Editor, DragAndDropZone } from '@panomc/sdk/components';
+  import { Editor, DragAndDropZone } from '@panomc/sdk/components/panel';
   import { base } from '@panomc/sdk/svelte';
   import tooltip from '@panomc/sdk/utils/tooltip';
   import { showToast } from '@panomc/sdk/toasts';

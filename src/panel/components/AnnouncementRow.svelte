@@ -99,10 +99,10 @@
 </tr>
 
 <script>
-  import { _ } from '../../main';
-  import { Date as DateComponent } from '@panomc/sdk/components';
-  import { base } from '@panomc/sdk/svelte';
-  import { onMount } from 'svelte';
+  import {_} from '../../main';
+  import {Date as DateComponent} from '@panomc/sdk/components/panel';
+  import {base} from '@panomc/sdk/svelte';
+  import {onMount} from 'svelte';
 
   export let announcement;
   export let currentStatus;

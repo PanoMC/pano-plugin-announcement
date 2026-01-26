@@ -160,7 +160,7 @@
     NoContent,
     Pagination,
     Date,
-  } from '@panomc/sdk/components';
+  } from '@panomc/sdk/components/panel';
 
   import { _ } from '../main';
   import AnnouncementRow from './components/AnnouncementRow.svelte';
