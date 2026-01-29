@@ -38,12 +38,11 @@ jobs:
           echo "new_tag_version=${NEXT_TAG_VERSION}" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          PANO_TOKEN: ${{ secrets.PANO_TOKEN }}
 
       - name: Echo new_tag_version
         run: |
           echo "Extracted Tag Version: ${{ steps.get-next-version.outputs.new_tag_version }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     outputs:
       new_tag_version: ${{ steps.get-next-version.outputs.new_tag_version }}
 
@@ -85,4 +84,5 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          PANO_TOKEN: ${{ secrets.PANO_TOKEN }}
         run: npx semantic-release
