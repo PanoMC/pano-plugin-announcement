@@ -85,4 +85,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
           PANO_TOKEN: ${{ secrets.PANO_TOKEN }}
-        run: npx semantic-release
+        run: |
+          npm install -D git+https://github.com/PanoMC/semantic-release-pano.git
+          npx semantic-release
