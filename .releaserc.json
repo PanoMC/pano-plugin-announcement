@@ -14,7 +14,8 @@
       {
         "resourceId": "pano-plugin-announcement",
         "file": "build/libs/pano-plugin-announcement-${version}.jar",
-        "panoVersion": "1.0.0"
+        "panoVersion": "1.0.0",
+        "panoUrl": "https://api-dev.panomc.com"
       }
     ],
     [
