@@ -1,0 +1,137 @@
+{
+    "buttons": {
+        "visit": "Посетить",
+        "close": "Закрыть",
+        "edit": "Редактировать"
+    },
+    "pages": {
+        "announcements": {
+            "title": "Объявления",
+            "new-announcement": "Добавить объявление",
+            "count": "{count} Объявлений",
+            "filters": {
+                "all": "Все",
+                "active": "Активные",
+                "inactive": "Неактивные",
+                "live": "В эфире",
+                "hidden": "Скрытые"
+            },
+            "table": {
+                "id": "ID",
+                "title": "Заголовок",
+                "status": "Статус",
+                "type": "Тип",
+                "showing": "Показано",
+                "live": "В эфире",
+                "hidden": "Скрыто",
+                "date": "Создано",
+                "updated-at": "Обновлено"
+            },
+            "actions": {
+                "edit": "Редактировать",
+                "delete": "Удалить",
+                "label": "Действия"
+            },
+            "types": {
+                "banner": "Баннер",
+                "modal": "Модальное окно"
+            }
+        }
+    },
+    "modals": {
+        "add-edit": {
+            "edit-title": "Редактировать объявление",
+            "new-title": "Добавить объявление",
+            "close": "Закрыть",
+            "title-label": "Заголовок",
+            "title-placeholder": "Введите заголовок объявления",
+            "status": "Статус",
+            "status-active": "Активно",
+            "status-inactive": "Неактивно",
+            "location": "Расположение",
+            "location-global": "Глобально (Вверху всех страниц)",
+            "location-home": "Главная (Вверху главной страницы)",
+            "time-type": "Тип времени",
+            "time-permanent": "Постоянно",
+            "time-timed": "По времени",
+            "time-select": "Время окончания",
+            "show-from": "Показывать с",
+            "show-from-now": "Сейчас",
+            "show-from-custom": "Выбрать",
+            "show-from-select": "Время начала",
+            "link": "Ссылка",
+            "link-placeholder": "Введите URL ссылки",
+            "external": "Внешняя ссылка (Открыть в новой вкладке)",
+            "type": "Тип",
+            "type-banner": "Баннер",
+            "type-modal": "Модальное окно",
+            "style": "Стиль",
+            "text-align": "Выравнивание текста",
+            "effects": "Эффекты",
+            "effect-none": "Нет",
+            "effect-marquee": "Бегущая строка",
+            "effect-flash": "Мигание (Туда-сюда)",
+            "display": "Отображение",
+            "display-always": "Всегда",
+            "display-once": "Один раз",
+            "modal-size": "Размер модального окна",
+            "modal-size-small": "Маленький",
+            "modal-size-normal": "Нормальный",
+            "modal-size-large": "Большой",
+            "modal-size-full": "Полный",
+            "image": "Изображение",
+            "image-change": "Изменить",
+            "image-remove": "Удалить",
+            "image-drop-placeholder": "Выберите или перетащите изображение",
+            "image-format-info": "PNG, JPEG, GIF, WEBP (Макс. 2MB)",
+            "image-error-size": "Размер файла не может превышать 2MB!",
+            "image-error-type": "Поддерживаются только форматы PNG, JPEG, GIF и WEBP!",
+            "content-tab": "Контент #{index}",
+            "add-content": "Добавить новый контент",
+            "remove-content": "Удалить",
+            "content-label": "Контент",
+            "content-placeholder": "Введите текст объявления",
+            "custom-css": "Пользовательский CSS",
+            "custom-css-placeholder": "Напишите ваши CSS стили здесь",
+            "custom-css-info": "Вы можете использовать селектор {selector} для стилизации объявления.",
+            "btn-create": "Создать",
+            "btn-save": "Сохранить",
+            "closeable": "Закрываемый",
+            "error-save": "Не удалось сохранить: {error}",
+            "error-unknown": "Неизвестная ошибка",
+            "error-general": "Произошла ошибка."
+        },
+        "delete": {
+            "title": "Удалить объявление",
+            "confirm-msg": "Вы уверены?",
+            "description": "Вы уверены, что хотите удалить объявление \"{title}\"? Это действие нельзя отменить.",
+            "cancel": "Отмена",
+            "confirm": "Удалить",
+            "success": "Объявление удалено",
+            "error": "Не удалось удалить объявление"
+        }
+    },
+    "toasts": {
+        "announcement-added": "Объявление успешно добавлено.",
+        "announcement-updated": "Объявление успешно обновлено.",
+        "announcement-deleted": "Объявление успешно удалено.",
+        "error-saving": "Произошла ошибка при сохранении объявления: {error}",
+        "error-deleting": "Произошла ошибка при удалении объявления: {error}"
+    },
+    "components": {
+        "site-navigation-menu": {
+            "announcements": "Объявления"
+        }
+    },
+    "permissions": {
+        "MANAGE_ANNOUNCEMENTS": {
+            "title": "Управление объявлениями",
+            "description": "Может создавать, удалять, редактировать объявления, которые будут показаны в теме."
+        }
+    },
+    "activity-logs": {
+        "CREATED_ANNOUNCEMENT": "<b>{username}</b> создал объявление \"{title}\".",
+        "UPDATED_ANNOUNCEMENT": "<b>{username}</b> обновил объявление \"{title}\".",
+        "DELETED_ANNOUNCEMENT": "<b>{username}</b> удалил объявление \"{title}\"."
+    }
+}
