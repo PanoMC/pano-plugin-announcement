@@ -44,15 +44,17 @@
   </td>
   <td class="align-middle" style="width: 60px;">
     {#if imageUrl}
-      <div
-        class="thumbnail-wrapper border rounded overflow-hidden flex-shrink-0"
-        style="width: 48px; height: 48px;">
+      <button
+        type="button"
+        class="thumbnail-wrapper border rounded overflow-hidden flex-shrink-0 p-0"
+        style="width: 48px; height: 48px;"
+        on:click={() => onEditClick(announcement.id)}>
         <img
           src={imageUrl}
           alt={announcement.title}
           class="w-100 h-100 object-fit-cover"
           loading="lazy" />
-      </div>
+      </button>
     {/if}
   </td>
   <td class="align-middle" style="max-width: 250px;">
