@@ -10,7 +10,6 @@
           type="button"
           class="btn-close"
           aria-label={$_('modals.add-edit.close')}
-          title={$_('modals.add-edit.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
@@ -329,8 +328,7 @@
                         ? 'border-3 border-primary shadow-sm'
                         : 'border-1 border-secondary border-opacity-25'}"
                       style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
-                      on:click={() => ($announcement.alertStyle = color)}
-                      title={color}>
+                      on:click={() => ($announcement.alertStyle = color)}>
                       {#if $announcement.alertStyle === color}
                         <i
                           class="fas fa-check {['LIGHT', 'WARNING', 'INFO'].includes(color)
@@ -477,7 +475,9 @@
       <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-primary w-100"
+          class="btn w-100"
+          class:btn-secondary={$mode === 'create'}
+          class:btn-primary={$mode !== 'create'}
           class:disabled={loading || !isFormValid || ($mode === 'edit' && !isChanged)}
           disabled={loading || !isFormValid || ($mode === 'edit' && !isChanged)}
           on:click={onSaveAnnouncement}>
