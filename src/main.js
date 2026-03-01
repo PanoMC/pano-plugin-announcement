@@ -12,8 +12,6 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
   onLoad() {
     const pano = this.pano;
 
-    console.log('announcement enabled', 'isPanel:' + pano.isPanel);
-
     if (pano.isPanel) {
       pano.ui.page.register({
         path: '/announcements',
