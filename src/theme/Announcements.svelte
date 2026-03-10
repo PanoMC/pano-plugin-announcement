@@ -167,9 +167,9 @@
 {/each}
 
 <script module>
-    import ApiUtil from '@panomc/sdk/utils/api';
+  import ApiUtil from '@panomc/sdk/utils/api';
 
-    export async function load(event) {
+  export async function load(event) {
     if (!event) return { announcements: [] };
 
     let output = {};
@@ -297,11 +297,7 @@
     let bootstrapModal;
     let destroyed = false;
 
-    async function init() {
-      while (!window.bootstrap && !destroyed) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-
+    function init() {
       if (destroyed || !window.bootstrap) return;
 
       bootstrapModal = new window.bootstrap.Modal(node);
