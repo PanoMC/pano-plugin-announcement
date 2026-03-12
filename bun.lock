@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "SvelteComponent",
@@ -16,7 +17,7 @@
         "svelte": "^5.53.3",
       },
       "peerDependencies": {
-        "svelte": "^5.53.3",
+        "svelte": "^5.46.1",
       },
     },
   },

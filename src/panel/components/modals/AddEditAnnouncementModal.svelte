@@ -14,161 +14,7 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-xl-7 border-end d-flex flex-column">
-            <!-- Title -->
-            <div class="input-group mb-3">
-              {#if $mode === 'edit'}
-                <span class="input-group-text">#{$announcement.id}</span>
-              {/if}
-              <div class="form-floating flex-grow-1">
-                <input
-                  type="text"
-                  class="form-control form-control-lg"
-                  id="title"
-                  bind:value={$announcement.title}
-                  placeholder={$_('modals.add-edit.title-placeholder')}
-                  required />
-                <label for="title">{$_('modals.add-edit.title-label')}</label>
-              </div>
-            </div>
-
-            <!-- Content -->
-            <div class="mb-3">
-              {#if $announcement.displayType === 'BANNER'}
-                <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-                  <div class="overflow-x-auto flex-grow-1" style="scrollbar-width: thin;">
-                    <div class="btn-group btn-group-sm flex-nowrap mb-1" role="group">
-                      {#each $announcement?.bannerContents || [] as item, i}
-                        <button
-                          type="button"
-                          class="btn {activeContentIndex === i
-                            ? 'btn-primary'
-                            : 'btn-outline-primary'} text-nowrap"
-                          on:click={() => (activeContentIndex = i)}>
-                          {$_('modals.add-edit.content-tab', {
-                            values: { index: i + 1 },
-                          })}
-                        </button>
-                      {/each}
-                      <button
-                        type="button"
-                        class="btn btn-outline-primary"
-                        on:click={addContent}
-                        title={$_('modals.add-edit.add-content')}>
-                        <i class="fas fa-plus"></i>
-                      </button>
-                    </div>
-                  </div>
-                  {#if ($announcement?.bannerContents?.length || 0) > 1}
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-link"
-                      on:click={removeActiveContent}
-                      title={$_('modals.add-edit.remove-content')}>
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  {/if}
-                </div>
-                {#key activeContentIndex}
-                  {#if $announcement?.bannerContents}
-                    <div class="form-floating">
-                      <textarea
-                        class="form-control"
-                        id="content-{activeContentIndex}"
-                        bind:value={$announcement.bannerContents[activeContentIndex]}
-                        placeholder={$_('modals.add-edit.content-placeholder')}
-                        required
-                        style="min-height: 256px;"></textarea>
-                      <label for="content-{activeContentIndex}"
-                        >{$_('modals.add-edit.content-label')}</label>
-                    </div>
-                  {/if}
-                {/key}
-              {:else if $announcement.displayType === 'MODAL'}
-                <div class="vstack gap-2">
-                  <div class="position-relative w-100">
-                    {#key displayImage}
-                      {#if displayImage}
-                        <div class="ratio ratio-16x9 border rounded">
-                          <button
-                            type="button"
-                            class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
-                            use:tooltip={[
-                              $_('modals.add-edit.image-change'),
-                              { placement: 'bottom' },
-                            ]}
-                            on:click={() => modalImageInput.click()}>
-                            <img
-                              src={displayImage}
-                              class="img-fluid w-100 h-100 object-fit-contain"
-                              alt={$_('modals.add-edit.image')} />
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
-                          style="z-index: 10;"
-                          on:click={onRemoveImage}
-                          on:mouseenter|stopPropagation
-                          on:mouseleave|stopPropagation
-                          aria-label={$_('modals.add-edit.image-remove')}>
-                          <i class="fas fa-minus"></i>
-                        </button>
-                        <input
-                          class="d-none"
-                          id="modalImage"
-                          type="file"
-                          on:change={onModalImageChange}
-                          bind:this={modalImageInput}
-                          accept="image/png,image/jpeg,image/gif,image/webp" />
-                      {:else}
-                        <DragAndDropZone
-                          style="aspect-ratio: 16/9;"
-                          accept={['image/png', 'image/jpeg', 'image/gif', 'image/webp']}
-                          maxFileSize={2 * 1024 * 1024}
-                          on:drop={(e) => processFile(e.detail)}
-                          on:error={handleFileError}>
-                          <i class="fas fa-image fa-3x mb-3 opacity-50"></i>
-                          <p class="mb-0 opacity-75 fw-medium">
-                            {$_('modals.add-edit.image-drop-placeholder')}
-                          </p>
-                          <small
-                            class="opacity-50 text-uppercase fw-semibold"
-                            style="font-size: 0.7rem; letter-spacing: 0.5px;"
-                            >{$_('modals.add-edit.image-format-info')}</small>
-                        </DragAndDropZone>
-                      {/if}
-                    {/key}
-                  </div>
-                  <Editor
-                    bind:content={$announcement.modalContent}
-                    bind:isEmpty={isEditorEmpty}
-                    showHtml={true}
-                    contentStyles={'min-height: 300px;'} />
-                </div>
-              {/if}
-            </div>
-
-            <!-- Custom CSS -->
-            <div class="form-floating flex-grow-1">
-              <textarea
-                class="form-control font-monospace"
-                id="customCss"
-                bind:value={$announcement.customCss}
-                placeholder={$_('modals.add-edit.custom-css-placeholder')}
-                style="height: 100%; min-height: 120px;"></textarea>
-              <label for="customCss">{$_('modals.add-edit.custom-css')}</label>
-            </div>
-            <small class="d-block mt-2">
-              {@html $_('modals.add-edit.custom-css-info', {
-                values: {
-                  selector: `<code>#pano-announcement-${$announcement.id || 'ID'}</code>`,
-                },
-              })}
-            </small>
-          </div>
-
-          <div class="col-xl-5">
+          <div class="col-xl-5 border-end">
             <div class="form-check form-switch mb-3">
               <input
                 class="form-check-input"
@@ -297,24 +143,76 @@
             {/if}
 
             {#if $announcement.displayType === 'BANNER'}
-              <div class="form-floating mb-3">
-                <select class="form-select" id="location" bind:value={$announcement.location}>
-                  <option value="GLOBAL">{$_('modals.add-edit.location-global')}</option>
-                  <option value="HOME">{$_('modals.add-edit.location-home')}</option>
-                </select>
-                <label for="location">{$_('modals.add-edit.location')}</label>
+              <div class="mb-3">
+                <label class="form-label d-block">{$_('modals.add-edit.location')}</label>
+                <div class="vstack gap-2 pb-2">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="location"
+                      id="locationGlobal"
+                      bind:group={$announcement.location}
+                      value="GLOBAL" />
+                    <label class="form-check-label" for="locationGlobal">
+                      {$_('modals.add-edit.location-global')}
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="location"
+                      id="locationHome"
+                      bind:group={$announcement.location}
+                      value="HOME" />
+                    <label class="form-check-label" for="locationHome">
+                      {$_('modals.add-edit.location-home')}
+                    </label>
+                  </div>
+                </div>
               </div>
 
-              <div class="form-floating mb-3">
-                <select
-                  class="form-select"
-                  id="bannerEffect"
-                  bind:value={$announcement.bannerEffect}>
-                  <option value="NONE">{$_('modals.add-edit.effect-none')}</option>
-                  <option value="MARQUEE">{$_('modals.add-edit.effect-marquee')}</option>
-                  <option value="FLASH">{$_('modals.add-edit.effect-flash')}</option>
-                </select>
-                <label for="bannerEffect">{$_('modals.add-edit.effects')}</label>
+              <div class="mb-3">
+                <label class="form-label d-block">{$_('modals.add-edit.effects')}</label>
+                <div class="vstack gap-2 pb-2">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="bannerEffect"
+                      id="effectNone"
+                      bind:group={$announcement.bannerEffect}
+                      value="NONE" />
+                    <label class="form-check-label" for="effectNone">
+                      {$_('modals.add-edit.effect-none')}
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="bannerEffect"
+                      id="effectMarquee"
+                      bind:group={$announcement.bannerEffect}
+                      value="MARQUEE" />
+                    <label class="form-check-label" for="effectMarquee">
+                      {$_('modals.add-edit.effect-marquee')}
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="bannerEffect"
+                      id="effectFlash"
+                      bind:group={$announcement.bannerEffect}
+                      value="FLASH" />
+                    <label class="form-check-label" for="effectFlash">
+                      {$_('modals.add-edit.effect-flash')}
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div class="mb-3">
@@ -470,6 +368,154 @@
               </div>
             {/if}
           </div>
+
+          <div class="col-xl-7 d-flex flex-column">
+            <!-- Title -->
+            <div class="input-group mb-3">
+              {#if $mode === 'edit'}
+                <span class="input-group-text">#{$announcement.id}</span>
+              {/if}
+              <div class="form-floating flex-grow-1">
+                <input
+                  type="text"
+                  class="form-control form-control-lg"
+                  id="title"
+                  bind:value={$announcement.title}
+                  placeholder={$_('modals.add-edit.title-placeholder')}
+                  required />
+                <label for="title">{$_('modals.add-edit.title-label')}</label>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="mb-3">
+              {#if $announcement.displayType === 'BANNER'}
+                <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                  <div class="overflow-x-auto flex-grow-1" style="scrollbar-width: thin;">
+                    <div class="btn-group btn-group-sm flex-nowrap mb-1" role="group">
+                      {#each $announcement?.bannerContents || [] as item, i}
+                        <button
+                          type="button"
+                          class="btn {activeContentIndex === i
+                            ? 'btn-primary'
+                            : 'btn-outline-primary'} text-nowrap"
+                          on:click={() => (activeContentIndex = i)}>
+                          {$_('modals.add-edit.content-tab', {
+                            values: { index: i + 1 },
+                          })}
+                        </button>
+                      {/each}
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        on:click={addContent}
+                        title={$_('modals.add-edit.add-content')}>
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  {#if ($announcement?.bannerContents?.length || 0) > 1}
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link"
+                      on:click={removeActiveContent}
+                      title={$_('modals.add-edit.remove-content')}>
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  {/if}
+                </div>
+                {#key activeContentIndex}
+                  {#if $announcement?.bannerContents}
+                    <div class="form-floating">
+                      <textarea
+                        class="form-control"
+                        id="content-{activeContentIndex}"
+                        bind:value={$announcement.bannerContents[activeContentIndex]}
+                        placeholder={$_('modals.add-edit.content-placeholder')}
+                        required
+                        style="min-height: 256px;"></textarea>
+                      <label for="content-{activeContentIndex}"
+                        >{$_('modals.add-edit.content-label')}</label>
+                    </div>
+                  {/if}
+                {/key}
+              {:else if $announcement.displayType === 'MODAL'}
+                <div class="vstack gap-2">
+                  <div class="position-relative w-100">
+                    {#key displayImage}
+                      {#if displayImage}
+                        <div class="ratio ratio-16x9 border rounded">
+                          <button
+                            type="button"
+                            class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
+                            use:tooltip={[
+                              $_('modals.add-edit.image-change'),
+                              { placement: 'bottom' },
+                            ]}
+                            on:click={() => modalImageInput.click()}>
+                            <img
+                              src={displayImage}
+                              class="img-fluid w-100 h-100 object-fit-contain"
+                              alt={$_('modals.add-edit.image')} />
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle"
+                          style="z-index: 10;"
+                          on:click={onRemoveImage}
+                          on:mouseenter|stopPropagation
+                          on:mouseleave|stopPropagation
+                          aria-label={$_('modals.add-edit.image-remove')}>
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <input
+                          class="d-none"
+                          id="modalImage"
+                          type="file"
+                          on:change={onModalImageChange}
+                          bind:this={modalImageInput}
+                          accept="image/png,image/jpeg,image/gif,image/webp" />
+                      {:else}
+                        <DragAndDropZone
+                          style="aspect-ratio: 16/9;"
+                          icon="fas fa-image fa-3x"
+                          title={$_('modals.add-edit.image-drop-placeholder')}
+                          subtitle={$_('modals.add-edit.image-format-info')}
+                          accept={['image/png', 'image/jpeg', 'image/gif', 'image/webp']}
+                          maxFileSize={2 * 1024 * 1024}
+                          on:drop={(e) => processFile(e.detail)}
+                          on:error={handleFileError} />
+                      {/if}
+                    {/key}
+                  </div>
+                  <Editor
+                    bind:content={$announcement.modalContent}
+                    bind:isEmpty={isEditorEmpty}
+                    showHtml={true}
+                    contentStyles={'min-height: 300px;'} />
+                </div>
+              {/if}
+            </div>
+
+            <!-- Custom CSS -->
+            <div class="form-floating flex-grow-1">
+              <textarea
+                class="form-control font-monospace"
+                id="customCss"
+                bind:value={$announcement.customCss}
+                placeholder={$_('modals.add-edit.custom-css-placeholder')}
+                style="height: 100%; min-height: 120px;"></textarea>
+              <label for="customCss">{$_('modals.add-edit.custom-css')}</label>
+            </div>
+            <small class="d-block mt-2">
+              {@html $_('modals.add-edit.custom-css-info', {
+                values: {
+                  selector: `<code>#pano-announcement-${$announcement.id || 'ID'}</code>`,
+                },
+              })}
+            </small>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -489,7 +535,7 @@
 </div>
 
 <script context="module">
-  import {get, writable} from 'svelte/store';
+  import { get, writable } from 'svelte/store';
 
   const modalElement = writable();
   const mode = writable('create');

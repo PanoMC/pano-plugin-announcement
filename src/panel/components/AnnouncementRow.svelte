@@ -102,10 +102,10 @@
 </tr>
 
 <script>
-  import {_} from '../../main';
-  import {Date as DateComponent} from '@panomc/sdk/components/panel';
-  import {base} from '@panomc/sdk/svelte';
-  import {onMount} from 'svelte';
+  import { _ } from '../../main';
+  import { Date as DateComponent } from '@panomc/sdk/components/panel';
+  import { base } from '@panomc/sdk/svelte';
+  import { onMount } from 'svelte';
   import tooltip from '@panomc/sdk/utils/tooltip';
 
   export let announcement;

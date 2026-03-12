@@ -59,7 +59,7 @@
             "show-from-now": "Сейчас",
             "show-from-custom": "Выбрать",
             "show-from-select": "Время начала",
-            "link": "Ссылка",
+            "link": "Ссылка (Необязательно)",
             "link-placeholder": "Введите URL ссылки",
             "external": "Внешняя ссылка (Открыть в новой вкладке)",
             "type": "Тип",

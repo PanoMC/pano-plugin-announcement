@@ -59,7 +59,7 @@
       "show-from-now": "Now",
       "show-from-custom": "Custom",
       "show-from-select": "Start Time",
-      "link": "Link",
+      "link": "Link (Optional)",
       "link-placeholder": "Enter link URL",
       "external": "External Link (Open in new tab)",
       "type": "Type",
