@@ -452,6 +452,7 @@
                               $_('modals.add-edit.image-change'),
                               { placement: 'bottom' },
                             ]}
+                            aria-label={$_('modals.add-edit.image-change')}
                             on:click={() => modalImageInput.click()}>
                             <img
                               src={displayImage}

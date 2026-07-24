@@ -61,7 +61,6 @@
     <div class="text-truncate">
       <button
         type="button"
-        title={announcement.title}
         use:tooltip={[$_('buttons.edit')]}
         aria-label={$_('buttons.edit')}
         on:click={() => onEditClick(announcement.id)}
