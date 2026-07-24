@@ -448,10 +448,7 @@
                           <button
                             type="button"
                             class="btn border-0 shadow-none w-100 h-100 p-0 bg-transparent"
-                            use:tooltip={[
-                              $_('modals.add-edit.image-change'),
-                              { placement: 'bottom' },
-                            ]}
+                            title={$_('modals.add-edit.image-change')}
                             aria-label={$_('modals.add-edit.image-change')}
                             on:click={() => modalImageInput.click()}>
                             <img
@@ -634,7 +631,6 @@
   import ApiUtil from '@panomc/sdk/utils/api';
   import { Editor, DragAndDropZone } from '@panomc/sdk/components/panel';
   import { base } from '@panomc/sdk/svelte';
-  import tooltip from '@panomc/sdk/utils/tooltip';
   import { showToast } from '@panomc/sdk/toasts';
   import { _ } from '../../../main';
 

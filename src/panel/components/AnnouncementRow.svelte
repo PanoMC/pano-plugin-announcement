@@ -13,7 +13,7 @@
         aria-expanded="false"
         aria-haspopup="true"
         data-bs-toggle="dropdown"
-        use:tooltip={[$_('pages.announcements.actions.label')]}
+        title={$_('pages.announcements.actions.label')}
         aria-label={$_('pages.announcements.actions.label')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
@@ -61,7 +61,7 @@
     <div class="text-truncate">
       <button
         type="button"
-        use:tooltip={[$_('buttons.edit')]}
+        title={$_('buttons.edit')}
         aria-label={$_('buttons.edit')}
         on:click={() => onEditClick(announcement.id)}
         class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate">
@@ -105,7 +105,6 @@
   import { Date as DateComponent } from '@panomc/sdk/components/panel';
   import { base } from '@panomc/sdk/svelte';
   import { onMount } from 'svelte';
-  import tooltip from '@panomc/sdk/utils/tooltip';
 
   export let announcement;
   export let currentStatus;
