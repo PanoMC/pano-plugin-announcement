@@ -65,8 +65,7 @@
 </script>
 
 <script>
-  import { showToast } from '@panomc/sdk/toasts';
-  import { _ } from '../../../main';
+  import { _, showSuccessToast, showErrorToast } from '../../../main';
   let loading = false;
 
   async function onYesClick() {
@@ -80,17 +79,17 @@
       if (result.error) {
         // Handle error (e.g., show toast)
         console.error('Delete failed:', result.error);
-        showToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
+        showErrorToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
           values: { error: result.error.statusMessage || $_('modals.add-edit.error-unknown') },
         });
       } else {
-        showToast('plugins.pano-plugin-announcement.toasts.announcement-deleted');
+        showSuccessToast('plugins.pano-plugin-announcement.toasts.announcement-deleted');
         callback(get(announcement));
         hide();
       }
     } catch (e) {
       console.error(e);
-      showToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
+      showErrorToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
         values: { error: $_('modals.add-edit.error-general') },
       });
     } finally {

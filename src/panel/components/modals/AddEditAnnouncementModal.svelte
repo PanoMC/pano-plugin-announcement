@@ -631,8 +631,7 @@
   import ApiUtil from '@panomc/sdk/utils/api';
   import { Editor, DragAndDropZone } from '@panomc/sdk/components/panel';
   import { base } from '@panomc/sdk/svelte';
-  import { showToast } from '@panomc/sdk/toasts';
-  import { _ } from '../../../main';
+  import { _, showSuccessToast, showErrorToast } from '../../../main';
 
   let isEditorEmpty = true;
   let activeContentIndex = 0;
@@ -681,9 +680,9 @@
   function handleFileError(event) {
     const { error } = event.detail;
     if (error === 'INVALID_SIZE') {
-      showToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-size');
+      showErrorToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-size');
     } else if (error === 'INVALID_TYPE') {
-      showToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-type');
+      showErrorToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-type');
     }
   }
 
@@ -709,14 +708,14 @@
 
     // File size check
     if (file.size > maxSize) {
-      showToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-size');
+      showErrorToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-size');
       if (modalImageInput) modalImageInput.value = '';
       return;
     }
 
     // File type check
     if (!allowedTypes.includes(file.type)) {
-      showToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-type');
+      showErrorToast('plugins.pano-plugin-announcement.modals.add-edit.image-error-type');
       if (modalImageInput) modalImageInput.value = '';
       return;
     }
@@ -804,13 +803,13 @@
 
       if (result.error) {
         console.error('Save failed:', result.error);
-        showToast('plugins.pano-plugin-announcement.toasts.error-saving', {
+        showErrorToast('plugins.pano-plugin-announcement.toasts.error-saving', {
           values: {
             error: result.error || $_('modals.add-edit.error-unknown'),
           },
         });
       } else {
-        showToast(
+        showSuccessToast(
           $mode === 'create'
             ? 'plugins.pano-plugin-announcement.toasts.announcement-added'
             : 'plugins.pano-plugin-announcement.toasts.announcement-updated',
@@ -820,7 +819,7 @@
       }
     } catch (e) {
       console.error(e);
-      showToast('plugins.pano-plugin-announcement.toasts.error-saving', {
+      showErrorToast('plugins.pano-plugin-announcement.toasts.error-saving', {
         values: { error: $_('modals.add-edit.error-general') },
       });
     } finally {
