@@ -203,7 +203,7 @@ publishing {
     repositories {
         maven {
             name = "pano-plugin-announcement"
-            url = uri("https://maven.pkg.github.com/panocms/pano-plugin-announcement")
+            url = uri("https://maven.pkg.github.com/panomc/pano-plugin-announcement")
             credentials {
                 username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME_GITHUB")
                 password = project.findProperty("gpr.token") as String? ?: System.getenv("TOKEN_GITHUB")
