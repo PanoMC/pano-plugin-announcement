@@ -1,6 +1,7 @@
 package com.panomc.plugins.announcement.db.dao
 
 import com.panomc.platform.db.Dao
+import com.panomc.platform.model.PageRequest
 import com.panomc.plugins.announcement.db.model.Announcement
 import io.vertx.sqlclient.SqlClient
 
@@ -9,7 +10,7 @@ abstract class AnnouncementDao : Dao<Announcement>(Announcement::class.java) {
 
     abstract suspend fun update(announcement: Announcement, sqlClient: SqlClient)
 
-    abstract suspend fun getAllByStatus(page: Long, status: Boolean?, visible: Boolean?, sqlClient: SqlClient): List<Announcement>
+    abstract suspend fun getAllByStatus(page: PageRequest, status: Boolean?, visible: Boolean?, sqlClient: SqlClient): List<Announcement>
 
     abstract suspend fun count(status: Boolean?, visible: Boolean?, sqlClient: SqlClient): Long
 

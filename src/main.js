@@ -1,6 +1,6 @@
 import {PanoPlugin, viewComponent} from '@panomc/sdk';
-import {derived} from 'svelte/store';
-import {_ as i18n} from '@panomc/sdk/utils/language';
+import { derived, get } from 'svelte/store';
+import { _ as i18n } from '@panomc/sdk/utils/language';
 import { showToast } from '@panomc/sdk/toasts';
 
 const pluginId = 'pano-plugin-announcement';
@@ -55,7 +55,10 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
         return navigationItems;
       });
     } else {
-      const announcementsComponent = viewComponent(() => import('./theme/Announcements.svelte'));
+      // The view registers itself on `theme:top` and `page:home:top` (export const view in Announcements.svelte).
+      // The entry stored for the view is looked up here, so the empty home hook can still be hidden.
+      const announcementsEntry = (hookName) =>
+        get(pano.ui.hook.get(hookName)).find((entry) => entry.view === 'announcement:Announcements');
 
       pano.ui.app.onLoad(async (data, event) => {
         const { load } = await import('./theme/Announcements.svelte');
@@ -63,19 +66,8 @@ export default class PanoAnnouncementPlugin extends PanoPlugin {
         data.announcements = res.announcements || [];
 
         if (res.hookOptions?.invisible) {
-          pano.ui.hook.setVisible('page:home:top', announcementsComponent, false);
+          pano.ui.hook.setVisible('page:home:top', announcementsEntry('page:home:top')?.component, false);
         }
-      });
-
-      pano.ui.hook.register({
-        name: 'theme:top',
-        component: announcementsComponent,
-        skipLoad: true,
-      });
-      pano.ui.hook.register({
-        name: 'page:home:top',
-        component: announcementsComponent,
-        skipLoad: true,
       });
     }
   }

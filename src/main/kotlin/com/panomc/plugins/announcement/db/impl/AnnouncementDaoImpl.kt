@@ -1,6 +1,7 @@
 package com.panomc.plugins.announcement.db.impl
 
 import com.panomc.platform.annotation.Dao
+import com.panomc.platform.model.PageRequest
 import com.panomc.plugins.announcement.db.dao.AnnouncementDao
 import com.panomc.plugins.announcement.db.model.Announcement
 import io.vertx.core.json.JsonArray
@@ -118,8 +119,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
             .coAwait()
     }
 
-    override suspend fun getAllByStatus(page: Long, status: Boolean?, visible: Boolean?, sqlClient: SqlClient): List<Announcement> {
-        val offset = (page - 1) * 10
+    override suspend fun getAllByStatus(page: PageRequest, status: Boolean?, visible: Boolean?, sqlClient: SqlClient): List<Announcement> {
         val now = System.currentTimeMillis()
         val query = StringBuilder("SELECT ${fields.toTableQuery()} FROM `${getTablePrefix() + tableName}` WHERE 1=1")
         val params = Tuple.tuple()
@@ -143,8 +143,9 @@ class AnnouncementDaoImpl : AnnouncementDao() {
             }
         }
 
-        query.append(" ORDER BY `id` DESC LIMIT 10 OFFSET ?")
-        params.addLong(offset)
+        query.append(" ORDER BY `id` DESC LIMIT ? OFFSET ?")
+        params.addInteger(page.limit)
+        params.addLong(page.offset)
 
         val rows: RowSet<Row> = sqlClient
             .preparedQuery(query.toString())

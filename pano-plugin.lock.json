@@ -1,0 +1,33 @@
+{
+  "controllers": {},
+  "format": 1,
+  "views": {
+    "announcement:Announcements": {
+      "classes": [
+        "announcement-announcements",
+        "announcement-announcements__action",
+        "announcement-announcements__alert",
+        "announcement-announcements__banners",
+        "announcement-announcements__body",
+        "announcement-announcements__body-2",
+        "announcement-announcements__flash",
+        "announcement-announcements__footer",
+        "announcement-announcements__image",
+        "announcement-announcements__marquee",
+        "announcement-announcements__marquee-content",
+        "announcement-announcements__modal-content"
+      ],
+      "contract": 1,
+      "hooks": [],
+      "props": {
+        "announcements": {
+          "required": false
+        },
+        "hookName": {
+          "required": true
+        }
+      },
+      "slots": []
+    }
+  }
+}

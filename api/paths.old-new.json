@@ -1,0 +1,58 @@
+[
+  {
+    "method": "GET",
+    "old": "/api/announcements",
+    "new": "/api/plugins/pano-plugin-announcement/announcements",
+    "relative": "/plugins/pano-plugin-announcement/announcements",
+    "class": "GetAnnouncementsAPI",
+    "file": "src/main/kotlin/com/panomc/plugins/announcement/routes/api/GetAnnouncementsAPI.kt"
+  },
+  {
+    "method": "GET",
+    "old": "/api/announcements/image/:fileName",
+    "new": "/api/plugins/pano-plugin-announcement/announcements/image/:fileName",
+    "relative": "/plugins/pano-plugin-announcement/announcements/image/:fileName",
+    "class": "GetAnnouncementImageAPI",
+    "file": "src/main/kotlin/com/panomc/plugins/announcement/routes/api/GetAnnouncementImageAPI.kt"
+  },
+  {
+    "method": "GET",
+    "old": "/api/panel/announcements",
+    "new": "/api/plugins/pano-plugin-announcement/panel/announcements",
+    "relative": "/plugins/pano-plugin-announcement/panel/announcements",
+    "class": "PanelGetAnnouncementsAPI",
+    "file": "src/main/kotlin/com/panomc/plugins/announcement/routes/panel/PanelGetAnnouncementsAPI.kt"
+  },
+  {
+    "method": "POST",
+    "old": "/api/panel/announcements",
+    "new": "/api/plugins/pano-plugin-announcement/panel/announcements",
+    "relative": "/plugins/pano-plugin-announcement/panel/announcements",
+    "class": "PanelAddAnnouncementAPI",
+    "file": "src/main/kotlin/com/panomc/plugins/announcement/routes/panel/PanelAddAnnouncementAPI.kt"
+  },
+  {
+    "method": "DELETE",
+    "old": "/api/panel/announcements/:id",
+    "new": "/api/plugins/pano-plugin-announcement/panel/announcements/:id",
+    "relative": "/plugins/pano-plugin-announcement/panel/announcements/:id",
+    "class": "PanelDeleteAnnouncementAPI",
+    "file": "src/main/kotlin/com/panomc/plugins/announcement/routes/panel/PanelDeleteAnnouncementAPI.kt"
+  },
+  {
+    "method": "PUT",
+    "old": "/api/panel/announcements/:id",
+    "new": "/api/plugins/pano-plugin-announcement/panel/announcements/:id",
+    "relative": "/plugins/pano-plugin-announcement/panel/announcements/:id",
+    "class": "PanelUpdateAnnouncementAPI",
+    "file": "src/main/kotlin/com/panomc/plugins/announcement/routes/panel/PanelUpdateAnnouncementAPI.kt"
+  },
+  {
+    "method": "GET",
+    "old": "/api/panel/announcements/image/:fileName",
+    "new": "/api/plugins/pano-plugin-announcement/panel/announcements/image/:fileName",
+    "relative": "/plugins/pano-plugin-announcement/panel/announcements/image/:fileName",
+    "class": "PanelGetAnnouncementImageAPI",
+    "file": "src/main/kotlin/com/panomc/plugins/announcement/routes/panel/PanelGetAnnouncementImageAPI.kt"
+  }
+]

@@ -628,9 +628,8 @@
 </script>
 
 <script>
-  import ApiUtil from '@panomc/sdk/utils/api';
+  import { api } from '@panomc/sdk/plugin-api';
   import { Editor, DragAndDropZone } from '@panomc/sdk/components/panel';
-  import { base } from '@panomc/sdk/svelte';
   import { _, showSuccessToast, showErrorToast } from '../../../main';
 
   let isEditorEmpty = true;
@@ -644,7 +643,7 @@
     ($isImageRemoved
       ? null
       : $announcement.imageFileName
-        ? `${base}/api/panel/announcements/image/${$announcement.imageFileName}`
+        ? `/api/plugins/pano-plugin-announcement/panel/announcements/image/${$announcement.imageFileName}`
         : null);
 
   $: isFormValid = (() => {
@@ -788,14 +787,14 @@
 
       let result;
       if ($mode === 'edit') {
-        result = await ApiUtil.put({
-          path: `/api/panel/announcements/${$announcement.id}`,
+        result = await api.panel.put({
+          path: `/announcements/${$announcement.id}`,
           body: formData,
           headers: {}, // ApiUtil might need null/empty headers to not set Content-Type to application/json
         });
       } else {
-        result = await ApiUtil.post({
-          path: `/api/panel/announcements`,
+        result = await api.panel.post({
+          path: `/announcements`,
           body: formData,
           headers: {},
         });
@@ -805,7 +804,7 @@
         console.error('Save failed:', result.error);
         showErrorToast('plugins.pano-plugin-announcement.toasts.error-saving', {
           values: {
-            error: result.error || $_('modals.add-edit.error-unknown'),
+            error: result.error.message || result.error.code || $_('modals.add-edit.error-unknown'),
           },
         });
       } else {

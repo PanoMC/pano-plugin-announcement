@@ -30,7 +30,7 @@
 
 <script context="module">
     import {get, writable} from 'svelte/store';
-    import ApiUtil from '@panomc/sdk/utils/api';
+    import { api } from '@panomc/sdk/plugin-api';
 
     const modalElement = writable();
   const announcement = writable({});
@@ -72,15 +72,15 @@
     loading = true;
 
     try {
-      const result = await ApiUtil.delete({
-        path: `/api/panel/announcements/${get(announcement).id}`,
+      const result = await api.panel.delete({
+        path: `/announcements/${get(announcement).id}`,
       });
 
       if (result.error) {
         // Handle error (e.g., show toast)
         console.error('Delete failed:', result.error);
         showErrorToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
-          values: { error: result.error.statusMessage || $_('modals.add-edit.error-unknown') },
+          values: { error: result.error.message || result.error.code || $_('modals.add-edit.error-unknown') },
         });
       } else {
         showSuccessToast('plugins.pano-plugin-announcement.toasts.announcement-deleted');

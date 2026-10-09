@@ -103,7 +103,6 @@
 <script>
   import { _ } from '../../main';
   import { Date as DateComponent } from '@panomc/sdk/components/panel';
-  import { base } from '@panomc/sdk/svelte';
   import { onMount } from 'svelte';
 
   export let announcement;
@@ -114,7 +113,7 @@
   export let onDeleteClick;
 
   $: imageUrl = announcement.imageFileName
-    ? `${base}/api/panel/announcements/image/${announcement.imageFileName}?thumbnail=true`
+    ? `/api/plugins/pano-plugin-announcement/panel/announcements/image/${announcement.imageFileName}?thumbnail=true`
     : null;
 
   let now = Date.now();

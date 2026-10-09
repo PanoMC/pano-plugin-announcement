@@ -1,17 +1,14 @@
 <style>
-  .announcements-container {
+  /* Kept rules: a z-index, the flash and marquee animations with the size and overflow the marquee needs. */
+  .announcement-announcements__banners {
     z-index: 10;
   }
 
-  .announcement-banner {
-    transition: all 0.3s ease;
+  .announcement-announcements__flash {
+    animation: announcement-flash-animation 1s infinite alternate;
   }
 
-  .flash-container {
-    animation: flash-animation 1s infinite alternate;
-  }
-
-  @keyframes flash-animation {
+  @keyframes announcement-flash-animation {
     from {
       opacity: 1;
     }
@@ -20,28 +17,23 @@
     }
   }
 
-  .announcement-modal-content :global(img) {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .marquee-container {
+  .announcement-announcements__marquee {
     overflow: hidden;
     white-space: nowrap;
     width: 100%;
   }
 
-  .marquee-content {
+  .announcement-announcements__marquee-content {
     display: inline-block;
     padding-left: 100%;
-    animation: marquee-animation 20s linear infinite;
+    animation: announcement-marquee-animation 20s linear infinite;
   }
 
-  .marquee-content:hover {
+  .announcement-announcements__marquee-content:hover {
     animation-play-state: paused;
   }
 
-  @keyframes marquee-animation {
+  @keyframes announcement-marquee-animation {
     0% {
       transform: translateX(0);
     }
@@ -51,7 +43,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .marquee-content {
+    .announcement-announcements__marquee-content {
       animation: none;
       white-space: normal;
       padding-left: 0;
@@ -60,22 +52,22 @@
 </style>
 
 {#if visibleBanners.length > 0}
-  <div class="announcements-container vstack gap-2">
+  <div class="announcement-announcements announcement-announcements__banners vstack gap-2">
     {#each visibleBanners as banner (banner.id)}
       <div
         id="pano-announcement-{banner.id}"
-        class="announcement-banner alert alert-{(banner.alertStyle || 'INFO').toLowerCase()} overflow-hidden mb-0 {getTextAlignClass(banner.textAlign)}"
+        class="announcement-banner announcement-announcements__alert alert {ALERT_CLASSES[banner.alertStyle || 'INFO']} overflow-hidden mb-0 {getTextAlignClass(banner.textAlign)}"
         class:alert-dismissible={banner.closeable}
         role="alert">
         <div class="announcement-content">
           {#if banner.effectType === 'MARQUEE'}
-            <div class="marquee-container">
-              <div class="marquee-content">
+            <div class="announcement-announcements__marquee">
+              <div class="announcement-announcements__marquee-content">
                 {@html banner.contents[activeContentIndex[banner.id] || 0]}
               </div>
             </div>
           {:else if banner.effectType === 'FLASH'}
-            <div class="flash-container">
+            <div class="announcement-announcements__flash">
               {@html banner.contents[activeContentIndex[banner.id] || 0]}
             </div>
           {:else}
@@ -116,14 +108,14 @@
 
 {#each visibleModals as modal (modal.id)}
   <div
-    class="modal fade"
+    class="announcement-announcements modal fade"
     id="announcementModal-{modal.id}"
     tabindex="-1"
     aria-hidden="true"
     use:setupModal={modal}>
     <div class="modal-dialog {getModalSizeClass(modal.size)} modal-dialog-centered">
       <div class="modal-content overflow-hidden border-0 shadow">
-        <div class="modal-body p-0 position-relative">
+        <div class="announcement-announcements__body modal-body p-0 position-relative">
           <button
             type="button"
             class="btn-close position-absolute top-0 end-0 m-3"
@@ -134,24 +126,24 @@
 
           {#if modal.imageFileName}
             <img
-              src="/api/announcements/image/{modal.imageFileName}"
-              class="img-fluid w-100 object-fit-cover"
+              src="/api/plugins/pano-plugin-announcement/announcements/image/{modal.imageFileName}"
+              class="announcement-announcements__image img-fluid w-100 object-fit-cover"
               style="max-height: 400px;"
               alt={modal.title} />
           {/if}
 
-          <div class="modal-body">
+          <div class="announcement-announcements__body-2 modal-body">
             <h4>{modal.title}</h4>
-            <div class="announcement-modal-content">
+            <div class="announcement-announcements__modal-content">
               {@html modal.contents[0]}
             </div>
           </div>
 
           {#if modal.link}
-            <div class="modal-footer">
+            <div class="announcement-announcements__footer modal-footer">
               <a
                 href={modal.link}
-                class="btn btn-secondary w-100"
+                class="announcement-announcements__action btn btn-secondary w-100"
                 target={modal.external ? '_blank' : null}
                 rel={modal.external ? 'noopener noreferrer' : null}>{$_('buttons.visit')}</a>
             </div>
@@ -167,7 +159,9 @@
 {/each}
 
 <script module>
-  import ApiUtil from '@panomc/sdk/utils/api';
+  // Mounts itself on both hooks; src/main.js only hides the empty home hook.
+  export const view = { hook: ['theme:top', 'page:home:top'], skipLoad: true };
+  import { api } from '@panomc/sdk/plugin-api';
 
   export async function load(event) {
     if (!event) return { announcements: [] };
@@ -175,12 +169,12 @@
     let output = {};
 
     try {
-      const res = await ApiUtil.get({
-        path: '/api/announcements',
+      const res = await api.get({
+        path: '/announcements',
         request: event,
       });
 
-      const anyAnnouncement = res.data.find(
+      const anyAnnouncement = (res.items ?? []).find(
         (announcement) => announcement.type === 'BANNER' && announcement.location === 'HOME',
       );
 
@@ -191,7 +185,7 @@
 
       output = {
         ...output,
-        announcements: res.data || [],
+        announcements: res.items || [],
       };
     } catch (err) {
       console.error('[Announcements] Failed to fetch:', err);
@@ -203,8 +197,24 @@
 </script>
 
 <script>
-  import { _ } from '../main';
+  import { derived } from 'svelte/store';
+  import { _ as i18n } from '@panomc/sdk/utils/language';
   import { page, browser, base } from '@panomc/sdk/svelte';
+
+  // plugin translations: `$_('key')` reads `plugins.pano-plugin-announcement.key`
+  const _ = derived(i18n, ($_fn) => (key, options) => $_fn(`plugins.pano-plugin-announcement.${key}`, options));
+
+  // The alert style names the admin can pick, written as full class names so the build sees them.
+  const ALERT_CLASSES = {
+    PRIMARY: 'alert-primary',
+    SECONDARY: 'alert-secondary',
+    SUCCESS: 'alert-success',
+    DANGER: 'alert-danger',
+    WARNING: 'alert-warning',
+    INFO: 'alert-info',
+    LIGHT: 'alert-light',
+    DARK: 'alert-dark',
+  };
 
   let { announcements = [], hookName } = $props();
 

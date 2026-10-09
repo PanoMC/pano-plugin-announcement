@@ -11,18 +11,28 @@ import com.panomc.plugins.announcement.AnnouncementPlugin
 import com.panomc.plugins.announcement.db.dao.AnnouncementDao
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.validation.ValidationHandler
-import io.vertx.ext.web.validation.builder.Parameters.param
-import io.vertx.ext.web.validation.builder.ValidationHandlerBuilder
+import com.panomc.platform.schema.dsl.Parameters.param
+import com.panomc.platform.schema.dsl.ValidationHandlerBuilder
 import io.vertx.json.schema.SchemaRepository
 import io.vertx.json.schema.common.dsl.Schemas.stringSchema
 import java.io.File
+import com.panomc.platform.schema.EndpointDoc
+import io.vertx.json.schema.common.dsl.Schemas.*
+import com.panomc.platform.error.NotFound
 
 @Endpoint
 class GetAnnouncementImageAPI(
     private val plugin: AnnouncementPlugin,
     private val announcementDao: AnnouncementDao
 ) : Api() {
-    override val paths = listOf(Path("/api/announcements/image/:fileName", RouteType.GET))
+    override val paths = listOf(Path("/announcements/image/:fileName", RouteType.GET))
+
+    override val doc = EndpointDoc(
+        summary = "The image of a visible announcement.",
+        tag = "announcements",
+        binary = true,
+        errors = listOf(NotFound::class)
+    )
 
     private val databaseManager: DatabaseManager by lazy {
         plugin.applicationContext.getBean(DatabaseManager::class.java)

@@ -86,10 +86,9 @@
       </div>
       <div class="card-footer">
         <Pagination
-          page={data.page}
-          totalPage={data.totalPage}
+          {...paginationProps(data.page, data.pageInfo)}
           on:firstPageClick={() => onPageClick(1)}
-          on:lastPageClick={() => onPageClick(data.totalPage)}
+          on:lastPageClick={() => onPageClick(data.pageInfo.totalPages)}
           on:pageLinkClick={(event) => onPageClick(event.detail.page)} />
       </div>
     {/if}
@@ -103,7 +102,9 @@
 </article>
 
 <script context="module">
-  import ApiUtil, {buildQueryParams} from '@panomc/sdk/utils/api';
+  import { buildQueryParams } from '@panomc/sdk/utils/api';
+  import { api } from '@panomc/sdk/plugin-api';
+  import { paginationProps } from './pagination.js';
 
   /**
    * @type {import("@sveltejs/kit").PageLoad}
@@ -135,17 +136,30 @@
       visible,
     });
 
-    const body = await ApiUtil.get({
-      path: `/api/panel/announcements` + queryParams,
+    const body = await api.panel.get({
+      path: `/announcements` + queryParams,
       request: event,
     });
 
     if (body.error) {
-      return { data: { announcements: [], announcementCount: 0, totalPage: 1, page: 1 } };
+      return {
+        data: {
+          announcements: [],
+          announcementCount: 0,
+          pageInfo: { number: 1, size: 10, totalItems: 0, totalPages: 1 },
+          page: 1,
+        },
+      };
     }
 
-    body.page = parseInt(page);
-    return { data: body };
+    return {
+      data: {
+        announcements: body.items,
+        announcementCount: body.page.totalItems,
+        pageInfo: body.page,
+        page: parseInt(page),
+      },
+    };
   }
 </script>
 
