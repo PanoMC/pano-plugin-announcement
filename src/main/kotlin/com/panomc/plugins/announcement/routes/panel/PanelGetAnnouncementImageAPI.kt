@@ -7,7 +7,7 @@ import com.panomc.platform.model.PanelApi
 import com.panomc.platform.model.Path
 import com.panomc.platform.model.Result
 import com.panomc.platform.model.RouteType
-import com.panomc.platform.util.MimeTypeUtil
+import com.panomc.plugins.announcement.util.AnnouncementImageFiles
 import com.panomc.plugins.announcement.AnnouncementPlugin
 import com.panomc.plugins.announcement.db.dao.AnnouncementDao
 import com.panomc.plugins.announcement.permission.ManageAnnouncementsPermission
@@ -74,10 +74,8 @@ class PanelGetAnnouncementImageAPI(
         }
 
         val etag = "\"${announcement.imageFileName}\""
-        val mimeType = MimeTypeUtil.getMimeTypeFromFileName(file.absolutePath)
-
         val response = context.response()
-        response.putHeader("Content-Type", mimeType)
+        AnnouncementImageFiles.putHeaders(response, file)
         response.putHeader("ETag", etag)
         response.putHeader("Cache-Control", "public, max-age=$CACHE_TTL_SECONDS, immutable")
 

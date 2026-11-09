@@ -108,6 +108,9 @@ class PanelUpdateAnnouncementAPI(
         var imageFileName: String? = existingAnnouncement?.imageFileName
         val removeImage = data.getBoolean("removeImage") ?: false
 
+        // Store the new image before the old one goes, so a failing upload keeps the old image
+        val newImageFileName = fileUpload?.let { saveUploadedFile(it) }
+
         if (removeImage || fileUpload != null) {
             existingAnnouncement?.imageFileName?.let { oldPath ->
                 deleteFile(oldPath)
@@ -115,8 +118,8 @@ class PanelUpdateAnnouncementAPI(
             imageFileName = null
         }
 
-        if (fileUpload != null) {
-            imageFileName = saveUploadedFile(fileUpload)
+        if (newImageFileName != null) {
+            imageFileName = newImageFileName
         }
 
         val announcement = Announcement(
@@ -209,30 +212,16 @@ class PanelUpdateAnnouncementAPI(
                 throw BadRequest()
             }
 
-            if (fileUpload != null) {
-                if (fileUpload.size() > 2 * 1024 * 1024) {
-                    throw BadRequest()
-                }
+        }
 
-                val allowedTypes = listOf("image/webp", "image/jpeg", "image/png", "image/gif")
-                if (!allowedTypes.contains(fileUpload.contentType())) {
-                    throw BadRequest()
-                }
-            }
+        // Every announcement type: only a real image is accepted
+        if (fileUpload != null) {
+            AnnouncementImageFiles.check(fileUpload)
         }
     }
 
-    private fun saveUploadedFile(fileUpload: io.vertx.ext.web.FileUpload): String {
-        val extension = fileUpload.fileName().split(".").last()
-        val fileName = "${System.currentTimeMillis()}-${fileUpload.uploadedFileName().split(File.separator).last()}.$extension"
-        val destFile = File(plugin.uploadsDir, fileName)
-
-        File(fileUpload.uploadedFileName()).copyTo(destFile, true)
-
-        ImageUtil.generateThumbnail(destFile, File(plugin.uploadsDir, "thumbnails"))
-
-        return fileName
-    }
+    private fun saveUploadedFile(fileUpload: io.vertx.ext.web.FileUpload): String =
+        AnnouncementImageFiles.store(fileUpload, plugin.uploadsDir)
 
     private fun deleteFile(fileName: String) {
         val file = File(plugin.uploadsDir, fileName)
