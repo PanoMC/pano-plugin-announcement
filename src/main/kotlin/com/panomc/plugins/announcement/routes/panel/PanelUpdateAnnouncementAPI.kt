@@ -4,6 +4,7 @@ import com.panomc.platform.annotation.Endpoint
 import com.panomc.platform.auth.AuthProvider
 import com.panomc.platform.db.DatabaseManager
 import com.panomc.platform.error.BadRequest
+import com.panomc.platform.error.NotFound
 import com.panomc.platform.model.*
 import com.panomc.plugins.announcement.AnnouncementPlugin
 import com.panomc.plugins.announcement.db.dao.AnnouncementDao
@@ -103,7 +104,7 @@ class PanelUpdateAnnouncementAPI(
         validateForm(title, contents, type, fileUpload, false, displayFrequency, size)
 
         val sqlClient = databaseManager.getSqlClient()
-        val existingAnnouncement = announcementDao.getById(id, sqlClient)
+        val existingAnnouncement = announcementDao.getById(id, sqlClient) ?: throw NotFound()
 
         var imageFileName: String? = existingAnnouncement?.imageFileName
         val removeImage = data.getBoolean("removeImage") ?: false

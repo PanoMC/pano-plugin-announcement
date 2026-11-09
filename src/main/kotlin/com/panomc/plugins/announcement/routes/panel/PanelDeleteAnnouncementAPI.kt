@@ -1,6 +1,7 @@
 package com.panomc.plugins.announcement.routes.panel
 
 import com.panomc.platform.annotation.Endpoint
+import com.panomc.platform.error.NotFound
 import com.panomc.platform.auth.AuthProvider
 import com.panomc.platform.db.DatabaseManager
 import com.panomc.platform.model.*
@@ -42,7 +43,7 @@ class PanelDeleteAnnouncementAPI(
         val id = parameters.pathParameter("id").long
 
         val sqlClient = databaseManager.getSqlClient()
-        val announcement = announcementDao.getById(id, sqlClient)
+        val announcement = announcementDao.getById(id, sqlClient) ?: throw NotFound()
 
         if (announcement?.imageFileName != null) {
             deleteFile(announcement.imageFileName)
