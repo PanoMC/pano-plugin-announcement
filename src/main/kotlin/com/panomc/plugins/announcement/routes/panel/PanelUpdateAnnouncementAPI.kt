@@ -96,7 +96,9 @@ class PanelUpdateAnnouncementAPI(
         val status = data.getBoolean("status")
         val type = AnnouncementType.valueOf(data.getString("type"))
         val contentsJson = data.getString("contents")
-        val contents = JsonArray(contentsJson).map { it.toString() }
+        // Admins may save any HTML; other announcement editors get it cleaned of scripts
+        val contents = SafeHtml.forCaller(JsonArray(contentsJson).map { it.toString() }, authProvider, context)
+        val customCss = SafeHtml.checkedCss(data.getString("customCss"))
 
         val displayFrequency = data.getString("displayFrequency")?.let { AnnouncementDisplayFrequency.valueOf(it) }
         val size = data.getInteger("size")
@@ -132,7 +134,7 @@ class PanelUpdateAnnouncementAPI(
             effectType = data.getString("effectType")?.let { AnnouncementEffectType.valueOf(it) },
             until = data.getLong("until"),
             contents = contents,
-            customCss = data.getString("customCss") ?: "",
+            customCss = customCss,
             size = size,
             displayFrequency = displayFrequency,
             imageFileName = imageFileName,
@@ -159,7 +161,7 @@ class PanelUpdateAnnouncementAPI(
             if (existingAnnouncement.effectType != (data.getString("effectType")?.let { AnnouncementEffectType.valueOf(it) })) changes.put("effectType", data.getString("effectType"))
             if (existingAnnouncement.until != data.getLong("until")) changes.put("until", data.getLong("until"))
             if (existingAnnouncement.contents != contents) changes.put("contents", JsonArray(contents))
-            if (existingAnnouncement.customCss != (data.getString("customCss") ?: "")) changes.put("customCss", data.getString("customCss") ?: "")
+            if (existingAnnouncement.customCss != customCss) changes.put("customCss", customCss)
             if (existingAnnouncement.size != size) changes.put("size", size)
             if (existingAnnouncement.displayFrequency != displayFrequency) changes.put("displayFrequency", displayFrequency?.name)
             if (existingAnnouncement.closeable != (data.getBoolean("closeable") ?: true)) changes.put("closeable", data.getBoolean("closeable") ?: true)

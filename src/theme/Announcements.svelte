@@ -99,7 +99,7 @@
         {/if}
 
         {#if banner.customCss}
-          {@html `<style>${banner.customCss.replace(/\{selector\}/g, `#pano-announcement-${banner.id}`)}</style>`}
+          {@html `<style>${banner.customCss.replaceAll('<', '').replace(/\{selector\}/g, `#pano-announcement-${banner.id}`)}</style>`}
         {/if}
       </div>
     {/each}
@@ -150,7 +150,7 @@
           {/if}
 
           {#if modal.customCss}
-            {@html `<style>${modal.customCss.replace(/\{selector\}/g, `#announcementModal-${modal.id}`)}</style>`}
+            {@html `<style>${modal.customCss.replaceAll('<', '').replace(/\{selector\}/g, `#announcementModal-${modal.id}`)}</style>`}
           {/if}
         </div>
       </div>

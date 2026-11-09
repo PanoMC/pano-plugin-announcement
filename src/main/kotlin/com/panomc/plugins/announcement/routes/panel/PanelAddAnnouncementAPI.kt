@@ -94,7 +94,9 @@ class PanelAddAnnouncementAPI(
         val status = data.getBoolean("status")
         val type = AnnouncementType.valueOf(data.getString("type"))
         val contentsJson = data.getString("contents")
-        val contents = JsonArray(contentsJson).map { it.toString() }
+        // Admins may save any HTML; other announcement editors get it cleaned of scripts
+        val contents = SafeHtml.forCaller(JsonArray(contentsJson).map { it.toString() }, authProvider, context)
+        val customCss = SafeHtml.checkedCss(data.getString("customCss"))
 
         val displayFrequency = data.getString("displayFrequency")?.let { AnnouncementDisplayFrequency.valueOf(it) }
         val size = data.getInteger("size")
@@ -114,7 +116,7 @@ class PanelAddAnnouncementAPI(
             effectType = data.getString("effectType")?.let { AnnouncementEffectType.valueOf(it) },
             until = data.getLong("until"),
             contents = contents,
-            customCss = data.getString("customCss") ?: "",
+            customCss = customCss,
             size = size,
             displayFrequency = displayFrequency,
             imageFileName = imageFileName,
