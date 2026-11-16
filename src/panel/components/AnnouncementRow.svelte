@@ -17,7 +17,7 @@
         aria-label={$_('pages.announcements.actions.label')}>
         <span class="fas fa-ellipsis-v"></span>
       </button>
-      <div class="dropdown-menu dropdown-menu-start animate__animated animate__fadeIn">
+      <div class="dropdown-menu dropdown-menu-start">
         <button
           type="button"
           class="dropdown-item"
@@ -30,7 +30,7 @@
         </button>
         <button
           type="button"
-          class="dropdown-item"
+          class="dropdown-item link-danger"
           on:click={() => onDeleteClick(announcement.id)}
           class:disabled={buttonsLoading}>
           <i class="fas fa-trash me-2"></i>
@@ -42,41 +42,39 @@
   <td class="align-middle">
     <code>{announcement.id}</code>
   </td>
-  <td class="align-middle" style="width: 60px;">
-    {#if imageUrl}
-      <button
-        type="button"
-        class="thumbnail-wrapper border rounded overflow-hidden flex-shrink-0 p-0"
-        style="width: 48px; height: 48px;"
-        on:click={() => onEditClick(announcement.id)}>
-        <img
-          src={imageUrl}
-          alt={announcement.title}
-          class="w-100 h-100 object-fit-cover"
-          loading="lazy" />
-      </button>
-    {/if}
-  </td>
   <td class="align-middle" style="max-width: 250px;">
-    <div class="text-truncate">
+    <div class="d-flex align-items-center gap-2">
+      {#if imageUrl}
+        <button
+          type="button"
+          class="thumbnail-wrapper border rounded overflow-hidden flex-shrink-0 p-0"
+          style="width: 48px; height: 48px;"
+          on:click={() => onEditClick(announcement.id)}>
+          <img
+            src={imageUrl}
+            alt={announcement.title}
+            class="w-100 h-100 object-fit-cover"
+            loading="lazy" />
+        </button>
+      {/if}
       <button
         type="button"
         title={$_('buttons.edit')}
         aria-label={$_('buttons.edit')}
         on:click={() => onEditClick(announcement.id)}
-        class="btn btn-link p-0 text-start text-decoration-none w-100 text-truncate">
+        class="btn btn-link p-0 text-start rounded focus-ring text-decoration-none d-block text-truncate">
         {announcement.title}
       </button>
     </div>
   </td>
-  <td class="align-middle text-nowrap" class:table-active={currentStatus}>
+  <td class="align-middle text-nowrap">
     {#if announcement.status}
       <span class="badge text-bg-success"> {$_('pages.announcements.filters.active')} </span>
     {:else}
       <span class="badge text-bg-secondary"> {$_('pages.announcements.filters.inactive')} </span>
     {/if}
   </td>
-  <td class="align-middle text-nowrap" class:table-active={currentVisibility !== null}>
+  <td class="align-middle text-nowrap">
     {#if isShowing}
       <span class="badge text-bg-success"> {$_('pages.announcements.table.live')} </span>
     {:else}
@@ -106,8 +104,6 @@
   import { onMount } from 'svelte';
 
   export let announcement;
-  export let currentStatus;
-  export let currentVisibility;
   export let buttonsLoading = false;
   export let onEditClick;
   export let onDeleteClick;

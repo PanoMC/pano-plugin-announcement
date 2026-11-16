@@ -119,7 +119,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
             .coAwait()
     }
 
-    override suspend fun getAllByStatus(page: PageRequest, status: Boolean?, visible: Boolean?, sqlClient: SqlClient): List<Announcement> {
+    override suspend fun getAllByStatus(page: PageRequest, status: Boolean?, visible: Boolean?, search: String?, sqlClient: SqlClient): List<Announcement> {
         val now = System.currentTimeMillis()
         val query = StringBuilder("SELECT ${fields.toTableQuery()} FROM `${getTablePrefix() + tableName}` WHERE 1=1")
         val params = Tuple.tuple()
@@ -127,6 +127,11 @@ class AnnouncementDaoImpl : AnnouncementDao() {
         if (status != null) {
             query.append(" AND `status` = ?")
             params.addBoolean(status)
+        }
+
+        if (search != null) {
+            query.append(" AND LOCATE(?, `title`) > 0")
+            params.addString(search)
         }
 
         if (visible != null) {
@@ -155,7 +160,7 @@ class AnnouncementDaoImpl : AnnouncementDao() {
         return rows.toEntities()
     }
 
-    override suspend fun count(status: Boolean?, visible: Boolean?, sqlClient: SqlClient): Long {
+    override suspend fun count(status: Boolean?, visible: Boolean?, search: String?, sqlClient: SqlClient): Long {
         val now = System.currentTimeMillis()
         val query = StringBuilder("SELECT COUNT(`id`) FROM `${getTablePrefix() + tableName}` WHERE 1=1")
         val params = Tuple.tuple()
@@ -163,6 +168,11 @@ class AnnouncementDaoImpl : AnnouncementDao() {
         if (status != null) {
             query.append(" AND `status` = ?")
             params.addBoolean(status)
+        }
+
+        if (search != null) {
+            query.append(" AND LOCATE(?, `title`) > 0")
+            params.addString(search)
         }
 
         if (visible != null) {

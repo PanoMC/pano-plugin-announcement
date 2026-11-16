@@ -114,16 +114,18 @@
     aria-hidden="true"
     use:setupModal={modal}>
     <div class="modal-dialog {getModalSizeClass(modal.size)} modal-dialog-centered">
-      <div class="modal-content overflow-hidden border-0 shadow">
-        <div class="announcement-announcements__body modal-body p-0 position-relative">
+      <div class="modal-content overflow-hidden">
+        <div class="announcement-announcements__header modal-header">
+          <h5 class="modal-title">{modal.title}</h5>
           <button
             type="button"
-            class="btn-close position-absolute top-0 end-0 m-3"
-            style="z-index: 1050; filter: drop-shadow(0px 0px 2px rgba(255,255,255,0.8));"
+            class="btn-close"
             data-bs-dismiss="modal"
             title={$_('buttons.close')}
             aria-label={$_('buttons.close')}></button>
+        </div>
 
+        <div class="announcement-announcements__body modal-body p-0 position-relative">
           {#if modal.imageFileName}
             <img
               src="/api/plugins/pano-plugin-announcement/announcements/image/{modal.imageFileName}"
@@ -133,7 +135,6 @@
           {/if}
 
           <div class="announcement-announcements__body-2 modal-body">
-            <h4>{modal.title}</h4>
             <div class="announcement-announcements__modal-content">
               {@html modal.contents[0]}
             </div>

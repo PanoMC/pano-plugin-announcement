@@ -95,6 +95,7 @@
       "custom-css-placeholder": "Özel CSS kodlarınızı buraya yazın",
       "custom-css-info": "Duyuruya özel stil vermek için {selector} seçicisini kullanabilirsiniz.",
       "btn-create": "Oluştur",
+      "btn-apply": "Uygula",
       "btn-save": "Kaydet",
       "closeable": "Kapatılabilir",
       "error-save": "Kaydedilemedi: {error}",

@@ -3,8 +3,7 @@
 export default {
   viewDirs: ['src/theme'],
   styles: {
-    // The inline styles of Announcements.svelte (close button z-index and filter, modal image height) stay as written: an
-    // inline style keeps winning over Bootstrap's dark palette rule for .btn-close, which a layered class could not do.
+    // The banner close button and modal image use inline styles.
     styleAttrAllow: ['Announcements'],
   },
 };

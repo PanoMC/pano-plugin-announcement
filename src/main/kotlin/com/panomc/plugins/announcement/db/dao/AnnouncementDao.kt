@@ -10,9 +10,9 @@ abstract class AnnouncementDao : Dao<Announcement>(Announcement::class.java) {
 
     abstract suspend fun update(announcement: Announcement, sqlClient: SqlClient)
 
-    abstract suspend fun getAllByStatus(page: PageRequest, status: Boolean?, visible: Boolean?, sqlClient: SqlClient): List<Announcement>
+    abstract suspend fun getAllByStatus(page: PageRequest, status: Boolean?, visible: Boolean?, search: String?, sqlClient: SqlClient): List<Announcement>
 
-    abstract suspend fun count(status: Boolean?, visible: Boolean?, sqlClient: SqlClient): Long
+    abstract suspend fun count(status: Boolean?, visible: Boolean?, search: String?, sqlClient: SqlClient): Long
 
     abstract suspend fun deleteById(id: Long, sqlClient: SqlClient)
 

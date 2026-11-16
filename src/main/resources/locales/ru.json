@@ -95,6 +95,7 @@
             "custom-css-placeholder": "Напишите ваши CSS стили здесь",
             "custom-css-info": "Вы можете использовать селектор {selector} для стилизации объявления.",
             "btn-create": "Создать",
+            "btn-apply": "Применить",
             "btn-save": "Сохранить",
             "closeable": "Закрываемый",
             "error-save": "Не удалось сохранить: {error}",

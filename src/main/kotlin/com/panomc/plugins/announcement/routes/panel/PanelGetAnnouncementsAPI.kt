@@ -13,6 +13,7 @@ import com.panomc.platform.schema.dsl.Parameters.optionalParam
 import com.panomc.platform.schema.dsl.ValidationHandlerBuilder
 import io.vertx.json.schema.SchemaRepository
 import io.vertx.json.schema.common.dsl.Schemas.booleanSchema
+import io.vertx.json.schema.common.dsl.Schemas.stringSchema
 
 @Endpoint
 class PanelGetAnnouncementsAPI(
@@ -34,6 +35,7 @@ class PanelGetAnnouncementsAPI(
             ValidationHandlerBuilder.create(schemaRepository)
                 .queryParameter(optionalParam("status", booleanSchema()))
                 .queryParameter(optionalParam("visible", booleanSchema()))
+                .queryParameter(optionalParam("search", stringSchema()))
         ).build()
 
     override suspend fun handle(context: RoutingContext): Result {
@@ -42,14 +44,15 @@ class PanelGetAnnouncementsAPI(
         val parameters = getParameters(context)
         val status = parameters.queryParameter("status")?.boolean
         val visible = parameters.queryParameter("visible")?.boolean
+        val search = parameters.queryParameter("search")?.string?.trim()?.takeIf { it.isNotEmpty() }
         val page = Paging.request(context)
 
         val sqlClient = databaseManager.getSqlClient()
-        val count = announcementDao.count(status, visible, sqlClient)
+        val count = announcementDao.count(status, visible, search, sqlClient)
 
         Paging.requireInRange(page, count)
 
-        val announcements = announcementDao.getAllByStatus(page, status, visible, sqlClient)
+        val announcements = announcementDao.getAllByStatus(page, status, visible, search, sqlClient)
 
         return Successful(Paging.response(announcements, count, page))
     }

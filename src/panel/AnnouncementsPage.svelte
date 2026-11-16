@@ -4,7 +4,7 @@
     <div slot="right">
       <button type="button" class="btn btn-secondary" on:click={onCreateClick}>
         <i class="fas fa-plus"></i>
-        <span class="d-lg-inline d-none ms-2"> {$_('pages.announcements.new-announcement')}</span>
+        <span class="ms-2">{$_('pages.announcements.new-announcement')}</span>
       </button>
     </div>
   </PageActions>
@@ -15,22 +15,30 @@
       <div slot="left">
         {$_('pages.announcements.count', { values: { count: data.announcementCount || 0 } })}
       </div>
+      <div slot="middle" style="width: 250px;">
+        <SearchInput
+          autofocus
+          initialValue={search}
+          searching={isSearching}
+          debounceMs={500}
+          on:change={onSearchInput} />
+      </div>
       <CardFilters slot="right">
-        <CardFiltersItem href="/announcements" active={!filterActive}>
+        <CardFiltersItem href={filterHref(search)} active={!filterActive}>
           {$_('pages.announcements.filters.all')}
         </CardFiltersItem>
-        <CardFiltersItem href="/announcements?status=ACTIVE" active={currentStatus === 'ACTIVE'}>
+        <CardFiltersItem href={filterHref(search, 'ACTIVE')} active={currentStatus === 'ACTIVE'}>
           {$_('pages.announcements.filters.active')}
         </CardFiltersItem>
         <CardFiltersItem
-          href="/announcements?status=INACTIVE"
+          href={filterHref(search, 'INACTIVE')}
           active={currentStatus === 'INACTIVE'}>
           {$_('pages.announcements.filters.inactive')}
         </CardFiltersItem>
-        <CardFiltersItem href="/announcements?visible=true" active={currentVisibility === 'true'}>
+        <CardFiltersItem href={filterHref(search, null, 'true')} active={currentVisibility === 'true'}>
           {$_('pages.announcements.filters.live')}
         </CardFiltersItem>
-        <CardFiltersItem href="/announcements?visible=false" active={currentVisibility === 'false'}>
+        <CardFiltersItem href={filterHref(search, null, 'false')} active={currentVisibility === 'false'}>
           {$_('pages.announcements.filters.hidden')}
         </CardFiltersItem>
       </CardFilters>
@@ -38,7 +46,7 @@
 
     <!-- No Announcements -->
     {#if !data.announcements || data.announcements.length === 0}
-      <NoContent />
+      <NoContent icon="" />
     {:else}
       <!-- Announcements Table -->
       <div class="table-responsive">
@@ -48,20 +56,17 @@
               <th scope="col" class="align-middle text-nowrap" style="width: 40px;"></th>
               <th scope="col" class="align-middle text-nowrap" style="width: 60px;">
                 {$_('pages.announcements.table.id')}</th>
-              <th scope="col" class="align-middle text-nowrap" style="width: 60px;"></th>
               <th scope="col" class="align-middle text-nowrap">
                 {$_('pages.announcements.table.title')}</th>
               <th
                 scope="col"
                 class="align-middle text-nowrap"
-                style="width: 100px;"
-                class:table-active={currentStatus}>
+                style="width: 100px;">
                 {$_('pages.announcements.table.status')}</th>
               <th
                 scope="col"
                 class="align-middle text-nowrap"
-                style="width: 100px;"
-                class:table-active={currentVisibility}>
+                style="width: 100px;">
                 {$_('pages.announcements.table.showing')}</th>
               <th scope="col" class="align-middle text-nowrap">
                 {$_('pages.announcements.table.type')}</th>
@@ -75,8 +80,6 @@
             {#each data.announcements as announcement (announcement.id)}
               <AnnouncementRow
                 {announcement}
-                {currentStatus}
-                {currentVisibility}
                 {buttonsLoading}
                 {onEditClick}
                 {onDeleteClick} />
@@ -129,11 +132,13 @@
     let visible = null;
     if (visibleParam === 'true') visible = true;
     else if (visibleParam === 'false') visible = 'false';
+    const search = searchParams.get('search')?.trim() || null;
 
     const queryParams = buildQueryParams({
       page,
       status,
       visible,
+      search,
     });
 
     const body = await api.panel.get({
@@ -142,14 +147,7 @@
     });
 
     if (body.error) {
-      return {
-        data: {
-          announcements: [],
-          announcementCount: 0,
-          pageInfo: { number: 1, size: 10, totalItems: 0, totalPages: 1 },
-          page: 1,
-        },
-      };
+      throw new Error(body.error.message || body.error.code);
     }
 
     return {
@@ -173,7 +171,7 @@
     CardFiltersItem,
     NoContent,
     Pagination,
-    Date,
+    SearchInput,
   } from '@panomc/sdk/components/panel';
 
   import { _ } from '../main';
@@ -194,26 +192,40 @@
   $: currentStatus = $page.url.searchParams.get('status');
   $: currentVisibility = $page.url.searchParams.get('visible');
   $: filterActive = currentStatus || currentVisibility;
+  $: search = $page.url.searchParams.get('search') || '';
 
   let buttonsLoading = false;
+  let isSearching = false;
 
-  async function refreshData() {
-    const pageNum = data.page === 1 ? null : data.page;
+  function filterHref(searchValue, status = null, visible = null) {
+    return '/announcements' + buildQueryParams({ status, visible, search: searchValue || null });
+  }
+
+  async function refreshData(pageNum = data.page, searchValue = search) {
     const statusVal = $page.url.searchParams.get('status');
     const visibleVal = $page.url.searchParams.get('visible');
 
     const queryParams = buildQueryParams({
-      page: pageNum,
+      page: pageNum === 1 ? null : pageNum,
       status: statusVal,
       visible: visibleVal,
+      search: searchValue.trim() || null,
     });
 
-    await goto(`${base}/announcements${queryParams}`, { invalidateAll: true });
+    isSearching = true;
+    try {
+      await goto(`${base}/announcements${queryParams}`, { invalidateAll: true });
+    } finally {
+      isSearching = false;
+    }
+  }
+
+  function onSearchInput(event) {
+    refreshData(1, event.detail.value);
   }
 
   async function onPageClick(pageNum) {
-    data.page = pageNum;
-    await refreshData();
+    await refreshData(pageNum);
   }
 
   function onCreateClick() {

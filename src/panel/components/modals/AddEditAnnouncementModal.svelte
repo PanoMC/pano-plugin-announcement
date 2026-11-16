@@ -1,20 +1,39 @@
 <!-- Add / Edit Announcement Modal -->
-<div class="modal fade" bind:this={$modalElement} tabindex="-1" role="dialog" aria-hidden="true">
+<div
+  class="modal fade"
+  bind:this={$modalElement}
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+  on:shown.bs.modal={() => (announcementModalShown = true)}
+  on:hide.bs.modal={() => (announcementModalShown = false)}>
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
           {$mode === 'edit' ? $_('modals.add-edit.edit-title') : $_('modals.add-edit.new-title')}
         </h5>
+        <div class="ms-auto me-1 d-flex align-items-center gap-1">
+          <button
+            type="button"
+            class="btn btn-link"
+            title={$_('modals.add-edit.custom-css')}
+            aria-label={$_('modals.add-edit.custom-css')}
+            disabled={!announcementModalShown}
+            on:click={openCustomCss}>
+            <i class="fas fa-code"></i>
+          </button>
+        </div>
         <button
           type="button"
-          class="btn-close"
+          class="btn-close ms-0"
           aria-label={$_('modals.add-edit.close')}
           on:click={hide}></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-xl-5 border-end">
+            <p class="form-label">{$_('modals.add-edit.status')}</p>
             <div class="form-check form-switch mb-3">
               <input
                 class="form-check-input"
@@ -441,7 +460,8 @@
                 {/key}
               {:else if $announcement.displayType === 'MODAL'}
                 <div class="vstack gap-2">
-                  <div class="position-relative w-100">
+                  <p class="form-label mb-0" id="modalImageLabel">{$_('modals.add-edit.image')}</p>
+                  <div class="position-relative w-100" role="group" aria-labelledby="modalImageLabel">
                     {#key displayImage}
                       {#if displayImage}
                         <div class="ratio ratio-16x9 border rounded">
@@ -487,32 +507,20 @@
                       {/if}
                     {/key}
                   </div>
-                  <Editor
-                    bind:content={$announcement.modalContent}
-                    bind:isEmpty={isEditorEmpty}
-                    showHtml={true}
-                    contentStyles={'min-height: 300px;'} />
+                  <div role="group" aria-labelledby="modalContentLabel">
+                    <p class="form-label" id="modalContentLabel">
+                      {$_('modals.add-edit.content-label')}
+                    </p>
+                    <Editor
+                      bind:content={$announcement.modalContent}
+                      bind:isEmpty={isEditorEmpty}
+                      showHtml={true}
+                      contentStyles={'min-height: 300px;'} />
+                  </div>
                 </div>
               {/if}
             </div>
 
-            <!-- Custom CSS -->
-            <div class="form-floating flex-grow-1">
-              <textarea
-                class="form-control font-monospace"
-                id="customCss"
-                bind:value={$announcement.customCss}
-                placeholder={$_('modals.add-edit.custom-css-placeholder')}
-                style="height: 100%; min-height: 120px;"></textarea>
-              <label for="customCss">{$_('modals.add-edit.custom-css')}</label>
-            </div>
-            <small class="d-block mt-2">
-              {@html $_('modals.add-edit.custom-css-info', {
-                values: {
-                  selector: `<code>#pano-announcement-${$announcement.id || 'ID'}</code>`,
-                },
-              })}
-            </small>
           </div>
         </div>
       </div>
@@ -528,6 +536,48 @@
           {$mode === 'create' ? $_('modals.add-edit.btn-create') : $_('modals.add-edit.btn-save')}
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  bind:this={customCssModalElement}
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+  on:hidden.bs.modal={returnToAnnouncement}>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{$_('modals.add-edit.custom-css')}</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label={$_('modals.add-edit.close')}></button>
+      </div>
+      <form on:submit|preventDefault={applyCustomCss}>
+        <div class="modal-body">
+          <textarea
+            class="form-control font-monospace"
+            bind:value={customCssDraft}
+            aria-label={$_('modals.add-edit.custom-css')}
+            rows="8"></textarea>
+          <small class="d-block mt-2 text-body-secondary">
+            {@html $_('modals.add-edit.custom-css-info', {
+              values: {
+                selector: `<code>#${$announcement.displayType === 'MODAL' ? 'announcementModal' : 'pano-announcement'}-${$announcement.id || 'ID'}</code>`,
+              },
+            })}
+          </small>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary w-100">
+            {$_('modals.add-edit.btn-apply')}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -635,8 +685,36 @@
   let isEditorEmpty = true;
   let activeContentIndex = 0;
   let loading = false;
+  let customCssModalElement;
+  let customCssDraft = '';
+  let announcementModalShown = false;
+  let openingCustomCss = false;
 
   let dropZoneActive = false;
+
+  function openCustomCss() {
+    if (openingCustomCss) return;
+    openingCustomCss = true;
+    customCssDraft = $announcement.customCss || '';
+    get(modalElement).addEventListener(
+      'hidden.bs.modal',
+      () => {
+        openingCustomCss = false;
+        window.bootstrap.Modal.getOrCreateInstance(customCssModalElement).show();
+      },
+      { once: true },
+    );
+    modal.hide();
+  }
+
+  function applyCustomCss() {
+    $announcement.customCss = customCssDraft;
+    window.bootstrap.Modal.getInstance(customCssModalElement).hide();
+  }
+
+  function returnToAnnouncement() {
+    modal.show();
+  }
 
   $: displayImage =
     $modalImage ||

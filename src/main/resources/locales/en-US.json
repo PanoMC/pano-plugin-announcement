@@ -95,6 +95,7 @@
       "custom-css-placeholder": "Write your custom CSS codes here",
       "custom-css-info": "You can use the {selector} selector to style the announcement.",
       "btn-create": "Create",
+      "btn-apply": "Apply",
       "btn-save": "Save",
       "closeable": "Closeable",
       "error-save": "Could not be saved: {error}",
