@@ -38,4 +38,4 @@ Announcements lets you share news with everyone who visits your Pano website. Pu
 Questions or ideas? Join our [Discord](https://panomc.com/discord) or visit [panomc.com](https://panomc.com).
 
 ## 📄 License
-Released under the GPL-3.0 License.
+Released under the MIT License.
