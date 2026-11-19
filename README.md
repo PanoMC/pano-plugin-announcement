@@ -13,7 +13,8 @@
 
 Announcements lets you share news with everyone who visits your Pano website. Put a banner at the top of every page for an event or a sale, or show a pop-up with an image for something big, like a new season.
 
-## ✨ Features
+<h3 align="center">Features</h3>
+
 - 📢 **Banners and pop-ups**: Use a slim banner at the top or a pop-up window with an image.
 - 🎨 **Colors and effects**: Pick a color, the text alignment and an optional scrolling or flashing effect.
 - ⏰ **Scheduling**: Start an announcement at a set time and let it end on its own.
@@ -22,20 +23,24 @@ Announcements lets you share news with everyone who visits your Pano website. Pu
 - ❌ **Closable**: Let players close a banner, and show a pop-up only once if you like.
 - 🧩 **Several messages**: Add more than one message to a single banner.
 
-## 📸 Screenshots
+<h3 align="center">Screenshots</h3>
+
 <p align="center"><img src=".github/assets/modal.png" alt="A pop-up announcement with an image for a big event" width="900" /></p>
 <p align="center"><i>A pop-up announcement with an image for a big event.</i></p>
 
 <p align="center"><img src=".github/assets/panel.png" alt="See which announcements are live, hidden or inactive" width="900" /></p>
 <p align="center"><i>See which announcements are live, hidden or inactive.</i></p>
 
-## 🚀 Get started
+<h3 align="center">Get started</h3>
+
 1. Open your Pano panel and go to **Addons**.
 2. Find **Announcements** and click **Install**.
 3. Open **Announcements** in the panel and click **Add Announcement**.
 
-## 💬 Support
+<h3 align="center">Support</h3>
+
 Questions or ideas? Join our [Discord](https://panomc.com/discord) or visit [panomc.com](https://panomc.com).
 
-## 📄 License
+<h3 align="center">License</h3>
+
 Released under the MIT License.
