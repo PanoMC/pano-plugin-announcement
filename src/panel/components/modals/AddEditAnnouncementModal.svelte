@@ -682,6 +682,13 @@
   import { Editor, DragAndDropZone } from '@panomc/sdk/components/panel';
   import { _, showSuccessToast, showErrorToast } from '../../../main';
 
+  function errorText(error) {
+    const code = typeof error === 'string' ? error : error?.code;
+    if (code === 'NOT_FOUND') return $_('modals.add-edit.error-not-found');
+    if (code === 'BAD_REQUEST') return $_('modals.add-edit.error-invalid');
+    return $_('modals.add-edit.error-general');
+  }
+
   let isEditorEmpty = true;
   let activeContentIndex = 0;
   let loading = false;
@@ -881,9 +888,7 @@
       if (result.error) {
         console.error('Save failed:', result.error);
         showErrorToast('plugins.pano-plugin-announcement.toasts.error-saving', {
-          values: {
-            error: result.error.message || result.error.code || $_('modals.add-edit.error-unknown'),
-          },
+          error: errorText(result.error),
         });
       } else {
         showSuccessToast(
@@ -897,7 +902,7 @@
     } catch (e) {
       console.error(e);
       showErrorToast('plugins.pano-plugin-announcement.toasts.error-saving', {
-        values: { error: $_('modals.add-edit.error-general') },
+        error: $_('modals.add-edit.error-general'),
       });
     } finally {
       loading = false;

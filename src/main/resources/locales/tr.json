@@ -8,11 +8,11 @@
     "announcements": {
       "title": "Duyurular",
       "new-announcement": "Duyuru Ekle",
-      "count": "{count} Duyuru",
+      "count": "{count} duyuru",
       "filters": {
         "all": "Tümü",
-        "active": "Aktif",
-        "inactive": "Pasif",
+        "active": "Etkin",
+        "inactive": "Devre Dışı",
         "live": "Yayında",
         "hidden": "Gizli"
       },
@@ -46,8 +46,8 @@
       "title-label": "Başlık",
       "title-placeholder": "Duyuru başlığını girin",
       "status": "Durum",
-      "status-active": "Aktif",
-      "status-inactive": "Pasif",
+      "status-active": "Etkin",
+      "status-inactive": "Devre Dışı",
       "location": "Konum",
       "location-global": "Global (Tüm sayfaların üstü)",
       "location-home": "Anasayfa (Anasayfanın üstü)",
@@ -55,11 +55,11 @@
       "time-permanent": "Kalıcı",
       "time-timed": "Zamanlı",
       "time-select": "Bitiş Zamanı",
-      "show-from": "Başlangıç Zamanı",
+      "show-from": "Gösterim Başlangıcı",
       "show-from-now": "Hemen",
-      "show-from-custom": "Zamanlı",
+      "show-from-custom": "Özel",
       "show-from-select": "Başlangıç Zamanı",
-      "link": "Bağlantı (Opsiyonel)",
+      "link": "Bağlantı (İsteğe Bağlı)",
       "link-placeholder": "Bağlantı URL'sini girin",
       "external": "Dış Bağlantı (Yeni sekmede aç)",
       "type": "Tür",
@@ -70,7 +70,7 @@
       "effects": "Efektler",
       "effect-none": "Yok",
       "effect-marquee": "Kayan Yazı",
-      "effect-flash": "Flaş / Şok (Git Gel)",
+      "effect-flash": "Yanıp Sönme (İleri Geri)",
       "display": "Gösterim",
       "display-always": "Sürekli",
       "display-once": "Bir Defa",
@@ -100,7 +100,9 @@
       "closeable": "Kapatılabilir",
       "error-save": "Kaydedilemedi: {error}",
       "error-unknown": "Bilinmeyen hata",
-      "error-general": "Bir hata oluştu."
+      "error-general": "Bir hata oluştu.",
+      "error-not-found": "Duyuru bulunamadı. Silinmiş olabilir.",
+      "error-invalid": "Bazı alanlar geçersiz. Lütfen kontrol edip tekrar deneyin."
     },
     "delete": {
       "title": "Duyuruyu Sil",
@@ -126,8 +128,8 @@
   },
   "permissions": {
     "MANAGE_ANNOUNCEMENTS": {
-      "title": "Duyuruları Düzenle",
-      "description": "Tema içinde gösterilecek bir duyuru oluşturabilir, silebilir ve düzenleyebilir."
+      "title": "Duyuruları Yönet",
+      "description": "Sitede gösterilen duyuruları oluşturabilir, düzenleyebilir ve silebilir."
     }
   },
   "activity-logs": {

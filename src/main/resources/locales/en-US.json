@@ -8,7 +8,7 @@
     "announcements": {
       "title": "Announcements",
       "new-announcement": "Add Announcement",
-      "count": "{count} Announcements",
+      "count": "{count, plural, one {# announcement} other {# announcements}}",
       "filters": {
         "all": "All",
         "active": "Active",
@@ -100,7 +100,9 @@
       "closeable": "Closeable",
       "error-save": "Could not be saved: {error}",
       "error-unknown": "Unknown error",
-      "error-general": "An error occurred."
+      "error-general": "An error occurred.",
+      "error-not-found": "The announcement could not be found. It may have been deleted.",
+      "error-invalid": "Some fields are invalid. Check them and try again."
     },
     "delete": {
       "title": "Delete Announcement",
@@ -127,7 +129,7 @@
   "permissions": {
     "MANAGE_ANNOUNCEMENTS": {
       "title": "Manage Announcements",
-      "description": "Can create, delete, edit an announcement which will be shown in theme."
+      "description": "Can create, edit and delete announcements shown on the site."
     }
   },
   "activity-logs": {

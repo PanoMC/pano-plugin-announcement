@@ -66,6 +66,14 @@
 
 <script>
   import { _, showSuccessToast, showErrorToast } from '../../../main';
+
+  function errorText(error) {
+    const code = typeof error === 'string' ? error : error?.code;
+    if (code === 'NOT_FOUND') return $_('modals.add-edit.error-not-found');
+    if (code === 'BAD_REQUEST') return $_('modals.add-edit.error-invalid');
+    return $_('modals.add-edit.error-general');
+  }
+
   let loading = false;
 
   async function onYesClick() {
@@ -80,7 +88,7 @@
         // Handle error (e.g., show toast)
         console.error('Delete failed:', result.error);
         showErrorToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
-          values: { error: result.error.message || result.error.code || $_('modals.add-edit.error-unknown') },
+          error: errorText(result.error),
         });
       } else {
         showSuccessToast('plugins.pano-plugin-announcement.toasts.announcement-deleted');
@@ -90,7 +98,7 @@
     } catch (e) {
       console.error(e);
       showErrorToast('plugins.pano-plugin-announcement.toasts.error-deleting', {
-        values: { error: $_('modals.add-edit.error-general') },
+        error: $_('modals.add-edit.error-general'),
       });
     } finally {
       loading = false;
