@@ -27,6 +27,9 @@ export const DEFAULTS = {
   marqueeSpeed: 60, // px per second
   rotateSeconds: 5,
   multiMode: 'ROTATE', // several contents: ROTATE (one after the other) or INLINE (side by side)
+  // Marquee with several contents: the line starts filled (side by side: an endless loop with no gap; one after the
+  // other: each text starts in view) instead of entering from the right edge.
+  fullStart: false,
   separator: 'SPARKLE',
   customSeparator: '',
   background: 'ALERT', // ALERT | THEME_SOFT | THEME_SOLID | THEME_GRADIENT | GRADIENT | CUSTOM

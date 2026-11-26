@@ -20,6 +20,24 @@
     }
   }
 
+  .announcement-preview__marquee-full {
+    padding-left: 0;
+  }
+
+  .announcement-preview__marquee-loop {
+    padding-left: 0;
+    animation-name: announcement-preview-loop;
+  }
+
+  @keyframes announcement-preview-loop {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   .announcement-preview__flash {
     animation: announcement-preview-flash 1s infinite alternate;
   }
@@ -330,6 +348,25 @@
                     </label>
                   </div>
                 </div>
+
+                {#if $announcement.bannerEffect === 'MARQUEE'}
+                  <div class="form-check form-switch mb-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="fullStart"
+                      role="switch"
+                      bind:checked={$announcement.displayOptions.fullStart} />
+                    <label class="form-check-label ms-2" for="fullStart">
+                      {$_('modals.add-edit.full-start')}
+                    </label>
+                    <small class="d-block text-body-secondary">
+                      {$announcement.displayOptions.multiMode === 'INLINE'
+                        ? $_('modals.add-edit.full-start-info-inline')
+                        : $_('modals.add-edit.full-start-info-rotate')}
+                    </small>
+                  </div>
+                {/if}
 
                 {#if $announcement.displayOptions.multiMode === 'INLINE'}
                   <div class="mb-3">
@@ -676,14 +713,30 @@
                     {#if $announcement.bannerEffect === 'MARQUEE'}
                       <div class="announcement-preview__marquee">
                         {#key previewKey}
-                          <div
-                            class="announcement-preview__marquee-content"
-                            use:previewMarquee={$announcement.displayOptions.marqueeSpeed}>
-                            {#each previewContents as content, i}
-                              {#if i > 0}<span class="announcement-preview__sep">{previewSeparator}</span
-                                >{/if}<span>{@html content}</span>
-                            {/each}
-                          </div>
+                          {#if previewLoop}
+                            <div
+                              class="announcement-preview__marquee-content announcement-preview__marquee-loop"
+                              use:previewMarquee={{ speed: $announcement.displayOptions.marqueeSpeed, loop: true }}>
+                              {#each [0, 1] as copy}
+                                <span
+                                  >{#each Array.from({ length: 4 }) as _}{#each previewContents as content}<span
+                                        >{@html content}</span
+                                      ><span class="announcement-preview__sep">{previewSeparator}</span
+                                      >{/each}{/each}</span>
+                              {/each}
+                            </div>
+                          {:else}
+                            <div
+                              class="announcement-preview__marquee-content"
+                              class:announcement-preview__marquee-full={previewOptions.fullStart &&
+                                previewFilled.length > 1}
+                              use:previewMarquee={{ speed: $announcement.displayOptions.marqueeSpeed, loop: false }}>
+                              {#each previewContents as content, i}
+                                {#if i > 0}<span class="announcement-preview__sep">{previewSeparator}</span
+                                  >{/if}<span>{@html content}</span>
+                              {/each}
+                            </div>
+                          {/if}
                         {/key}
                       </div>
                     {:else}
@@ -1280,7 +1333,7 @@
       : previewFilled.length > 1 && previewOptions.multiMode !== 'INLINE'
         ? [previewFilled[0]]
         : previewFilled;
-  $: previewKey = `${previewContents.join('\u0000')}|${previewSeparator}`;
+  $: previewKey = `${previewContents.join('\u0000')}|${previewSeparator}|${previewOptions.fullStart}`;
   $: previewAlignClass =
     $announcement.textAlign === 'LEFT'
       ? 'text-start'
@@ -1294,13 +1347,20 @@
         ? 'justify-content-end'
         : 'justify-content-center';
 
+  $: previewLoop =
+    previewOptions.fullStart && previewFilled.length > 1 && previewOptions.multiMode === 'INLINE';
+
   /** The marquee duration from its width, so the preview moves at the chosen px per second. */
-  function previewMarquee(node, speed) {
-    let current = speed;
+  function previewMarquee(node, params) {
+    let current = params;
     const apply = () => {
-      const distance = node.offsetWidth || 0;
+      // The endless line moves one of its two groups per pass.
+      const distance = (node.offsetWidth || 0) / (current.loop ? 2 : 1);
       if (distance > 0) {
-        node.style.setProperty('--ann-duration', `${Math.max(distance / Math.max(Number(current) || 60, 5), 2)}s`);
+        node.style.setProperty(
+          '--ann-duration',
+          `${Math.max(distance / Math.max(Number(current.speed) || 60, 5), 2)}s`,
+        );
       }
     };
     apply();

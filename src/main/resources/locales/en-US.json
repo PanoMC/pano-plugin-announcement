@@ -147,7 +147,10 @@
       "gradient-angle": "Gradient direction",
       "text-color": "Text colour",
       "text-color-auto": "Automatic",
-      "text-color-custom": "Custom"
+      "text-color-custom": "Custom",
+      "full-start": "Start full",
+      "full-start-info-inline": "The line is full of text from the start and runs on without a gap.",
+      "full-start-info-rotate": "Each text starts in view instead of entering from the right."
     },
     "delete": {
       "title": "Delete Announcement",

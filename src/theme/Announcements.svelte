@@ -44,6 +44,26 @@
     }
   }
 
+  /* "Start full", one after the other: each text starts in view instead of entering from the right. */
+  .announcement-announcements__marquee-full {
+    padding-left: 0;
+  }
+
+  /* "Start full", side by side: two identical groups moved by one group's width, an endless line with no gap. */
+  .announcement-announcements__marquee-loop {
+    padding-left: 0;
+    animation-name: announcement-marquee-loop-animation;
+  }
+
+  @keyframes announcement-marquee-loop-animation {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
   .announcement-announcements__item {
     display: inline;
   }
@@ -86,6 +106,10 @@
     .announcement-announcements__fade {
       animation: none;
     }
+
+    .announcement-announcements__marquee-loop > :last-child {
+      display: none;
+    }
   }
 </style>
 
@@ -106,9 +130,26 @@
         <div class="announcement-content" class:announcement-announcements__flash={isFlash(banner)}>
           {#if banner.effectType === 'MARQUEE'}
             <div class="announcement-announcements__marquee">
+              {#if inline && o.fullStart}
+                <div
+                  class="announcement-announcements__marquee-content announcement-announcements__marquee-loop"
+                  use:marqueeLoop={{ speed: o.marqueeSpeed, id: banner.id }}>
+                  {#each [0, 1] as copy}
+                    <span aria-hidden={copy === 1 ? 'true' : null}>
+                      {#each Array.from({ length: loopRepeats[banner.id] || 1 }) as _}
+                        {#each contents as content}<span class="announcement-announcements__item"
+                            >{@html content}</span
+                          ><span class="announcement-announcements__sep" aria-hidden="true">{separatorText(o)}</span
+                          >{/each}
+                      {/each}
+                    </span>
+                  {/each}
+                </div>
+              {:else}
               {#key inline ? 'all' : index}
                 <div
                   class="announcement-announcements__marquee-content"
+                  class:announcement-announcements__marquee-full={isFullRotate(banner, o)}
                   use:marqueeSpeed={o.marqueeSpeed}
                   onanimationiteration={() => !inline && nextContent(banner)}>
                   {#if inline}
@@ -122,6 +163,7 @@
                   {/if}
                 </div>
               {/key}
+              {/if}
             </div>
           {:else if inline}
             <div class="announcement-announcements__inline {getJustifyClass(banner.textAlign)}">
@@ -383,6 +425,45 @@
   /** A marquee moves across the whole width, so it has no alignment. */
   function alignClass(banner) {
     return banner.effectType === 'MARQUEE' ? '' : getTextAlignClass(banner.textAlign);
+  }
+
+  function isFullRotate(banner, o) {
+    return o.fullStart && (banner.contents?.length || 0) > 1 && o.multiMode !== 'INLINE';
+  }
+
+  // How often the contents repeat in one group of the endless line, so a group is at least as wide as the banner.
+  let loopRepeats = $state({});
+
+  /** The endless line: repeats the contents until a group fills the banner, then moves one group per pass. */
+  function marqueeLoop(node, params) {
+    let current = params;
+    const apply = () => {
+      const group = node.firstElementChild;
+      const box = node.parentElement;
+      if (!group || !box) return;
+      const repeats = loopRepeats[current.id] || 1;
+      const groupWidth = group.offsetWidth || 0;
+      if (groupWidth === 0) return;
+      const needed = Math.max(1, Math.ceil(box.clientWidth / (groupWidth / repeats)));
+      if (needed !== repeats && needed <= 50) {
+        loopRepeats[current.id] = needed;
+        return; // measured again after the new groups render
+      }
+      node.style.setProperty('--ann-duration', `${Math.max(groupWidth / Math.max(current.speed || 60, 5), 2)}s`);
+    };
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(apply) : null;
+    observer?.observe(node);
+    if (node.parentElement) observer?.observe(node.parentElement);
+    apply();
+    return {
+      update(next) {
+        current = next;
+        apply();
+      },
+      destroy() {
+        observer?.disconnect();
+      },
+    };
   }
 
   function isFlash(banner) {

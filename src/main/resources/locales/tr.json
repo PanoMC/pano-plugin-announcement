@@ -147,7 +147,10 @@
       "gradient-angle": "Gradyan yönü",
       "text-color": "Yazı rengi",
       "text-color-auto": "Otomatik",
-      "text-color-custom": "Özel"
+      "text-color-custom": "Özel",
+      "full-start": "Dolu başlasın",
+      "full-start-info-inline": "Şerit en baştan yazıyla dolu başlar ve arada boşluk kalmadan akar.",
+      "full-start-info-rotate": "Her yazı sağdan girmek yerine görünür halde başlar."
     },
     "delete": {
       "title": "Duyuruyu Sil",

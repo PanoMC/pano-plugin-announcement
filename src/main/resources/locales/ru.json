@@ -147,7 +147,10 @@
             "gradient-angle": "Направление градиента",
             "text-color": "Цвет текста",
             "text-color-auto": "Автоматически",
-            "text-color-custom": "Свой"
+            "text-color-custom": "Свой",
+            "full-start": "Начинать заполненной",
+            "full-start-info-inline": "Строка сразу заполнена текстом и идёт без пропусков.",
+            "full-start-info-rotate": "Каждый текст начинается видимым, а не въезжает справа."
         },
         "delete": {
             "title": "Удалить объявление",
