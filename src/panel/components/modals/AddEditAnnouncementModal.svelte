@@ -20,6 +20,10 @@
     }
   }
 
+  .announcement-preview__marquee-pause:hover {
+    animation-play-state: paused;
+  }
+
   .announcement-preview__marquee-full {
     padding-left: 0;
   }
@@ -318,6 +322,18 @@
                     <span>{$_('modals.add-edit.slow')}</span>
                     <span>{$_('modals.add-edit.fast')}</span>
                   </div>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="pauseOnHover"
+                    role="switch"
+                    bind:checked={$announcement.displayOptions.pauseOnHover} />
+                  <label class="form-check-label ms-2" for="pauseOnHover">
+                    {$_('modals.add-edit.pause-on-hover')}
+                  </label>
                 </div>
               {/if}
 
@@ -716,6 +732,7 @@
                           {#if previewLoop}
                             <div
                               class="announcement-preview__marquee-content announcement-preview__marquee-loop"
+                              class:announcement-preview__marquee-pause={previewOptions.pauseOnHover !== false}
                               use:previewMarquee={{ speed: $announcement.displayOptions.marqueeSpeed, loop: true }}>
                               {#each [0, 1] as copy}
                                 <span
@@ -728,6 +745,7 @@
                           {:else}
                             <div
                               class="announcement-preview__marquee-content"
+                              class:announcement-preview__marquee-pause={previewOptions.pauseOnHover !== false}
                               class:announcement-preview__marquee-full={previewOptions.fullStart &&
                                 previewFilled.length > 1}
                               use:previewMarquee={{ speed: $announcement.displayOptions.marqueeSpeed, loop: false }}>

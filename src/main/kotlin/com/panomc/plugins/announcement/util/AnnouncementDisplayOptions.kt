@@ -31,6 +31,7 @@ object AnnouncementDisplayOptions {
         input.intIn("rotateSeconds", 2..60)?.let { out.put("rotateSeconds", it) }
         input.oneOf("multiMode", MULTI_MODES)?.let { out.put("multiMode", it) }
         (input.getValue("fullStart") as? Boolean)?.let { out.put("fullStart", it) }
+        (input.getValue("pauseOnHover") as? Boolean)?.let { out.put("pauseOnHover", it) }
         input.oneOf("separator", SEPARATORS)?.let { out.put("separator", it) }
         input.getValue("customSeparator")?.let { it as? String }
             ?.let { sanitizeSeparator(it) }

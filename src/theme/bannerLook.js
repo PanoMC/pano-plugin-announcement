@@ -25,6 +25,7 @@ export const GRADIENTS = {
 
 export const DEFAULTS = {
   marqueeSpeed: 60, // px per second
+  pauseOnHover: true, // the marquee stops while the pointer is on it
   rotateSeconds: 5,
   multiMode: 'ROTATE', // several contents: ROTATE (one after the other) or INLINE (side by side)
   // Marquee with several contents: the line starts filled (side by side: an endless loop with no gap; one after the

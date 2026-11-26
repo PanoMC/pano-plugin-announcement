@@ -150,7 +150,8 @@
       "text-color-custom": "Özel",
       "full-start": "Dolu başlasın",
       "full-start-info-inline": "Şerit en baştan yazıyla dolu başlar ve arada boşluk kalmadan akar.",
-      "full-start-info-rotate": "Her yazı sağdan girmek yerine görünür halde başlar."
+      "full-start-info-rotate": "Her yazı sağdan girmek yerine görünür halde başlar.",
+      "pause-on-hover": "Üzerine gelince dursun"
     },
     "delete": {
       "title": "Duyuruyu Sil",

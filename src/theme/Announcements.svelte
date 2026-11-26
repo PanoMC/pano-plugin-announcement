@@ -31,7 +31,8 @@
     animation: announcement-marquee-animation var(--ann-duration, 20s) linear infinite;
   }
 
-  .announcement-announcements__marquee-content:hover {
+  /* "Pause on hover" (on by default). */
+  .announcement-announcements__marquee-pause:hover {
     animation-play-state: paused;
   }
 
@@ -133,6 +134,7 @@
               {#if inline && o.fullStart}
                 <div
                   class="announcement-announcements__marquee-content announcement-announcements__marquee-loop"
+                  class:announcement-announcements__marquee-pause={o.pauseOnHover !== false}
                   use:marqueeLoop={{ speed: o.marqueeSpeed, id: banner.id }}>
                   {#each [0, 1] as copy}
                     <span aria-hidden={copy === 1 ? 'true' : null}>
@@ -150,6 +152,7 @@
                 <div
                   class="announcement-announcements__marquee-content"
                   class:announcement-announcements__marquee-full={isFullRotate(banner, o)}
+                  class:announcement-announcements__marquee-pause={o.pauseOnHover !== false}
                   use:marqueeSpeed={o.marqueeSpeed}
                   onanimationiteration={() => !inline && nextContent(banner)}>
                   {#if inline}
