@@ -23,10 +23,12 @@
     width: 100%;
   }
 
+  /* Starts right of the box (padding = the box width) and moves its own width left; the duration comes from the
+     admin's speed (px per second) and the measured width, so every text moves at the same speed. */
   .announcement-announcements__marquee-content {
     display: inline-block;
     padding-left: 100%;
-    animation: announcement-marquee-animation 20s linear infinite;
+    animation: announcement-marquee-animation var(--ann-duration, 20s) linear infinite;
   }
 
   .announcement-announcements__marquee-content:hover {
@@ -42,11 +44,47 @@
     }
   }
 
+  .announcement-announcements__item {
+    display: inline;
+  }
+
+  .announcement-announcements__sep {
+    display: inline-block;
+    margin: 0 0.85em;
+    opacity: 0.75;
+  }
+
+  .announcement-announcements__inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 0.25rem;
+  }
+
+  .announcement-announcements__fade {
+    animation: announcement-fade-animation 0.45s ease both;
+  }
+
+  @keyframes announcement-fade-animation {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .announcement-announcements__marquee-content {
       animation: none;
       white-space: normal;
       padding-left: 0;
+    }
+
+    .announcement-announcements__fade {
+      animation: none;
     }
   }
 </style>
@@ -54,24 +92,51 @@
 {#if visibleBanners.length > 0}
   <div class="announcement-announcements announcement-announcements__banners vstack gap-2">
     {#each visibleBanners as banner (banner.id)}
+      {@const o = optionsOf(banner)}
+      {@const look = bannerLook(o)}
+      {@const contents = banner.contents || []}
+      {@const inline = contents.length > 1 && o.multiMode === 'INLINE'}
+      {@const index = (activeContentIndex[banner.id] || 0) % Math.max(contents.length, 1)}
       <div
         id="pano-announcement-{banner.id}"
-        class="announcement-banner announcement-announcements__alert alert {ALERT_CLASSES[banner.alertStyle || 'INFO']} overflow-hidden mb-0 {getTextAlignClass(banner.textAlign)}"
+        class="announcement-banner announcement-announcements__alert alert {colourClass(banner, look)} overflow-hidden mb-0 {alignClass(banner)}"
         class:alert-dismissible={banner.closeable}
+        style={look.style || null}
         role="alert">
-        <div class="announcement-content">
+        <div class="announcement-content" class:announcement-announcements__flash={isFlash(banner)}>
           {#if banner.effectType === 'MARQUEE'}
             <div class="announcement-announcements__marquee">
-              <div class="announcement-announcements__marquee-content">
-                {@html banner.contents[activeContentIndex[banner.id] || 0]}
-              </div>
+              {#key inline ? 'all' : index}
+                <div
+                  class="announcement-announcements__marquee-content"
+                  use:marqueeSpeed={o.marqueeSpeed}
+                  onanimationiteration={() => !inline && nextContent(banner)}>
+                  {#if inline}
+                    {#each contents as content, i}
+                      {#if i > 0}<span class="announcement-announcements__sep" aria-hidden="true"
+                          >{separatorText(o)}</span
+                        >{/if}<span class="announcement-announcements__item">{@html content}</span>
+                    {/each}
+                  {:else}
+                    <span class="announcement-announcements__item">{@html contents[index]}</span>
+                  {/if}
+                </div>
+              {/key}
             </div>
-          {:else if banner.effectType === 'FLASH'}
-            <div class="announcement-announcements__flash">
-              {@html banner.contents[activeContentIndex[banner.id] || 0]}
+          {:else if inline}
+            <div class="announcement-announcements__inline {getJustifyClass(banner.textAlign)}">
+              {#each contents as content, i}
+                {#if i > 0}<span class="announcement-announcements__sep" aria-hidden="true"
+                    >{separatorText(o)}</span
+                  >{/if}<span class="announcement-announcements__item">{@html content}</span>
+              {/each}
             </div>
           {:else}
-            {@html banner.contents[activeContentIndex[banner.id] || 0]}
+            {#key index}
+              <div class:announcement-announcements__fade={contents.length > 1}>
+                {@html contents[index]}
+              </div>
+            {/key}
           {/if}
         </div>
 
@@ -79,6 +144,7 @@
           <button
             type="button"
             class="btn-close"
+            class:btn-close-white={look.lightText}
             style="z-index: 2;"
             onclick={(e) => {
               e.stopPropagation();
@@ -201,6 +267,7 @@
   import { derived } from 'svelte/store';
   import { _ as i18n } from '@panomc/sdk/utils/language';
   import { page, browser, base } from '@panomc/sdk/svelte';
+  import { parseOptions, bannerLook, separatorText } from './bannerLook.js';
 
   // plugin translations: `$_('key')` reads `plugins.pano-plugin-announcement.key`
   const _ = derived(i18n, ($_fn) => (key, options) => $_fn(`plugins.pano-plugin-announcement.${key}`, options));
@@ -254,22 +321,84 @@
     }),
   );
 
+  // Several contents shown one after the other: each stays the admin's display time. A marquee moves to the next one
+  // when its pass ends instead (onanimationiteration).
   $effect(() => {
     const intervals = [];
     finalAnnouncements.forEach((a) => {
-      if (a.type === 'BANNER' && a.contents.length > 1) {
-        activeContentIndex[a.id] = 0;
-        const interval = setInterval(() => {
-          activeContentIndex[a.id] = (activeContentIndex[a.id] + 1) % a.contents.length;
-        }, 5000);
-        intervals.push(interval);
-      }
+      if (a.type !== 'BANNER' || (a.contents?.length || 0) < 2 || a.effectType === 'MARQUEE') return;
+      const o = optionsOf(a);
+      if (o.multiMode === 'INLINE') return;
+      activeContentIndex[a.id] = 0;
+      intervals.push(setInterval(() => nextContent(a), Math.max(2, o.rotateSeconds) * 1000));
     });
 
     return () => {
       intervals.forEach(clearInterval);
     };
   });
+
+  const optionsCache = new Map();
+
+  function optionsOf(announcement) {
+    const key = `${announcement.id}:${announcement.displayOptions ?? ''}`;
+    if (!optionsCache.has(key)) optionsCache.set(key, parseOptions(announcement.displayOptions));
+    return optionsCache.get(key);
+  }
+
+  function nextContent(announcement) {
+    const count = announcement.contents?.length || 0;
+    if (count < 2) return;
+    activeContentIndex[announcement.id] = ((activeContentIndex[announcement.id] || 0) + 1) % count;
+  }
+
+  /** Sets the marquee's duration from its width so it moves at `speed` px per second, also after a resize. */
+  function marqueeSpeed(node, speed) {
+    let current = speed;
+    const apply = () => {
+      const distance = node.offsetWidth || 0;
+      if (distance > 0) {
+        node.style.setProperty('--ann-duration', `${Math.max(distance / Math.max(current || 60, 5), 2)}s`);
+      }
+    };
+    apply();
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(apply) : null;
+    observer?.observe(node);
+    return {
+      update(next) {
+        current = next;
+        apply();
+      },
+      destroy() {
+        observer?.disconnect();
+      },
+    };
+  }
+
+  /** The classic alert colour, or none when the admin picked another background (set inline by bannerLook). */
+  function colourClass(banner, look) {
+    return look.alert ? ALERT_CLASSES[banner.alertStyle || 'INFO'] : '';
+  }
+
+  /** A marquee moves across the whole width, so it has no alignment. */
+  function alignClass(banner) {
+    return banner.effectType === 'MARQUEE' ? '' : getTextAlignClass(banner.textAlign);
+  }
+
+  function isFlash(banner) {
+    return banner.effectType === 'FLASH';
+  }
+
+  function getJustifyClass(align) {
+    switch (align) {
+      case 'LEFT':
+        return 'justify-content-start';
+      case 'RIGHT':
+        return 'justify-content-end';
+      default:
+        return 'justify-content-center';
+    }
+  }
 
   function closeBanner(id) {
     if (!closedBanners.includes(id)) {

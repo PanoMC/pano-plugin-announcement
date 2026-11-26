@@ -22,6 +22,8 @@ open class Announcement(
     val external: Boolean = false,
     val alertStyle: AnnouncementAlertStyle = AnnouncementAlertStyle.INFO,
     val textAlign: AnnouncementTextAlign = AnnouncementTextAlign.CENTER,
+    /** JSON text of the banner's look and motion, see [AnnouncementDisplayOptions]; null on rows saved before it. */
+    val displayOptions: String? = "{}",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 ) : DBEntity()

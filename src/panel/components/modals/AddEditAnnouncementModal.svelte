@@ -1,3 +1,45 @@
+<style>
+  /* The preview's motion, as on the site (theme/Announcements.svelte). */
+  .announcement-preview__marquee {
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .announcement-preview__marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: announcement-preview-marquee var(--ann-duration, 20s) linear infinite;
+  }
+
+  @keyframes announcement-preview-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  .announcement-preview__flash {
+    animation: announcement-preview-flash 1s infinite alternate;
+  }
+
+  @keyframes announcement-preview-flash {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0.6;
+    }
+  }
+
+  .announcement-preview__sep {
+    display: inline-block;
+    margin: 0 0.85em;
+    opacity: 0.75;
+  }
+</style>
+
 <!-- Add / Edit Announcement Modal -->
 <div
   class="modal fade"
@@ -148,17 +190,19 @@
                   placeholder={$_('modals.add-edit.link-placeholder')} />
                 <label for="link">{$_('modals.add-edit.link')}</label>
               </div>
-              <div class="form-check form-switch mb-3">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="external"
-                  role="switch"
-                  bind:checked={$announcement.external} />
-                <label class="form-check-label ms-2" for="external">
-                  {$_('modals.add-edit.external')}
-                </label>
-              </div>
+              {#if ($announcement.link || '').trim() !== ''}
+                <div class="form-check form-switch mb-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="external"
+                    role="switch"
+                    bind:checked={$announcement.external} />
+                  <label class="form-check-label ms-2" for="external">
+                    {$_('modals.add-edit.external')}
+                  </label>
+                </div>
+              {/if}
             {/if}
 
             {#if $announcement.displayType === 'BANNER'}
@@ -234,29 +278,124 @@
                 </div>
               </div>
 
-              <div class="mb-3">
-                <p class="form-label d-block">{$_('modals.add-edit.style')}</p>
-                <div class="d-flex flex-wrap gap-2">
-                  {#each ['PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'WARNING', 'INFO', 'LIGHT', 'DARK'] as color}
-                    <button
-                      type="button"
-                      class="btn btn-{color.toLowerCase()} p-0 rounded-circle border {$announcement.alertStyle ===
-                      color
-                        ? 'border-3 border-primary shadow-sm'
-                        : 'border-1 border-secondary border-opacity-25'}"
-                      style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
-                      on:click={() => ($announcement.alertStyle = color)}>
-                      {#if $announcement.alertStyle === color}
-                        <i
-                          class="fas fa-check {['LIGHT', 'WARNING', 'INFO'].includes(color)
-                            ? 'text-dark'
-                            : 'text-white'}"></i>
-                      {/if}
-                    </button>
-                  {/each}
+              {#if $announcement.bannerEffect === 'MARQUEE'}
+                <div class="mb-3">
+                  <label class="form-label d-flex justify-content-between" for="marqueeSpeed">
+                    <span>{$_('modals.add-edit.marquee-speed')}</span>
+                    <span class="text-body-secondary">
+                      {$_('modals.add-edit.marquee-speed-value', {
+                        values: { speed: $announcement.displayOptions.marqueeSpeed },
+                      })}
+                    </span>
+                  </label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    id="marqueeSpeed"
+                    min="10"
+                    max="300"
+                    step="5"
+                    bind:value={$announcement.displayOptions.marqueeSpeed} />
+                  <div class="d-flex justify-content-between small text-body-secondary">
+                    <span>{$_('modals.add-edit.slow')}</span>
+                    <span>{$_('modals.add-edit.fast')}</span>
+                  </div>
                 </div>
-              </div>
+              {/if}
 
+              {#if ($announcement.bannerContents?.length || 0) > 1}
+                <div class="mb-3">
+                  <p class="form-label d-block">{$_('modals.add-edit.multi-mode')}</p>
+                  <div class="btn-group w-100" role="group">
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      id="multiRotate"
+                      autocomplete="off"
+                      bind:group={$announcement.displayOptions.multiMode}
+                      value="ROTATE" />
+                    <label class="btn btn-outline-primary" for="multiRotate">
+                      {$_('modals.add-edit.multi-mode-rotate')}
+                    </label>
+
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      id="multiInline"
+                      autocomplete="off"
+                      bind:group={$announcement.displayOptions.multiMode}
+                      value="INLINE" />
+                    <label class="btn btn-outline-primary" for="multiInline">
+                      {$_('modals.add-edit.multi-mode-inline')}
+                    </label>
+                  </div>
+                </div>
+
+                {#if $announcement.displayOptions.multiMode === 'INLINE'}
+                  <div class="mb-3">
+                    <p class="form-label d-block">{$_('modals.add-edit.separator')}</p>
+                    <div class="d-flex flex-wrap gap-2">
+                      {#each Object.entries(SEPARATORS) as [key, symbol]}
+                        <button
+                          type="button"
+                          class="btn btn-sm {$announcement.displayOptions.separator === key
+                            ? 'btn-primary'
+                            : 'btn-outline-secondary'}"
+                          style="min-width: 40px;"
+                          title={$_(`modals.add-edit.separator-${key.toLowerCase()}`)}
+                          aria-label={$_(`modals.add-edit.separator-${key.toLowerCase()}`)}
+                          aria-pressed={$announcement.displayOptions.separator === key}
+                          on:click={() => ($announcement.displayOptions.separator = key)}>
+                          {symbol}
+                        </button>
+                      {/each}
+                      <button
+                        type="button"
+                        class="btn btn-sm {$announcement.displayOptions.separator === 'CUSTOM'
+                          ? 'btn-primary'
+                          : 'btn-outline-secondary'}"
+                        aria-pressed={$announcement.displayOptions.separator === 'CUSTOM'}
+                        on:click={() => ($announcement.displayOptions.separator = 'CUSTOM')}>
+                        {$_('modals.add-edit.separator-custom')}
+                      </button>
+                    </div>
+                    {#if $announcement.displayOptions.separator === 'CUSTOM'}
+                      <div class="form-floating mt-2">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="customSeparator"
+                          maxlength="8"
+                          bind:value={$announcement.displayOptions.customSeparator}
+                          placeholder={$_('modals.add-edit.separator-custom-placeholder')} />
+                        <label for="customSeparator"
+                          >{$_('modals.add-edit.separator-custom-placeholder')}</label>
+                      </div>
+                    {/if}
+                  </div>
+                {:else if $announcement.bannerEffect !== 'MARQUEE'}
+                  <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between" for="rotateSeconds">
+                      <span>{$_('modals.add-edit.rotate-seconds')}</span>
+                      <span class="text-body-secondary">
+                        {$_('modals.add-edit.rotate-seconds-value', {
+                          values: { seconds: $announcement.displayOptions.rotateSeconds },
+                        })}
+                      </span>
+                    </label>
+                    <input
+                      type="range"
+                      class="form-range"
+                      id="rotateSeconds"
+                      min="2"
+                      max="30"
+                      step="1"
+                      bind:value={$announcement.displayOptions.rotateSeconds} />
+                  </div>
+                {/if}
+              {/if}
+
+              {#if $announcement.bannerEffect !== 'MARQUEE'}
               <div class="mb-3">
                 <p class="form-label d-block">{$_('modals.add-edit.text-align')}</p>
                 <div class="btn-group btn-group-sm w-100" role="group">
@@ -294,6 +433,7 @@
                   </label>
                 </div>
               </div>
+              {/if}
               <div class="form-check form-switch mb-3">
                 <input
                   class="form-check-input"
@@ -521,6 +661,200 @@
               {/if}
             </div>
 
+            {#if $announcement.displayType === 'BANNER'}
+              <!-- Look: a live preview, the background and the text colour -->
+              <div class="mb-3">
+                <p class="form-label d-block">{$_('modals.add-edit.preview')}</p>
+                <div
+                  class="alert mb-0 overflow-hidden {previewLook.alert
+                    ? `alert-${($announcement.alertStyle || 'INFO').toLowerCase()}`
+                    : ''} {$announcement.bannerEffect === 'MARQUEE'
+                    ? ''
+                    : previewAlignClass}"
+                  style={previewLook.style || null}>
+                  <div class:announcement-preview__flash={$announcement.bannerEffect === 'FLASH'}>
+                    {#if $announcement.bannerEffect === 'MARQUEE'}
+                      <div class="announcement-preview__marquee">
+                        {#key previewKey}
+                          <div
+                            class="announcement-preview__marquee-content"
+                            use:previewMarquee={$announcement.displayOptions.marqueeSpeed}>
+                            {#each previewContents as content, i}
+                              {#if i > 0}<span class="announcement-preview__sep">{previewSeparator}</span
+                                >{/if}<span>{@html content}</span>
+                            {/each}
+                          </div>
+                        {/key}
+                      </div>
+                    {:else}
+                      <div class="d-flex flex-wrap align-items-center {previewJustifyClass}">
+                        {#each previewContents as content, i}
+                          {#if i > 0}<span class="announcement-preview__sep">{previewSeparator}</span
+                            >{/if}<span>{@html content}</span>
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="background">{$_('modals.add-edit.background')}</label>
+                <select
+                  class="form-select"
+                  id="background"
+                  bind:value={$announcement.displayOptions.background}>
+                  {#each BACKGROUNDS as key}
+                    <option value={key}>{$_(`modals.add-edit.background-${key.toLowerCase().replaceAll('_', '-')}`)}</option>
+                  {/each}
+                </select>
+                {#if $announcement.displayOptions.background.startsWith('THEME')}
+                  <small class="d-block mt-1 text-body-secondary">{$_('modals.add-edit.background-theme-info')}</small>
+                {/if}
+              </div>
+
+              {#if $announcement.displayOptions.background === 'ALERT'}
+                <div class="mb-3">
+                  <p class="form-label d-block">{$_('modals.add-edit.style')}</p>
+                  <div class="d-flex flex-wrap gap-2">
+                    {#each ['PRIMARY', 'SECONDARY', 'SUCCESS', 'DANGER', 'WARNING', 'INFO', 'LIGHT', 'DARK'] as color}
+                      <button
+                        type="button"
+                        class="btn btn-{color.toLowerCase()} p-0 rounded-circle border {$announcement.alertStyle ===
+                        color
+                          ? 'border-3 border-primary shadow-sm'
+                          : 'border-1 border-secondary border-opacity-25'}"
+                        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+                        aria-pressed={$announcement.alertStyle === color}
+                        on:click={() => ($announcement.alertStyle = color)}>
+                        {#if $announcement.alertStyle === color}
+                          <i
+                            class="fas fa-check {['LIGHT', 'WARNING', 'INFO'].includes(color)
+                              ? 'text-dark'
+                              : 'text-white'}"></i>
+                        {/if}
+                      </button>
+                    {/each}
+                  </div>
+                </div>
+              {/if}
+
+              {#if $announcement.displayOptions.background === 'GRADIENT'}
+                <div class="mb-3">
+                  <p class="form-label d-block">{$_('modals.add-edit.gradient')}</p>
+                  <div class="d-flex flex-wrap gap-2">
+                    {#each Object.entries(GRADIENTS) as [key, [from, to]]}
+                      <button
+                        type="button"
+                        class="btn p-0 rounded-3 border {$announcement.displayOptions.gradient === key
+                          ? 'border-3 border-primary shadow-sm'
+                          : 'border-1 border-secondary border-opacity-25'}"
+                        style="width: 56px; height: 32px; background: linear-gradient(90deg, {from}, {to});"
+                        title={$_(`modals.add-edit.gradient-${key.toLowerCase()}`)}
+                        aria-label={$_(`modals.add-edit.gradient-${key.toLowerCase()}`)}
+                        aria-pressed={$announcement.displayOptions.gradient === key}
+                        on:click={() => ($announcement.displayOptions.gradient = key)}>
+                        {#if $announcement.displayOptions.gradient === key}
+                          <i class="fas fa-check text-white"></i>
+                        {/if}
+                      </button>
+                    {/each}
+                    <button
+                      type="button"
+                      class="btn btn-sm {$announcement.displayOptions.gradient === 'CUSTOM'
+                        ? 'btn-primary'
+                        : 'btn-outline-secondary'}"
+                      aria-pressed={$announcement.displayOptions.gradient === 'CUSTOM'}
+                      on:click={() => ($announcement.displayOptions.gradient = 'CUSTOM')}>
+                      {$_('modals.add-edit.gradient-custom')}
+                    </button>
+                  </div>
+                  {#if $announcement.displayOptions.gradient === 'CUSTOM'}
+                    <div class="d-flex gap-3 mt-2">
+                      <div>
+                        <label class="form-label small mb-1" for="gradientFrom">{$_('modals.add-edit.gradient-from')}</label>
+                        <input
+                          type="color"
+                          class="form-control form-control-color"
+                          id="gradientFrom"
+                          bind:value={$announcement.displayOptions.gradientFrom} />
+                      </div>
+                      <div>
+                        <label class="form-label small mb-1" for="gradientTo">{$_('modals.add-edit.gradient-to')}</label>
+                        <input
+                          type="color"
+                          class="form-control form-control-color"
+                          id="gradientTo"
+                          bind:value={$announcement.displayOptions.gradientTo} />
+                      </div>
+                    </div>
+                  {/if}
+                </div>
+              {/if}
+
+              {#if $announcement.displayOptions.background === 'GRADIENT' || $announcement.displayOptions.background === 'THEME_GRADIENT'}
+                <div class="mb-3">
+                  <label class="form-label d-flex justify-content-between" for="gradientAngle">
+                    <span>{$_('modals.add-edit.gradient-angle')}</span>
+                    <span class="text-body-secondary">{$announcement.displayOptions.gradientAngle}°</span>
+                  </label>
+                  <input
+                    type="range"
+                    class="form-range"
+                    id="gradientAngle"
+                    min="0"
+                    max="360"
+                    step="15"
+                    bind:value={$announcement.displayOptions.gradientAngle} />
+                </div>
+              {/if}
+
+              {#if $announcement.displayOptions.background === 'CUSTOM'}
+                <div class="mb-3">
+                  <label class="form-label" for="backgroundColor">{$_('modals.add-edit.background-color')}</label>
+                  <input
+                    type="color"
+                    class="form-control form-control-color"
+                    id="backgroundColor"
+                    bind:value={$announcement.displayOptions.backgroundColor} />
+                </div>
+              {/if}
+
+              <div class="mb-3">
+                <p class="form-label d-block">{$_('modals.add-edit.text-color')}</p>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="btn-group" role="group">
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      id="textColorAuto"
+                      autocomplete="off"
+                      bind:group={$announcement.displayOptions.textColor}
+                      value="AUTO" />
+                    <label class="btn btn-outline-primary" for="textColorAuto">
+                      {$_('modals.add-edit.text-color-auto')}
+                    </label>
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      id="textColorCustom"
+                      autocomplete="off"
+                      bind:group={$announcement.displayOptions.textColor}
+                      value="CUSTOM" />
+                    <label class="btn btn-outline-primary" for="textColorCustom">
+                      {$_('modals.add-edit.text-color-custom')}
+                    </label>
+                  </div>
+                  {#if $announcement.displayOptions.textColor === 'CUSTOM'}
+                    <input
+                      type="color"
+                      class="form-control form-control-color"
+                      aria-label={$_('modals.add-edit.text-color')}
+                      bind:value={$announcement.displayOptions.textColorValue} />
+                  {/if}
+                </div>
+              </div>
+            {/if}
           </div>
         </div>
       </div>
@@ -584,10 +918,20 @@
 
 <script context="module">
   import { get, writable } from 'svelte/store';
+  import {
+    parseOptions,
+    bannerLook,
+    separatorText,
+    SEPARATORS,
+    GRADIENTS,
+  } from '../../../theme/bannerLook.js';
+
+  const BACKGROUNDS = ['ALERT', 'THEME_SOFT', 'THEME_SOLID', 'THEME_GRADIENT', 'GRADIENT', 'CUSTOM'];
 
   const modalElement = writable();
   const mode = writable('create');
-  const announcement = writable({});
+  // Options start filled, so the form can read them before the modal was opened once.
+  const announcement = writable({ displayOptions: parseOptions(null) });
   const initialAnnouncement = writable({});
   const modalImage = writable(null);
   const isImageRemoved = writable(false);
@@ -628,6 +972,7 @@
         modalContent: activeType === 'MODAL' ? contents[0] : cloned.modalContent || '',
         alertStyle: cloned.alertStyle || 'INFO',
         textAlign: cloned.textAlign || 'CENTER',
+        displayOptions: parseOptions(cloned.displayOptions),
       };
       announcement.set(state);
       initialAnnouncement.set(JSON.parse(JSON.stringify(state)));
@@ -653,6 +998,7 @@
         external: false,
         alertStyle: 'INFO',
         textAlign: 'CENTER',
+        displayOptions: parseOptions(null),
       });
     }
 
@@ -856,6 +1202,9 @@
         closeable: $announcement.displayType === 'BANNER' ? $announcement.closeable : false,
         alertStyle: $announcement.displayType === 'BANNER' ? $announcement.alertStyle : 'INFO',
         textAlign: $announcement.displayType === 'BANNER' ? $announcement.textAlign : 'CENTER',
+        displayOptions: JSON.stringify(
+          $announcement.displayType === 'BANNER' ? optionsToSave($announcement.displayOptions) : {},
+        ),
         removeImage: $isImageRemoved,
       };
 
@@ -907,6 +1256,65 @@
     } finally {
       loading = false;
     }
+  }
+
+  // Numbers from range inputs, the custom separator trimmed; the backend checks every value again.
+  function optionsToSave(options) {
+    return {
+      ...options,
+      marqueeSpeed: Number(options.marqueeSpeed),
+      rotateSeconds: Number(options.rotateSeconds),
+      gradientAngle: Number(options.gradientAngle),
+      customSeparator: (options.customSeparator || '').trim(),
+    };
+  }
+
+  // Live preview of the banner, drawn with the same helper as the site (theme/bannerLook.js).
+  $: previewOptions = parseOptions(optionsToSave($announcement.displayOptions || {}));
+  $: previewLook = bannerLook(previewOptions);
+  $: previewSeparator = separatorText(previewOptions);
+  $: previewFilled = ($announcement.bannerContents || []).filter((c) => c && c.trim() !== '');
+  $: previewContents =
+    previewFilled.length === 0
+      ? [$_('modals.add-edit.preview-empty')]
+      : previewFilled.length > 1 && previewOptions.multiMode !== 'INLINE'
+        ? [previewFilled[0]]
+        : previewFilled;
+  $: previewKey = `${previewContents.join('\u0000')}|${previewSeparator}`;
+  $: previewAlignClass =
+    $announcement.textAlign === 'LEFT'
+      ? 'text-start'
+      : $announcement.textAlign === 'RIGHT'
+        ? 'text-end'
+        : 'text-center';
+  $: previewJustifyClass =
+    $announcement.textAlign === 'LEFT'
+      ? 'justify-content-start'
+      : $announcement.textAlign === 'RIGHT'
+        ? 'justify-content-end'
+        : 'justify-content-center';
+
+  /** The marquee duration from its width, so the preview moves at the chosen px per second. */
+  function previewMarquee(node, speed) {
+    let current = speed;
+    const apply = () => {
+      const distance = node.offsetWidth || 0;
+      if (distance > 0) {
+        node.style.setProperty('--ann-duration', `${Math.max(distance / Math.max(Number(current) || 60, 5), 2)}s`);
+      }
+    };
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(node);
+    return {
+      update(next) {
+        current = next;
+        apply();
+      },
+      destroy() {
+        observer.disconnect();
+      },
+    };
   }
 
   function addContent() {

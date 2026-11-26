@@ -72,6 +72,7 @@ class PanelAddAnnouncementAPI(
                         .optionalProperty("external", booleanSchema())
                         .optionalProperty("alertStyle", enumSchema(*AnnouncementAlertStyle.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("textAlign", enumSchema(*AnnouncementTextAlign.entries.map { it.name }.toTypedArray()))
+                        .optionalProperty("displayOptions", stringSchema())
                 )
             )
             .predicate(RequestPredicate.BODY_REQUIRED)
@@ -125,7 +126,8 @@ class PanelAddAnnouncementAPI(
             location = data.getString("location")?.let { AnnouncementLocation.valueOf(it) } ?: AnnouncementLocation.GLOBAL,
             external = data.getBoolean("external") ?: false,
             alertStyle = data.getString("alertStyle")?.let { AnnouncementAlertStyle.valueOf(it) } ?: AnnouncementAlertStyle.INFO,
-            textAlign = data.getString("textAlign")?.let { AnnouncementTextAlign.valueOf(it) } ?: AnnouncementTextAlign.CENTER
+            textAlign = data.getString("textAlign")?.let { AnnouncementTextAlign.valueOf(it) } ?: AnnouncementTextAlign.CENTER,
+            displayOptions = AnnouncementDisplayOptions.normalize(data.getString("displayOptions"))
         )
 
         val sqlClient = databaseManager.getSqlClient()

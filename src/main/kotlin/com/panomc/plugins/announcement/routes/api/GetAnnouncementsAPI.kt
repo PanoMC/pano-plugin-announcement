@@ -45,6 +45,7 @@ class GetAnnouncementsAPI(
                     .optionalProperty("external", booleanSchema())
                     .optionalProperty("alertStyle", stringSchema())
                     .optionalProperty("textAlign", stringSchema())
+                    .optionalProperty("displayOptions", stringSchema())
                     .optionalProperty("createdAt", intSchema())
                     .optionalProperty("updatedAt", intSchema())
                 )

@@ -73,6 +73,7 @@ class PanelUpdateAnnouncementAPI(
                         .optionalProperty("external", booleanSchema())
                         .optionalProperty("alertStyle", enumSchema(*AnnouncementAlertStyle.entries.map { it.name }.toTypedArray()))
                         .optionalProperty("textAlign", enumSchema(*AnnouncementTextAlign.entries.map { it.name }.toTypedArray()))
+                        .optionalProperty("displayOptions", stringSchema())
                 )
             )
             .predicate(RequestPredicate.BODY_REQUIRED)
@@ -125,6 +126,11 @@ class PanelUpdateAnnouncementAPI(
             imageFileName = newImageFileName
         }
 
+        // Not sent (an older panel): the saved options stay.
+        val displayOptions = data.getString("displayOptions")
+            ?.let { AnnouncementDisplayOptions.normalize(it) }
+            ?: existingAnnouncement.displayOptions
+
         val announcement = Announcement(
             id = id,
             title = title,
@@ -144,6 +150,7 @@ class PanelUpdateAnnouncementAPI(
             external = data.getBoolean("external") ?: false,
             alertStyle = data.getString("alertStyle")?.let { AnnouncementAlertStyle.valueOf(it) } ?: AnnouncementAlertStyle.INFO,
             textAlign = data.getString("textAlign")?.let { AnnouncementTextAlign.valueOf(it) } ?: AnnouncementTextAlign.CENTER,
+            displayOptions = displayOptions,
             updatedAt = System.currentTimeMillis()
         )
 
@@ -170,6 +177,7 @@ class PanelUpdateAnnouncementAPI(
             if (existingAnnouncement.external != (data.getBoolean("external") ?: false)) changes.put("external", data.getBoolean("external") ?: false)
             if (existingAnnouncement.alertStyle.name != (data.getString("alertStyle") ?: "INFO")) changes.put("alertStyle", data.getString("alertStyle") ?: "INFO")
             if (existingAnnouncement.textAlign.name != (data.getString("textAlign") ?: "CENTER")) changes.put("textAlign", data.getString("textAlign") ?: "CENTER")
+            if (existingAnnouncement.displayOptions != displayOptions) changes.put("displayOptions", displayOptions?.let { JsonObject(it) })
             if (imageFileName != existingAnnouncement.imageFileName) changes.put("image", imageFileName != null)
         }
 
